@@ -103,11 +103,13 @@ namespace AutoBotCSharp
         {
             var helper = new WindowInteropHelper(this);
             RegisterHotKey(helper.Handle, 0, 0, 0x70); // F1
+            RegisterHotKey(helper.Handle, 1, 0, 0x71); // F2
         }
         private void UnregisterHotkeys()
         {
             var helper = new WindowInteropHelper(this);
             UnregisterHotkey(helper.Handle, 0);
+            UnregisterHotkey(helper.Handle, 1);
         }
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
