@@ -27,7 +27,7 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
                     <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="53,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3"/>
-                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="261,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3"/>
+                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="261,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
             <Grid Background="#FFE5E5E5" Height="70" Width="590">
@@ -36,12 +36,14 @@
                     <ColumnDefinition Width="39*"/>
                     <ColumnDefinition Width="164*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnHello_Copy1" Content="INS PROVIDER" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                <Button x:Name="btnTheirName_Copy1" Content="POLICY &#xA;EXPIRATION" HorizontalAlignment="Left" Margin="9,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Bold"/>
-                <Button x:Name="btnIntro_Copy1" Content="POLICY&#xA;START DATE" HorizontalAlignment="Left" Margin="138,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="2"/>
+
             </Grid>
             <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="0,0,-30,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="47*"/>
+                        <RowDefinition Height="25*"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="177*"/>
                         <ColumnDefinition Width="29*"/>
@@ -49,9 +51,9 @@
                         <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="304*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnHello_Copy2" Content="INS PROVIDER" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                    <Button x:Name="btnTheirName_Copy2" Content="POLICY &#xA;EXPIRATION" HorizontalAlignment="Left" Margin="9,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="1" Grid.ColumnSpan="4" FontWeight="Bold"/>
-                    <Button x:Name="btnIntro_Copy2" Content="POLICY&#xA;START DATE" HorizontalAlignment="Left" Margin="108,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4"/>
+                    <Button x:Name="btnInsuranceProvider" Content="INS PROVIDER" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click" Grid.RowSpan="2"/>
+                    <Button x:Name="btnPolicyExpiration" Content="POLICY &#xA;EXPIRATION" HorizontalAlignment="Left" Margin="9,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="1" Grid.ColumnSpan="4" FontWeight="Bold" Grid.RowSpan="2"/>
+                    <Button x:Name="btnPolicyStart" Content="POLICY&#xA;START DATE" HorizontalAlignment="Left" Margin="108,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.RowSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbVehicleInfo" Header="VEHICLE INFO" Margin="0,0,-35,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
@@ -67,7 +69,7 @@
                     <Button x:Name="btnYmm1" Content="YMM 1" HorizontalAlignment="Left" Margin="131,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.ColumnSpan="3" FontWeight="Bold"/>
                     <Button x:Name="btnYMM2" Content="YMM 2" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="2" Grid.ColumnSpan="3"/>
                     <Button x:Name="btnYMM3" Content="YMM 3" HorizontalAlignment="Left" Margin="55,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4"/>
-                    <Button x:Name="btnYMM3_Copy" Content="YMM4" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4"/>
+                    <Button x:Name="btnYMM4" Content="YMM4" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo" Header="DRIVER INFO" Margin="0,0,-41,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
@@ -82,7 +84,7 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnDOB" Content="DOB" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
                     <Button x:Name="btnMaritalStatus" Content="MARITAL STATUS" HorizontalAlignment="Left" Margin="136,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.ColumnSpan="5" FontWeight="Bold"/>
-                    <Button x:Name="btnSpouseName" Content="SPOUSE NAME" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.ColumnSpan="2" Click="btnIntro_Copy4_Click"/>
+                    <Button x:Name="btnSpouseName" Content="SPOUSE NAME" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.ColumnSpan="2"/>
                     <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="104,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click" Grid.Column="5"/>
                 </Grid>
             </TabItem>
@@ -151,7 +153,7 @@
                     <Button x:Name="btnDontYouHaveThis" Content="DON'T YOU &#xD;&#xA;HAVE THIS?" HorizontalAlignment="Left" Margin="176,7,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="2" Background="#FFD0FFFD" FontSize="11"/>
                     <Button x:Name="btnWillIGetManyCalls" Content="WILL I GET&#xD;&#xA;MANY CALLS&#xD;&#xA;" HorizontalAlignment="Left" Margin="7,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.ColumnSpan="2" FontSize="11" Background="#FFD0FFFD"/>
                     <Button x:Name="btnCantTheyEmail" Content="CAN THEY JUST&#xD;&#xA;EMAIL?" HorizontalAlignment="Left" Margin="36,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="1" Grid.ColumnSpan="2" FontSize="11" Background="#FFD0FFFD"/>
-                    <Button x:Name="btnCanYouQuote" Content="CANT YOU&#xD;&#xA;QUOTE ME" HorizontalAlignment="Left" Margin="82,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="2" Click="btnLaugh_Copy_Click" FontSize="11" Background="#FFD0FFFD"/>
+                    <Button x:Name="btnCanYouQuote" Content="CANT YOU&#xD;&#xA;QUOTE ME" HorizontalAlignment="Left" Margin="82,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="2" FontSize="11" Background="#FFD0FFFD"/>
                     <Button x:Name="btnWhenWillTheyCall" Content="WHEN WILL&#xD;&#xA;THEY CALL" HorizontalAlignment="Left" Margin="176,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="2" FontSize="11" Background="#FFD0FFFD"/>
                     <Button x:Name="btnSpellThat_Copy" Content="WHY DO YOU&#xD;&#xA;NEED THAT" HorizontalAlignment="Left" Margin="271,47,0,0" VerticalAlignment="Top" Width="89" Height="34" Grid.Column="2" FontSize="11" Background="#FFD0FFFD"/>
                     <Button x:Name="btnNotGivingThatOut" Content="NOT GIVING &#xD;&#xA;THAT OUT" HorizontalAlignment="Left" Margin="7,86,0,0" VerticalAlignment="Top" Width="89" Height="31" Grid.ColumnSpan="2" FontSize="11" Background="#FFFF9381"/>
