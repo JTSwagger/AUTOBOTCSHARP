@@ -15,6 +15,7 @@ namespace AutoBotCSharp
     public partial class App : Application
     {
         private static Random randy = new Random();
+        private static WaveOut waveOut = new WaveOut();
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
          */
@@ -23,10 +24,11 @@ namespace AutoBotCSharp
             Console.WriteLine("CLIP");
             try
             {
+                StopTheClip();
+
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
-                var mp3 = new WaveOut();
-                mp3.Init(Reader);
-                mp3.Play();
+                waveOut.Init(Reader);
+                waveOut.Play();
                 return true;
             }
             catch (Exception ex)
@@ -34,6 +36,14 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.InnerException);
                 return false;
+            }
+        }
+        public static void StopTheClip()
+        {
+            if (waveOut.PlaybackState == PlaybackState.Playing)
+            {
+                waveOut.Stop();
+                waveOut.Dispose();
             }
         }
         public static void playOkClip()
