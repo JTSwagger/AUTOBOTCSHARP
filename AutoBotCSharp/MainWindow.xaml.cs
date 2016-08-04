@@ -28,27 +28,13 @@ namespace AutoBotCSharp
         }
 
 
-        private bool RollTheClip(string Clip)
-        {
-            try
-            {
-                Mp3FileReader Reader = new Mp3FileReader(Clip);
-                var mp3 = new NAudio.Wave.WaveOut();
-                mp3.Init(Reader);
-                mp3.Play();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-          
-        }
+
 
 
         private void btnHello_Click(object sender, RoutedEventArgs e)
         {
-            RollTheClip("C:\\SoundBoard\\Cheryl\\INTRO\\hello.mp3");
+            // Keep methods like RollTheClip in App.xaml.cs, call them like this
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
 
         private void butnThisIsCheryl_Click(object sender, RoutedEventArgs e)
