@@ -16,6 +16,9 @@ namespace AutoBotCSharp
     {
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
+
+
+
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
          */
