@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NAudio.Wave;
+
 
 namespace AutoBotCSharp
 {
@@ -23,6 +25,55 @@ namespace AutoBotCSharp
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+
+        private bool RollTheClip(string Clip)
+        {
+            try
+            {
+                Mp3FileReader Reader = new Mp3FileReader(Clip);
+                var mp3 = new NAudio.Wave.WaveOut();
+                mp3.Init(Reader);
+                mp3.Play();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+          
+        }
+
+
+        private void btnHello_Click(object sender, RoutedEventArgs e)
+        {
+            RollTheClip("C:\\SoundBoard\\Cheryl\\INTRO\\hello.mp3");
+        }
+
+        private void butnThisIsCheryl_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnLaugh_Copy_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void btnIntro_Copy4_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnOk_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
