@@ -480,6 +480,7 @@ namespace AutoBotCSharp
             var helper = new WindowInteropHelper(this);
             UnregisterHotKey(helper.Handle, 0);
             UnregisterHotKey(helper.Handle, 1);
+            UnregisterHotKey(helper.Handle, 2);
         }
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
