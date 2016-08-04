@@ -40,7 +40,8 @@ namespace AutoBotCSharp
 
         private void butnThisIsCheryl_Click(object sender, RoutedEventArgs e)
         {
-
+            string clip = @"C:\Soundboard\Cheryl\INTRO\CHERY_CALLING_FROM_LCN.mp3";
+            App.RollTheClip(clip)
         }
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -54,7 +55,8 @@ namespace AutoBotCSharp
 
         private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
-
+            string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
+            App.RollTheClip(clip);
         }
 
 
@@ -80,7 +82,7 @@ namespace AutoBotCSharp
          * 1 : Humanism button
          */
         [DllImport("user32.dll")]
-        public static extern bool UnregisterHotkey(
+        public static extern bool UnregisterHotKey(
             IntPtr hWnd,
             int id);
         private HwndSource _source;
@@ -108,8 +110,8 @@ namespace AutoBotCSharp
         private void UnregisterHotkeys()
         {
             var helper = new WindowInteropHelper(this);
-            UnregisterHotkey(helper.Handle, 0);
-            UnregisterHotkey(helper.Handle, 1);
+            UnregisterHotKey(helper.Handle, 0);
+            UnregisterHotKey(helper.Handle, 1);
         }
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
