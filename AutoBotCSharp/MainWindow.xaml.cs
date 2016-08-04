@@ -122,6 +122,9 @@ namespace AutoBotCSharp
                         case 0:
                             App.playOkClip();
                             break;
+                        case 1:
+                            App.playHumanism();
+                            break;
                     }
                     break;
             }
