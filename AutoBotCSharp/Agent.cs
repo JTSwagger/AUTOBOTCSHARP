@@ -168,32 +168,24 @@ namespace AutoBotCSharp
 
         public void setupNameButtons()
         {
-            //App.Current.Dispatcher.Invoke((() =>
-            //{
-                
-            //}));
+
             string firstName = "";
-            try
+            while (driver.WindowHandles.Count < 2)
             {
-                firstName = driver.FindElementById("frmFirstName").Text;
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException);
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.Source);
-                driver.SwitchTo().Window(driver.WindowHandles.Last());
-                Thread.Sleep(100);
-                firstName = driver.FindElementById("frmFirstName").Text;
-            } finally
-            {
-                firstName = "";
+                Console.WriteLine("shoop");
             }
-            
-            //string firstName = "James";
+            Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
+            driver.SwitchTo().Window(driver.WindowHandles.Last());
+            Console.WriteLine("driver title: " + driver.Title);
+            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value"));
             try
             {
                 string[] clips = App.findNameClips(firstName);
-                App.getWindow().setNameText(firstName);
+                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                {
+                    App.getWindow().setNameText(firstName);
+                }));
+                
             } catch (Exception ex)
             {
                 Console.WriteLine(ex.InnerException);
