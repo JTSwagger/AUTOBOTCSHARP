@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.Diagnostics;
 
 namespace AutoBotCSharp
 {
@@ -30,6 +31,11 @@ namespace AutoBotCSharp
         {
             randy = new Random();
             InitializeComponent();
+            string procName = Process.GetCurrentProcess().ProcessName;
+            foreach (Process proc in Process.GetProcessesByName("chromedriver"))
+            {
+                proc.Kill();
+            }
         }
 
         public void setNameText(string name)
@@ -598,6 +604,27 @@ namespace AutoBotCSharp
                 case "READY":
                     user.PauseUnPause("PAUSE");
                     break;
+            }
+        }
+
+        private void btnYMMOnly1_Click(object sender, RoutedEventArgs e)
+        {
+            string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3";
+            App.RollTheClip(clip);
+        }
+
+        public void setNameBtns(bool torf)
+        {
+            if (torf)
+            {
+                btnTheirName.IsEnabled = true;
+                btnLookingFor.IsEnabled = true;
+                btnHi.IsEnabled = true;
+            } else if (!torf)
+            {
+                btnTheirName.IsEnabled = false;
+                btnLookingFor.IsEnabled = false;
+                btnHi.IsEnabled = false;
             }
         }
     }

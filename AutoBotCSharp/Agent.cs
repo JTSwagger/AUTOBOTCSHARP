@@ -23,6 +23,8 @@ namespace AutoBotCSharp
         public string Agent_Name;
         public string Dialer_Status;
         public string Callpos;
+
+        private bool newCall = false;
         public const string INTRO = "INTRO";
         public const string INS_PROVIDER = "INS_PROVIDER";
         public const string INS_EXP = "INS_EXP";
@@ -63,8 +65,20 @@ namespace AutoBotCSharp
                 {
                     Dialer_Status = tempstr[0];
                     Agent_Name = tempstr[5];
-                    Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    Console.WriteLine("Agent Name: " + Agent_Name);
+                    if (Dialer_Status == "READY")
+                    {
+                        newCall = true;
+                    } else if (Dialer_Status == "INCALL")
+                    {
+                        if (newCall)
+                        {
+                            setupNameButtons();
+                            newCall = false;
+                        }
+                        
+                    }
+                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    //Console.WriteLine("Agent Name: " + Agent_Name);
                 }
                 catch
                 {
@@ -192,6 +206,7 @@ namespace AutoBotCSharp
                         break;
 
                 }
+                r.Close();
             }
             catch
             {
@@ -201,33 +216,29 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupNameButtons()
         {
-            var window = App.getWindow();
-            string firstName = driver.FindElementById("frmFirstName").Text;
-            //string firstName = "James";
-            string[] clips = App.findNameClips(firstName);
-
-            if (clips[0] != "no clip")
+            string firstName = "";
+            while (driver.WindowHandles.Count < 2)
             {
-                window.setNameText(firstName);
-                window.btnTheirName.IsEnabled = true;
-            } else
-            {
-                window.setNameText(firstName);
-                window.btnTheirName.IsEnabled = false;
+                Console.WriteLine("shoop");
             }
-            if (clips[1] != "no clip")
+            Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
+            driver.SwitchTo().Window(driver.WindowHandles.Last());
+            Console.WriteLine("driver title: " + driver.Title);
+            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            
+            try
             {
-                window.btnLookingFor.IsEnabled = true;
-            } else
-            {
-                window.btnLookingFor.IsEnabled = false;
+                string[] clips = App.findNameClips(firstName);
+                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                {
+                    App.getWindow().setNameText(firstName);
+                }));
             }
-            if (clips[2] != "no clip")
+            catch (Exception ex)
             {
-                window.btnHi.IsEnabled = true;
-            } else
-            {
-                window.btnHi.IsEnabled = false;
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
             }
         }
 
