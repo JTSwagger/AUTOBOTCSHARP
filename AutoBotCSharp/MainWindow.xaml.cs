@@ -627,6 +627,11 @@ namespace AutoBotCSharp
                 btnHi.IsEnabled = false;
             }
         }
+
+        private void btnGreatDay_Click(object sender, RoutedEventArgs e)
+        {
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.");
+        }
     }
     
 }

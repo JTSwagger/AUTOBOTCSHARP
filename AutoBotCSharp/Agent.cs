@@ -79,6 +79,7 @@ namespace AutoBotCSharp
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
                     //Console.WriteLine("Agent Name: " + Agent_Name);
+                    
                 }
                 catch
                 {
@@ -89,7 +90,7 @@ namespace AutoBotCSharp
                     }
                 }
                 setGlobals();
-                
+                Thread.Sleep(500);
             }
         }
         //------------------------------------------------------------------------------------------------------
@@ -190,7 +191,9 @@ namespace AutoBotCSharp
             {
               WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" +  AgentNum + "&function=external_hangup&value=1");
               WebResponse r = h.GetResponse();
+                Thread.Sleep(250);
                 r.Close();
+                Thread.Sleep(250);
                 switch(dispo)
                 {
                 case "Not Available":
@@ -219,6 +222,7 @@ namespace AutoBotCSharp
                         break;
 
                 }
+                Thread.Sleep(250);
                 r.Close();
             }
             catch

@@ -215,7 +215,7 @@
 
 
         </TabControl>
-        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="58,390,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1" SelectionChanged="cmbDispo_SelectionChanged" SelectedIndex="0">
+        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="58,380,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1" SelectionChanged="cmbDispo_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem Background="{x:Null}" Content="Not Available"/>
             <ComboBoxItem Content="Wrong Number"/>
             <ComboBoxItem Content="Not Interested"/>
@@ -223,8 +223,9 @@
             <ComboBoxItem Content="Do Not Call"/>
             <ComboBoxItem Content="No English"/>
         </ComboBox>
-        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,390,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
-        <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="47" Grid.Row="1" Click="btnDispo_Click"/>
-        <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="47" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1" Click="btnPause_Click"/>
+        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,395,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
+        <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="53" Grid.Row="1" Click="btnDispo_Click"/>
+        <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="53" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1" Click="btnPause_Click"/>
+        <Button x:Name="btnGreatDay" Content="HAVE A GREAT DAY!" HorizontalAlignment="Left" Margin="63,407,0,0" VerticalAlignment="Top" Width="279" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="25" Grid.Row="1" Click="btnGreatDay_Click"/>
     </Grid>
 </Window>
