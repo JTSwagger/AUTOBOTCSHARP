@@ -30,7 +30,6 @@ namespace AutoBotCSharp
         {
             randy = new Random();
             InitializeComponent();
-            user = new Agent();
         }
 
         public void setNameText(string name)
