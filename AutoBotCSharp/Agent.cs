@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
+using System.Threading;
+using OpenQA.Selenium.Support;
 
 namespace AutoBotCSharp
 {
@@ -38,15 +40,27 @@ namespace AutoBotCSharp
         private ChromeDriver driver;
        
  
-        public bool Login()
+        public bool Login(string AgentNum)
         {
             ChromeDriverService cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             driver = new ChromeDriver(cds);
             try
-            {        
+            {
                 driver.Navigate().GoToUrl("http://loudcloud9.ytel.com");
-                driver.FindElementById("");
+                driver.SwitchTo().Frame("top");
+                Thread.Sleep(500);
+                driver.FindElementById("login-agent").Click();
+                driver.FindElementById("agent-login").SendKeys(AgentNum);
+                Thread.Sleep(500);
+                driver.FindElementById("agent-password").SendKeys("y" + AgentNum + "IE");
+                Thread.Sleep(500);
+                driver.FindElementById("btn-get-campaign").Click();
+                Thread.Sleep(500);
+                driver.FindElementById("select-campaign").Click();
+                driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click(); 
+                Thread.Sleep(250);
+                driver.FindElementById("btn-submit").Click();
             }
             catch
             {

@@ -16,7 +16,7 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="299*"/>
         </Grid.ColumnDefinitions>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" SelectionChanged="tabControl_SelectionChanged" Grid.Column="2">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" Grid.Column="2">
             <TabItem x:Name="tbIntro" Header="INTRO" Margin="2,0,-36,0" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>

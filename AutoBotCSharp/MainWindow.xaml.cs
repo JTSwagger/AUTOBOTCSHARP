@@ -30,7 +30,7 @@ namespace AutoBotCSharp
         {
             randy = new Random();
             InitializeComponent();          
-            App.setupMicRecogClient();
+           // App.setupMicRecogClient();
         }
 
         public void setNameText(string name)
@@ -525,8 +525,9 @@ namespace AutoBotCSharp
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            user = new Agent();
             string AgentNum = txtAgentNum.Text;
-            user.Login();
+            user.Login(AgentNum);
 
             
         }

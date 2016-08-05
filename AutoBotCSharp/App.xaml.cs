@@ -20,9 +20,9 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
-        private static string clipDir;
+        //private static string clipDir;
 
-        private static MainWindow mainwindow = (MainWindow)Current.MainWindow;
+        //private static MainWindow mainwindow = (MainWindow)Current.MainWindow;
 
         public static void setupMicRecogClient()
         {
@@ -48,7 +48,7 @@ namespace AutoBotCSharp
         public static void onPartialResponseRecieved(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            mainwindow.setSpeechBoxText(response);
+            //mainwindow.setSpeechBoxText(response);
         }
 
         public static void void_name(string name)
