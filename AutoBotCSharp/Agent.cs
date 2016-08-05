@@ -23,6 +23,7 @@ namespace AutoBotCSharp
         public string Agent_Name;
         public string Dialer_Status;
         public string Callpos;
+        private bool newCall = true;
         public const string INTRO = "INTRO";
         public const string INS_PROVIDER = "INS_PROVIDER";
         public const string INS_EXP = "INS_EXP";
@@ -46,6 +47,12 @@ namespace AutoBotCSharp
         public const string TCPA = "TCPA";
         private ChromeDriver driver;
 
+        public void killChromeDriver()
+        {
+            driver.Quit();
+        }
+
+        
 
         WebRequest webRequest;
         WebResponse resp;
@@ -63,16 +70,27 @@ namespace AutoBotCSharp
                 {
                     Dialer_Status = tempstr[0];
                     Agent_Name = tempstr[5];
-                    Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    Console.WriteLine("Agent Name: " + Agent_Name);
+                    if (Dialer_Status == "READY")
+                    {
+                        newCall = true;
+                    } else if (Dialer_Status == "INCALL")
+                    {
+                        if (newCall)
+                        {
+                            setupNameButtons();
+                            newCall = false;
+                        }
+                    }
+                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    //Console.WriteLine("Agent Name: " + Agent_Name);
                 }
                 catch
                 {
-                    for(int i = 0; i < tempstr.Length-1;i++)
+                    //for(int i = 0; i < tempstr.Length-1;i++)
 
-                    {
-                        Console.WriteLine(tempstr[i]);
-                    }
+                    //{
+                    //    Console.WriteLine(tempstr[i]);
+                    //}
                 }
                 setGlobals();
                 
@@ -101,10 +119,6 @@ namespace AutoBotCSharp
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
         }
-
-     
-
-  
         public bool Login(string AgentNumber)
         {
             AgentNum = AgentNumber;
@@ -131,7 +145,6 @@ namespace AutoBotCSharp
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
                 Task task = Task.Run((Action)doAgentStatusRequest);
-               
             }
             catch
             {
@@ -155,34 +168,38 @@ namespace AutoBotCSharp
 
         public void setupNameButtons()
         {
-            var window = App.getWindow();
-            string firstName = driver.FindElementById("frmFirstName").Text;
+            //App.Current.Dispatcher.Invoke((() =>
+            //{
+                
+            //}));
+            string firstName = "";
+            try
+            {
+                firstName = driver.FindElementById("frmFirstName").Text;
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+                driver.SwitchTo().Window(driver.WindowHandles.Last());
+                Thread.Sleep(100);
+                firstName = driver.FindElementById("frmFirstName").Text;
+            } finally
+            {
+                firstName = "";
+            }
+            
             //string firstName = "James";
-            string[] clips = App.findNameClips(firstName);
-
-            if (clips[0] != "no clip")
+            try
             {
-                window.setNameText(firstName);
-                window.btnTheirName.IsEnabled = true;
-            } else
+                string[] clips = App.findNameClips(firstName);
+                App.getWindow().setNameText(firstName);
+            } catch (Exception ex)
             {
-                window.setNameText(firstName);
-                window.btnTheirName.IsEnabled = false;
-            }
-            if (clips[1] != "no clip")
-            {
-                window.btnLookingFor.IsEnabled = true;
-            } else
-            {
-                window.btnLookingFor.IsEnabled = false;
-            }
-            if (clips[2] != "no clip")
-            {
-                window.btnHi.IsEnabled = true;
-            } else
-            {
-                window.btnHi.IsEnabled = false;
-            }
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+            } 
         }
 
         //---------------------------------------------------------------

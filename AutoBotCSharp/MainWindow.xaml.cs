@@ -95,7 +95,7 @@ namespace AutoBotCSharp
         // Vehicle info button group
         private void btnHowManyVehicles_Click(object sender, RoutedEventArgs e)
         {
-            string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have";
+            string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3";
             App.RollTheClip(clip);
         }
         private void btnYmm1_Click(object sender, RoutedEventArgs e)
@@ -454,6 +454,23 @@ namespace AutoBotCSharp
             // I'm not entirely sure we have this clip.
             MessageBox.Show("Not entirely sure if this clip exists yet. Sorry.");
         }
+        private void btnKillLongDictation_Click(object sender, RoutedEventArgs e)
+        {
+            App.longDictationClient.EndMicAndRecognition();
+            Console.WriteLine("LD ended");
+        }
+
+        private void btnKillShortPhrase_Click(object sender, RoutedEventArgs e)
+        {
+            App.shortPhraseClient.EndMicAndRecognition();
+            App.shortPhraseClient.AudioStop();
+            Console.WriteLine("SP ended");
+        }
+
+        private void btnReaction_Click(object sender, RoutedEventArgs e)
+        {
+            App.playHumanism();
+        }
 
         // below is my hotkey handling code
         /*
@@ -495,14 +512,7 @@ namespace AutoBotCSharp
             _source.RemoveHook(HwndHook);
             _source = null;
             UnregisterHotkeys();
-
-            App.shortPhraseClient.EndMicAndRecognition();
-            App.longDictationClient.EndMicAndRecognition();
-
-            App.longDictationClient.AudioStop();
-            App.longDictationClient.Dispose();
-
-            Console.WriteLine("uhhhh");
+            
             
             Application.Current.Shutdown();
             base.OnClosed(e);

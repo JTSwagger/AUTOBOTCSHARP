@@ -77,6 +77,7 @@ namespace AutoBotCSharp
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
                 }));
+                (sender as MicrophoneRecognitionClient).AudioStop();
                 
             }
         }
@@ -118,11 +119,15 @@ namespace AutoBotCSharp
          */
         public static bool RollTheClip(string Clip)
         {
+            //if (Clip == "no clip")
+            //{
+            //    return false;
+            //}
             Console.WriteLine("CLIP");
             try
             {
                 StopTheClip();
-
+                waveOut = new WaveOut();
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
                 waveOut.Init(Reader);
                 waveOut.Play();
@@ -137,12 +142,10 @@ namespace AutoBotCSharp
         }
         public static void StopTheClip()
         {
-            if (waveOut.PlaybackState == PlaybackState.Playing)
-            {
-                waveOut.Stop();
-                waveOut.Dispose();
-            }
+            waveOut.Stop();
+            waveOut.Dispose();
         }
+        private static int okClipIndex = 0;
         public static void playOkClip()
         {
             string[] okClips = new string[] {
@@ -150,19 +153,38 @@ namespace AutoBotCSharp
                 @"C:\Soundboard\Cheryl\REACTIONS\OK2.mp3",
                 @"C:\Soundboard\Cheryl\REACTIONS\okGreat.mp3",
             };
-            int index = randy.Next(okClips.Length);
-            string clip = okClips[index];
+
+            string clip = okClips[okClipIndex];
+            if (okClipIndex >= okClips.Length - 1)
+            {
+                okClipIndex = 0;
+            }
+            else
+            {
+                okClipIndex += 1;
+            }
             RollTheClip(clip);
         }
+
+        private static int humanismIndex = 0;
         public static void playHumanism()
         {
             string[] humanismClips = new string[]
             {
-                @"C:\Soundboard\Cheryl\REACTIONS\Excellent2.mp3",
+                @"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3",
                 @"C:\Soundboard\Cheryl\REACTIONS\Great 2.mp3",
+                @"C:\Soundboard\Cheryl\REACTIONS\Wonderful.mp3",
             };
-            int index = randy.Next(humanismClips.Length);
-            string clip = humanismClips[index];
+            
+            string clip = humanismClips[humanismIndex];
+            if (humanismIndex >= humanismClips.Length - 1)
+            {
+                humanismIndex = 0;
+            }
+            else
+            {
+                humanismIndex += 1;
+            }
             RollTheClip(clip);
         }
 
