@@ -22,7 +22,6 @@ namespace AutoBotCSharp
 
         //private static string clipDir;
         
-
         public static void setupMicRecogClient()
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
@@ -56,7 +55,40 @@ namespace AutoBotCSharp
             getWindow().setSpeechBoxText(response);
         }
 
-        
+        public static string[] findNameClips(string name)
+        {
+            string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
+            string[] nameClips = new string[3];
+            string check1 = namesDir + @"\" + name + " 1";
+            string check2 = namesDir + @"\" + name + " 2";
+            string check3 = namesDir + @"\" + name + " 3";
+            Console.WriteLine(check1);
+            Console.WriteLine(check2);
+            Console.WriteLine(check3);
+            if (System.IO.File.Exists(check1))
+            {
+                nameClips[0] = check1;
+            } else
+            {
+                nameClips[0] = "no clip";
+            }
+            if (System.IO.File.Exists(check2))
+            {
+                nameClips[1] = check2;
+            } else
+            {
+                nameClips[1] = "no clip";
+            }
+            if (System.IO.File.Exists(check3))
+            {
+                nameClips[2] = check3;
+            } else
+            {
+                nameClips[3] = "no clip";
+            }
+
+            return nameClips;
+        }
 
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
