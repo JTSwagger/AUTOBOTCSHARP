@@ -99,14 +99,25 @@ namespace AutoBotCSharp
            switch(Dialer_Status)
             {
                 case "READY":
-                    App.getWindow().Background =  new SolidColorBrush();
-                   
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().Background = Brushes.CadetBlue;
+                    }));
+
                     break;
                 case "PAUSED":
-                    App.Current.Resources["Background"] = new SolidColorBrush(Colors.Red);
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().Background = Brushes.Red;
+                    }));
+
                     break;
-                case "CONNECTED":               
-                    App.Current.Resources["Background"] = new SolidColorBrush(Colors.Green);
+                case "INCALL":
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().Background = Brushes.Green;
+                    }));
+                    
                     break;
             }
 
