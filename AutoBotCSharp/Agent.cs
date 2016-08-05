@@ -50,7 +50,7 @@ namespace AutoBotCSharp
         WebRequest webRequest;
         WebResponse resp;
         StreamReader reader;
-
+        //--------------------------------------------------------------------------------------------------------
         public void doAgentStatusRequest()
         {
             
@@ -78,6 +78,7 @@ namespace AutoBotCSharp
                 
             }
         }
+        //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
 
@@ -95,16 +96,18 @@ namespace AutoBotCSharp
             }
 
         }
+        //----------------------------------------------------------------------------------------------------
         void StartWebRequest()
         {
             webRequest= WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
+
         }
 
      
 
-  
+  //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)
         {
             AgentNum = AgentNumber;
@@ -153,6 +156,49 @@ namespace AutoBotCSharp
             }
         }
 
+        //------------------------------------------------------------------
+        public void HangUpandDispo(string dispo)
+        {
+           
+            try
+            {
+              WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" +  AgentNum + "&function=external_hangup&value=1");
+              WebResponse r = h.GetResponse();
+                switch(dispo)
+                {
+                case "Not Available":
+                    h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                         r = h.GetResponse();
+                        break;
+               case "Not Interested":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
+                         r = h.GetResponse();
+                        break;
+                case "Do Not Call":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
+                         r = h.GetResponse();
+                        break;
+                    case "Wrong Number":
+                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
+                         r = h.GetResponse();
+                        break;
+                    case "No Car":
+                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum+ "&function=external_status&value=" + "NoCar");
+                         r = h.GetResponse();
+                        break;
+                    case "No English":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value="  +"NoEng");
+                         r = h.GetResponse();
+                        break;
+
+                }
+            }
+            catch
+            {
+                Console.WriteLine("ERROR");
+            }
+        }
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupNameButtons()
         {
             var window = App.getWindow();
@@ -186,6 +232,27 @@ namespace AutoBotCSharp
         }
 
         //---------------------------------------------------------------
+
+        public void PauseUnPause(string pauseAction)
+        {
+            WebRequest Pause;
+            WebResponse resp;
+
+            switch(pauseAction)
+            {
+                case "PAUSE":
+                Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "PAUSE");
+                resp = Pause.GetResponse();
+                resp.Close();
+                        break;
+                case "UNPAUSE":
+                Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "RESUME");
+                    resp = Pause.GetResponse();
+                    resp.Close();
+                    break;
+            }
+
+        }
         public bool AskQuestion()
         {
             try
