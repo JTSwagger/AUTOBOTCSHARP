@@ -101,21 +101,21 @@ namespace AutoBotCSharp
                 case "READY":
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
-                        App.getWindow().Background = Brushes.CadetBlue;
+                        App.getWindow().Background = Brushes.LightGoldenrodYellow;
                     }));
 
                     break;
                 case "PAUSED":
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
-                        App.getWindow().Background = Brushes.Red;
+                        App.getWindow().Background = Brushes.IndianRed;
                     }));
 
                     break;
                 case "INCALL":
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
-                        App.getWindow().Background = Brushes.Green;
+                        App.getWindow().Background = Brushes.ForestGreen;
                     }));
                     
                     break;
