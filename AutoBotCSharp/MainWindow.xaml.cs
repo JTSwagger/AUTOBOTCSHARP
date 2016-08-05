@@ -575,6 +575,31 @@ namespace AutoBotCSharp
         {
 
         }
+
+        private void btnDispo_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Hanging up and dispoing as: " + cmbDispo.Text);
+            user.HangUpandDispo(cmbDispo.Text);
+
+        }
+
+        private void cmbDispo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+            switch(user.Dialer_Status)
+            {
+                case "PAUSED":
+                    user.PauseUnPause("UNPAUSE");
+                    break;
+                case "READY":
+                    user.PauseUnPause("PAUSE");
+                    break;
+            }
+        }
     }
     
 }
