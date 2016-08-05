@@ -15,38 +15,37 @@ using System.Windows.Shapes;
 using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
-using OpenQA.Selenium.Chrome;
-
-
 
 namespace AutoBotCSharp
 {
-
-
-    
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Agent user;
         private Random randy;
-
         
         public MainWindow()
-        {       
+        {
             randy = new Random();
             InitializeComponent();
-            user = new Agent();      
-                   
+            App.setupMicRecogClient();
         }
 
-
-        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void setNameText(string name)
         {
-
+            btnTheirName.Content = name;
         }
+
+        public int getTabControlIndex()
+        {
+            return this.tabControl.TabIndex;
+        }
+        public void setSpeechBoxText(string text)
+        {
+            txtBoxCustomerSpeech.Text = text;
+        }
+
         // below is a bunch of button code.
         // Intro stuff button group
         private void btnHello_Click(object sender, RoutedEventArgs e)
@@ -55,6 +54,10 @@ namespace AutoBotCSharp
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
 
+        private void btnTheirName_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
@@ -519,14 +522,7 @@ namespace AutoBotCSharp
             return IntPtr.Zero;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            if (!user.Login())
-            {
-               
-            }
-      
-        }
+
     }
     
 }
