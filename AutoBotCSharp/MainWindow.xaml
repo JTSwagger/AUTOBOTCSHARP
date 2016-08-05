@@ -16,7 +16,7 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="299*"/>
         </Grid.ColumnDefinitions>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" SelectionChanged="tabControl_SelectionChanged" Grid.Column="2">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" Grid.Column="2">
             <TabItem x:Name="tbIntro" Header="INTRO" Margin="2,0,-36,0" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
@@ -26,7 +26,7 @@
                         <ColumnDefinition Width="457*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="53,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3"/>
+                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="53,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3" Click="btnTheirName_Click"/>
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="261,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="3" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
@@ -180,11 +180,13 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top"/>
+            <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="TextBox" Width="120"/>
         </TabControl>
         <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,391,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
         <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,390,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="47" Grid.Row="1"/>
         <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="47" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1"/>
+        <TextBox x:Name="txtBoxCustomerSpeech" Grid.Column="2" HorizontalAlignment="Left" Height="230" Margin="10,134,0,0" Grid.Row="1" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="578"/>
 
     </Grid>
 </Window>
