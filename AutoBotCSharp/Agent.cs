@@ -99,7 +99,8 @@ namespace AutoBotCSharp
            switch(Dialer_Status)
             {
                 case "READY":
-                    App.Current.Resources["Background"] = new SolidColorBrush();
+                    App.getWindow().Background =  new SolidColorBrush();
+                   
                     break;
                 case "PAUSED":
                     App.Current.Resources["Background"] = new SolidColorBrush(Colors.Red);
@@ -178,6 +179,7 @@ namespace AutoBotCSharp
             {
               WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" +  AgentNum + "&function=external_hangup&value=1");
               WebResponse r = h.GetResponse();
+                r.Close();
                 switch(dispo)
                 {
                 case "Not Available":
