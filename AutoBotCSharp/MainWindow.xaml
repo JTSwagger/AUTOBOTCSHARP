@@ -29,7 +29,7 @@
                         <ColumnDefinition Width="423*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6"/>
+                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnTheirName_Click" />
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>

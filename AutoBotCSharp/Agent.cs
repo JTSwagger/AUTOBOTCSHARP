@@ -81,6 +81,39 @@ namespace AutoBotCSharp
                 return false;
             }
         }
+
+        public void setupNameButtons()
+        {
+            var window = App.getWindow();
+            string firstName = driver.FindElementById("frmFirstName").Text;
+            //string firstName = "James";
+            string[] clips = App.findNameClips(firstName);
+
+            if (clips[0] != "no clip")
+            {
+                window.setNameText(firstName);
+                window.btnTheirName.IsEnabled = true;
+            } else
+            {
+                window.setNameText(firstName);
+                window.btnTheirName.IsEnabled = false;
+            }
+            if (clips[1] != "no clip")
+            {
+                window.btnLookingFor.IsEnabled = true;
+            } else
+            {
+                window.btnLookingFor.IsEnabled = false;
+            }
+            if (clips[2] != "no clip")
+            {
+                window.btnHi.IsEnabled = true;
+            } else
+            {
+                window.btnHi.IsEnabled = false;
+            }
+        }
+
         //---------------------------------------------------------------
         public bool AskQuestion()
         {
@@ -88,28 +121,28 @@ namespace AutoBotCSharp
             {
                 switch (Callpos)
                 {
-                    case "INTRO":
+                    case INTRO:
                         App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
                         break;
-                    case "INS_PROVIDER":
+                    case INS_PROVIDER:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");                      
                         break;
-                    case "INS_EXPIRATION":
+                    case INS_EXP:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
                         break;
-                    case "INS_START":
+                    case INST_START:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3");
                         break;
-                    case "NUM_VEHICLES":
+                    case NUM_VEHICLES:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have");
                             break;
-                    case "YMM1":
+                    case YMM1:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3");
                         break;
-                    case "YMM2":
+                    case YMM2:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\2nd Vehicle.mp3");
                         break;
-                    case "YMM3":
+                    case YMM3:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\3rd Vehicle.mp3");
                         break;
                     case YMM4:

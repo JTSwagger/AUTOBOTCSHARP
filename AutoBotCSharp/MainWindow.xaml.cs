@@ -29,7 +29,8 @@ namespace AutoBotCSharp
         public MainWindow()
         {
             randy = new Random();
-            InitializeComponent();          
+            InitializeComponent();
+            user = new Agent();
         }
 
         public void setNameText(string name)
@@ -39,11 +40,11 @@ namespace AutoBotCSharp
 
         public int getTabControlIndex()
         {
-            return this.tabControl.TabIndex;
+            return tabControl.TabIndex;
         }
         public void setSpeechBoxText(string text)
         {
-           
+            //speechTextBox.Text = text;
         }
 
         // below is a bunch of button code.
@@ -53,15 +54,20 @@ namespace AutoBotCSharp
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
-
-        private void btnTheirName_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
             App.RollTheClip(clip);
+        }
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            user = new Agent();
+            string AgentNum = txtAgentNum.Text;
+            user.Login(AgentNum);
+        }
+        private void btnTheirName_Click(object sender, RoutedEventArgs e)
+        {
+            App.RollTheClip(App.findNameClips(btnTheirName.Content.ToString())[2]);
         }
         // Insurance info button group
         private void btnInsuranceProvider_Click(object sender, RoutedEventArgs e)
@@ -194,7 +200,7 @@ namespace AutoBotCSharp
         }
         private void btnLookingFor_Click(object sender, RoutedEventArgs e)
         {
-            // THIS SPACE INTENTIONALLY LEFT BLANK
+            App.RollTheClip(App.findNameClips(btnTheirName.Content.ToString())[1]);
         }
         private void btnGreatQ_Click(object sender, RoutedEventArgs e)
         {
@@ -223,7 +229,7 @@ namespace AutoBotCSharp
         }
         private void btnHi_Click(object sender, RoutedEventArgs e)
         {
-            // THIS SPACE INTENTIONALLY LEFT BLANK
+            App.RollTheClip(App.findNameClips(btnTheirName.Content.ToString())[0]);
         }
 
         private void btnCompUnd_Click(object sender, RoutedEventArgs e)
@@ -522,14 +528,7 @@ namespace AutoBotCSharp
             return IntPtr.Zero;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            user = new Agent();
-            string AgentNum = txtAgentNum.Text;
-            user.Login(AgentNum);
 
-            
-        }
     }
     
 }

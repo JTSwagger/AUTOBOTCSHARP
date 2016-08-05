@@ -59,12 +59,10 @@ namespace AutoBotCSharp
         {
             string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
             string[] nameClips = new string[3];
-            string check1 = namesDir + @"\" + name + " 1";
-            string check2 = namesDir + @"\" + name + " 2";
-            string check3 = namesDir + @"\" + name + " 3";
-            Console.WriteLine(check1);
-            Console.WriteLine(check2);
-            Console.WriteLine(check3);
+            string check1 = namesDir + @"\" + name + " 1.mp3";
+            string check2 = namesDir + @"\" + name + " 2.mp3";
+            string check3 = namesDir + @"\" + name + " 3.mp3";
+
             if (System.IO.File.Exists(check1))
             {
                 nameClips[0] = check1;
@@ -84,9 +82,8 @@ namespace AutoBotCSharp
                 nameClips[2] = check3;
             } else
             {
-                nameClips[3] = "no clip";
+                nameClips[2] = "no clip";
             }
-
             return nameClips;
         }
 
