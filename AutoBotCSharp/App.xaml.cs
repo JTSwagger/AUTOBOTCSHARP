@@ -21,8 +21,7 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient longDictationClient;
 
         //private static string clipDir;
-
-        //private static MainWindow mainwindow = (MainWindow)Current.MainWindow;
+        
 
         public static void setupMicRecogClient()
         {
@@ -30,6 +29,12 @@ namespace AutoBotCSharp
             string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
             shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+        }
+
+        public static MainWindow getWindow()
+        {
+            var mainwindow = App.Current.MainWindow as MainWindow;
+            return mainwindow;
         }
 
         public static void testSpeechReco(int mode)
@@ -48,13 +53,9 @@ namespace AutoBotCSharp
         public static void onPartialResponseRecieved(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            //mainwindow.setSpeechBoxText(response);
+            getWindow().setSpeechBoxText(response);
         }
 
-        public static void void_name(string name)
-        {
-
-        }
         
 
         /*

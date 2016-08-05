@@ -30,7 +30,6 @@ namespace AutoBotCSharp
         {
             randy = new Random();
             InitializeComponent();          
-           // App.setupMicRecogClient();
         }
 
         public void setNameText(string name)
