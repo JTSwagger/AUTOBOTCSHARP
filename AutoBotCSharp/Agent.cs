@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
 using OpenQA.Selenium.Support;
+using System.Net;
+using System.IO;
+using System.Windows.Media;
 
 namespace AutoBotCSharp
 {
 
     public class Agent
     {
+        public bool LoggedIn = false;
+        public string Campaign;
+        public int CallsToday;
+
         public string AgentNum;
         public string Agent_Name;
         public string Dialer_Status;
@@ -38,10 +45,70 @@ namespace AutoBotCSharp
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
         private ChromeDriver driver;
-       
- 
-        public bool Login(string AgentNum)
+
+
+        WebRequest webRequest;
+        WebResponse resp;
+        StreamReader reader;
+
+        public void doAgentStatusRequest()
         {
+            
+            while (LoggedIn)
+            {
+                StartWebRequest();
+                string stats = reader.ReadToEnd();
+                string[] tempstr = stats.Split(',');
+                try
+                {
+                    Dialer_Status = tempstr[0];
+                    Agent_Name = tempstr[5];
+                    Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    Console.WriteLine("Agent Name: " + Agent_Name);
+                }
+                catch
+                {
+                    for(int i = 0; i < tempstr.Length-1;i++)
+
+                    {
+                        Console.WriteLine(tempstr[i]);
+                    }
+                }
+                setGlobals();
+                
+            }
+        }
+        private void setGlobals()
+        {
+
+           switch(Dialer_Status)
+            {
+                case "READY":
+                    App.Current.Resources["Background"] = new SolidColorBrush();
+                    break;
+                case "PAUSED":
+                    App.Current.Resources["Background"] = new SolidColorBrush(Colors.Red);
+                    break;
+                case "CONNECTED":               
+                    App.Current.Resources["Background"] = new SolidColorBrush(Colors.Green);
+                    break;
+            }
+
+        }
+        void StartWebRequest()
+        {
+            webRequest= WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
+            resp = webRequest.GetResponse();
+            reader = new StreamReader(resp.GetResponseStream());
+        }
+
+     
+
+  
+        public bool Login(string AgentNumber)
+        {
+            AgentNum = AgentNumber;
+
             ChromeDriverService cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             driver = new ChromeDriver(cds);
@@ -51,6 +118,7 @@ namespace AutoBotCSharp
                 driver.SwitchTo().Frame("top");
                 Thread.Sleep(500);
                 driver.FindElementById("login-agent").Click();
+                Thread.Sleep(250);
                 driver.FindElementById("agent-login").SendKeys(AgentNum);
                 Thread.Sleep(500);
                 driver.FindElementById("agent-password").SendKeys("y" + AgentNum + "IE");
@@ -61,6 +129,9 @@ namespace AutoBotCSharp
                 driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click(); 
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
+                LoggedIn = true;
+                Task task = Task.Run((Action)doAgentStatusRequest);
+               
             }
             catch
             {

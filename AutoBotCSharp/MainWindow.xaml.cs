@@ -531,6 +531,11 @@ namespace AutoBotCSharp
 
             
         }
+
+        private void frmReactions_Navigated(object sender, NavigationEventArgs e)
+        {
+
+        }
     }
     
 }

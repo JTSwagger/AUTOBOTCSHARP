@@ -122,7 +122,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2"/>
+        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2" Navigated="frmReactions_Navigated"/>
         <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="27,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnOk_Click"/>
         <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2"/>
         <Button x:Name="btnWhatIGot" Content="WHAT I GOT" HorizontalAlignment="Left" Margin="197,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnWhatIGot_Click"/>
@@ -201,10 +201,11 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,391,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
-        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,390,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
+        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,370,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
+        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,370,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="47" Grid.Row="1"/>
         <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="47" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1"/>
+        <Label x:Name="lblAgentStats" Content="Agent Name: " Grid.Column="2" HorizontalAlignment="Left" Margin="10,408,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140"/>
 
     </Grid>
 </Window>
