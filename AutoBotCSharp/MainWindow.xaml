@@ -183,7 +183,14 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
-                <TextBox x:Name="textBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,16"/>
+                <Grid>
+                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56"/>
+                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click"/>
+                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click"/>
+                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click"/>
+
+                </Grid>
+
             </TabItem>
             <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-73,0,73,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
                 <Grid Background="#FFE5E5E5">
@@ -203,11 +210,11 @@
                 </Grid>
             </TabItem>
 
+
         </TabControl>
         <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,391,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
         <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,390,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="47" Grid.Row="1"/>
         <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="47" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1"/>
-
     </Grid>
 </Window>

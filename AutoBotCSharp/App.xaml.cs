@@ -28,7 +28,14 @@ namespace AutoBotCSharp
             string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
             shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+
+            shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+
+            shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
         }
+
 
         public static MainWindow getWindow()
         {
@@ -38,21 +45,40 @@ namespace AutoBotCSharp
 
         public static void testSpeechReco(int mode)
         {
+            Console.WriteLine("testing now");
             switch (mode)
             {
                 case 0:
                     shortPhraseClient.StartMicAndRecognition();
+                    Console.WriteLine("shortphrase started");
                     break;
                 case 1:
                     longDictationClient.StartMicAndRecognition();
+                    Console.WriteLine("longdictation started");
                     break;
             }
         }
 
-        public static void onPartialResponseRecieved(object sender, PartialSpeechResponseEventArgs e)
+        public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            getWindow().setSpeechBoxText(response);
+            Application.Current.Dispatcher.Invoke((() =>
+            {
+                getWindow().setSpeechBoxText("Partial: " + response);
+            }));
+            
+        }
+
+        public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
+        {
+            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
+            {
+                Application.Current.Dispatcher.Invoke((() =>
+                {
+                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
+                }));
+                
+            }
         }
 
         public static string[] findNameClips(string name)

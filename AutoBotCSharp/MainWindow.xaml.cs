@@ -43,7 +43,11 @@ namespace AutoBotCSharp
         }
         public void setSpeechBoxText(string text)
         {
-            //speechTextBox.Text = text;
+            speechTxtBox.Text = text;
+        }
+        public void appendSpeechBoxText(string text)
+        {
+            speechTxtBox.Text += "\n" + text;
         }
         private void txtAgentNum_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -491,6 +495,16 @@ namespace AutoBotCSharp
             _source.RemoveHook(HwndHook);
             _source = null;
             UnregisterHotkeys();
+
+            App.shortPhraseClient.EndMicAndRecognition();
+            App.longDictationClient.EndMicAndRecognition();
+
+            App.longDictationClient.AudioStop();
+            App.longDictationClient.Dispose();
+
+            Console.WriteLine("uhhhh");
+            
+            Application.Current.Shutdown();
             base.OnClosed(e);
         }
         private void RegisterHotkeys()
@@ -532,7 +546,20 @@ namespace AutoBotCSharp
             return IntPtr.Zero;
         }
 
+        private void btnInitSpeechReco_Click(object sender, RoutedEventArgs e)
+        {
+            App.setupMicRecogClient();
+        }
 
+        private void btnStartSpeechRecoShort_Click(object sender, RoutedEventArgs e)
+        {
+            App.testSpeechReco(0);
+        }
+
+        private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
+        {
+            App.testSpeechReco(1);
+        }
     }
     
 }
