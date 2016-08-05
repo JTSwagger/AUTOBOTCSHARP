@@ -68,11 +68,12 @@
                         <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="304*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnHowManyVehicles" Content="HOW MANY &#xD;&#xA;VEHICLES" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHowManyVehicles_Click"/>
-                    <Button x:Name="btnYmm1" Content="YMM 1" HorizontalAlignment="Left" Margin="131,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.ColumnSpan="3" FontWeight="Bold" Click="btnYmm1_Click"/>
-                    <Button x:Name="btnYMM2" Content="YMM 2" HorizontalAlignment="Left" Margin="30,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="2" Grid.ColumnSpan="3" Click="btnYMM2_Click"/>
-                    <Button x:Name="btnYMM3" Content="YMM 3" HorizontalAlignment="Left" Margin="55,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4" Click="btnYMM3_Click"/>
-                    <Button x:Name="btnYMM4" Content="YMM4" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4" Click="btnYMM4_Click"/>
+                    <Button x:Name="btnHowManyVehicles" Content="HOW MANY &#xD;&#xA;VEHICLES" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="98" Height="50" Click="btnHowManyVehicles_Click"/>
+                    <Button x:Name="btnYmm1" Content="YMM 1" HorizontalAlignment="Left" Margin="14,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.ColumnSpan="4" FontWeight="Bold" Click="btnYmm1_Click" Grid.Column="1"/>
+                    <Button x:Name="btnYMM2" Content="YMM 2" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4" Click="btnYMM2_Click"/>
+                    <Button x:Name="btnYMM3" Content="YMM 3" HorizontalAlignment="Left" Margin="105,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4" Click="btnYMM3_Click"/>
+                    <Button x:Name="btnYMM4" Content="YMM4" HorizontalAlignment="Left" Margin="205,10,0,0" VerticalAlignment="Top" Width="100" Height="50" Grid.Column="4" Click="btnYMM4_Click"/>
+                    <Button x:Name="btnYMMOnly1" Grid.ColumnSpan="2" Content="YMM One Car" HorizontalAlignment="Left" Margin="103,10,0,0" VerticalAlignment="Top" Width="94" Height="50"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo" Header="DRIVER INFO" Margin="0,0,-41,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
@@ -124,7 +125,7 @@
         </TabControl>
         <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2"/>
         <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="27,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnOk_Click"/>
-        <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2"/>
+        <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnReaction_Click"/>
         <Button x:Name="btnWhatIGot" Content="WHAT I GOT" HorizontalAlignment="Left" Margin="197,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnWhatIGot_Click"/>
         <Button x:Name="btnYes" Content="YES" HorizontalAlignment="Left" Margin="282,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnYes_Click"/>
         <Button x:Name="btnRepeatThat" Content="REPEAT THAT" HorizontalAlignment="Left" Margin="367,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnRepeatThat_Click"/>
@@ -184,10 +185,12 @@
             </TabItem>
             <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
-                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56"/>
-                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click"/>
-                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click"/>
-                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click"/>
+                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="False"/>
+                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click" IsEnabled="False"/>
+                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click" IsEnabled="False"/>
+                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click" IsEnabled="False"/>
+                    <Button x:Name="btnKillLongDictation" Content="Kill LD" HorizontalAlignment="Left" Margin="452,203,0,0" VerticalAlignment="Top" Width="120" Click="btnKillLongDictation_Click" IsEnabled="False"/>
+                    <Button x:Name="btnKillShortPhrase" Content="Kill SP" HorizontalAlignment="Left" Margin="452,183,0,0" VerticalAlignment="Top" Width="120" Click="btnKillShortPhrase_Click" IsEnabled="False"/>
 
                 </Grid>
 
