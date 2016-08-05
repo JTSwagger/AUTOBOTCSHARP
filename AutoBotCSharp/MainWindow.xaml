@@ -29,7 +29,7 @@
                         <ColumnDefinition Width="423*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6"/>
+                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnTheirName_Click" />
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
@@ -122,7 +122,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2" Navigated="frmReactions_Navigated"/>
+        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2"/>
         <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="27,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnOk_Click"/>
         <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2"/>
         <Button x:Name="btnWhatIGot" Content="WHAT I GOT" HorizontalAlignment="Left" Margin="197,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnWhatIGot_Click"/>
@@ -182,7 +182,16 @@
                     <Button x:Name="btnVerifyModel" Content="VERIFY MODEL" HorizontalAlignment="Left" Margin="272,192,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="2" FontSize="11" Background="#FFE813C1" Click="btnVerifyModel_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top"/>
+            <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
+                <Grid>
+                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56"/>
+                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click"/>
+                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click"/>
+                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click"/>
+
+                </Grid>
+
+            </TabItem>
             <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-73,0,73,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
@@ -197,15 +206,15 @@
                         <ColumnDefinition Width="304*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click"/>
-                    <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154"/>
+                    <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus"/>
                 </Grid>
             </TabItem>
+
+
         </TabControl>
-        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,370,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
-        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,370,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
+        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="52,391,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1"/>
+        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,390,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="47" Grid.Row="1"/>
         <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="47" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1"/>
-        <Label x:Name="lblAgentStats" Content="Agent Name: " Grid.Column="2" HorizontalAlignment="Left" Margin="10,408,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140"/>
-
     </Grid>
 </Window>

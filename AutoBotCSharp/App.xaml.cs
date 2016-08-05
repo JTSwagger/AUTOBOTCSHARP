@@ -21,41 +21,97 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient longDictationClient;
 
         //private static string clipDir;
-
-        //private static MainWindow mainwindow = (MainWindow)Current.MainWindow;
-
+        
         public static void setupMicRecogClient()
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
             string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
             shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+
+            shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+
+            shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
+        }
+
+
+        public static MainWindow getWindow()
+        {
+            var mainwindow = App.Current.MainWindow as MainWindow;
+            return mainwindow;
         }
 
         public static void testSpeechReco(int mode)
         {
+            Console.WriteLine("testing now");
             switch (mode)
             {
                 case 0:
                     shortPhraseClient.StartMicAndRecognition();
+                    Console.WriteLine("shortphrase started");
                     break;
                 case 1:
                     longDictationClient.StartMicAndRecognition();
+                    Console.WriteLine("longdictation started");
                     break;
             }
         }
 
-        public static void onPartialResponseRecieved(object sender, PartialSpeechResponseEventArgs e)
+        public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            //mainwindow.setSpeechBoxText(response);
+            Application.Current.Dispatcher.Invoke((() =>
+            {
+                getWindow().setSpeechBoxText("Partial: " + response);
+            }));
+            
         }
 
-        public static void void_name(string name)
+        public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
-
+            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
+            {
+                Application.Current.Dispatcher.Invoke((() =>
+                {
+                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
+                }));
+                
+            }
         }
-        
+
+        public static string[] findNameClips(string name)
+        {
+            string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
+            string[] nameClips = new string[3];
+            string check1 = namesDir + @"\" + name + " 1.mp3";
+            string check2 = namesDir + @"\" + name + " 2.mp3";
+            string check3 = namesDir + @"\" + name + " 3.mp3";
+
+            if (System.IO.File.Exists(check1))
+            {
+                nameClips[0] = check1;
+            } else
+            {
+                nameClips[0] = "no clip";
+            }
+            if (System.IO.File.Exists(check2))
+            {
+                nameClips[1] = check2;
+            } else
+            {
+                nameClips[1] = "no clip";
+            }
+            if (System.IO.File.Exists(check3))
+            {
+                nameClips[2] = check3;
+            } else
+            {
+                nameClips[2] = "no clip";
+            }
+            return nameClips;
+        }
 
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
