@@ -15,22 +15,34 @@ using System.Windows.Shapes;
 using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using OpenQA.Selenium.Chrome;
+
+
 
 namespace AutoBotCSharp
 {
+
+
+    
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Agent user;
         private Random randy;
 
         
         public MainWindow()
-        {
+        {       
             randy = new Random();
             InitializeComponent();
+            user = new Agent();      
+                   
         }
+
+
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -507,7 +519,14 @@ namespace AutoBotCSharp
             return IntPtr.Zero;
         }
 
-        
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!user.Login())
+            {
+               
+            }
+      
+        }
     }
     
 }
