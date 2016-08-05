@@ -45,6 +45,10 @@ namespace AutoBotCSharp
         {
             //speechTextBox.Text = text;
         }
+        private void txtAgentNum_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtAgentNum.Text = "";
+        }
 
         // below is a bunch of button code.
         // Intro stuff button group
@@ -446,6 +450,7 @@ namespace AutoBotCSharp
             // I'm not entirely sure we have this clip.
             MessageBox.Show("Not entirely sure if this clip exists yet. Sorry.");
         }
+
         // below is my hotkey handling code
         /*
          * Here be dragons.  
