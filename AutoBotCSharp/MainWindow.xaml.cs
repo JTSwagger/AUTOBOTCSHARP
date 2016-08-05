@@ -24,11 +24,12 @@ namespace AutoBotCSharp
     public partial class MainWindow : Window
     {
         private Random randy;
-        
+        public Agent user;
+
         public MainWindow()
         {
             randy = new Random();
-            InitializeComponent();
+            InitializeComponent();          
             App.setupMicRecogClient();
         }
 
@@ -43,7 +44,7 @@ namespace AutoBotCSharp
         }
         public void setSpeechBoxText(string text)
         {
-            txtBoxCustomerSpeech.Text = text;
+           
         }
 
         // below is a bunch of button code.
@@ -522,7 +523,13 @@ namespace AutoBotCSharp
             return IntPtr.Zero;
         }
 
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            string AgentNum = txtAgentNum.Text;
+            user.Login();
 
+            
+        }
     }
     
 }

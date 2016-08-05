@@ -183,7 +183,7 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top"/>
-            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-73,0,73,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold">
+            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-73,0,73,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
@@ -196,7 +196,8 @@
                         <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="304*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="125" Height="22" Click="button_Click"/>
+                    <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click"/>
+                    <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154"/>
                 </Grid>
             </TabItem>
         </TabControl>
