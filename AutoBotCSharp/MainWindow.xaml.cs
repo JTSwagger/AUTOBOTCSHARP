@@ -634,15 +634,6 @@ namespace AutoBotCSharp
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
         }
 
-        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
-        {
-            App.openTestPage();
-        }
-
-        private void btnGetDOBTest_Click(object sender, RoutedEventArgs e)
-        {
-            App.getDobTest();
-        }
     }
     
 }

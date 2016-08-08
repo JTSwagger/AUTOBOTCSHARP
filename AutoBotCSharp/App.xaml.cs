@@ -20,8 +20,6 @@ namespace AutoBotCSharp
         private static bool waveOutIsStopped = true;
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
-
-        //private static string clipDir;
         
         public static void setupMicRecogClient()
         {
