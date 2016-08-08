@@ -214,6 +214,7 @@
             <ComboBoxItem Content="No Car"/>
             <ComboBoxItem Content="Do Not Call"/>
             <ComboBoxItem Content="No English"/>
+            <ComboBoxItem Content="Auto Lead"/>
         </ComboBox>
         <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,395,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="53" Grid.Row="1" Click="btnDispo_Click"/>
