@@ -75,7 +75,7 @@ namespace AutoBotCSharp
                     {
                         if (newCall)
                         {
-                            setupNameButtons();
+                            setupBot();
                             newCall = false;
                         }
                         
@@ -256,7 +256,7 @@ namespace AutoBotCSharp
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public void setupNameButtons()
+        public void setupBot()
         {
             string firstName = "";
             while (driver.WindowHandles.Count < 2)
@@ -296,6 +296,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
+            
         }
 
         //---------------------------------------------------------------
@@ -308,12 +309,12 @@ namespace AutoBotCSharp
             switch(pauseAction)
             {
                 case "PAUSE":
-                Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "PAUSE");
-                resp = Pause.GetResponse();
-                resp.Close();
-                        break;
+                    Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "PAUSE");
+                    resp = Pause.GetResponse();
+                    resp.Close();
+                    break;
                 case "UNPAUSE":
-                Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "RESUME");
+                     Pause = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_pause&value=" + "RESUME");
                     resp = Pause.GetResponse();
                     resp.Close();
                     break;
