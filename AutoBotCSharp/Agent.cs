@@ -234,7 +234,7 @@ namespace AutoBotCSharp
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public string[] getDob()
+        public void getDob()
         {
             string[] dob = new string[3]
             {
@@ -243,7 +243,7 @@ namespace AutoBotCSharp
                 new SelectElement(driver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value"),
             };
 
-            return dob;
+            dobInfo = dob;
         }
         public void killDriver()
         {
@@ -295,7 +295,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            dobInfo = getDob();
+            Task.Run((Action)getDob);
         }
 
         //---------------------------------------------------------------
