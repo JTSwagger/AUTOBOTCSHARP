@@ -251,6 +251,18 @@ namespace AutoBotCSharp
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        public string[] getDob()
+        {
+            string[] dob = new string[3]
+            {
+                new SelectElement(driver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value"),
+                new SelectElement(driver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value"),
+                new SelectElement(driver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value"),
+            };
+
+            return dob;
+        }
+        //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupNameButtons()
         {
             string firstName = "";

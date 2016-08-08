@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 
 namespace AutoBotCSharp
 {
@@ -23,8 +20,6 @@ namespace AutoBotCSharp
         private static bool waveOutIsStopped = true;
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
-
-        public static ChromeDriver testDriver;
 
         //private static string clipDir;
         
@@ -49,22 +44,13 @@ namespace AutoBotCSharp
             return mainwindow;
         }
 
-        public static void openTestPage()
+        /*
+         * Returns the current agent object available to MainWindow.
+         * :)
+         */ 
+        public static Agent getAgent()
         {
-            var cds = ChromeDriverService.CreateDefaultService();
-            cds.HideCommandPromptWindow = true;
-            testDriver = new ChromeDriver(cds);
-
-            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
-        }
-
-        public static void getDobTest()
-        {
-            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
-            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
-            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
-
-            getWindow().lblDobTesting.Content = month + " " + day + " " + year;
+            return getWindow().user;
         }
 
         public static void testSpeechReco(int mode)
@@ -141,6 +127,11 @@ namespace AutoBotCSharp
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
          */
+        public static void onPlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            waveOutIsStopped = true;
+        }
+
         public static bool RollTheClip(string Clip)
         {
             //if (Clip == "no clip")
@@ -165,13 +156,7 @@ namespace AutoBotCSharp
             }
         }
 
-        
-        public static void onPlaybackStopped(object sender, StoppedEventArgs e)
-        {
-            waveOutIsStopped = true;
-        }
-
-        public static bool RollTheClipAndWait(string Clip)
+        public static async Task<bool> RollTheClipAndWait(string Clip)
         {
             //if (Clip == "no clip")
             //{
@@ -189,7 +174,7 @@ namespace AutoBotCSharp
                 waveOut.Play();
                 do
                 {
-                    // nothing
+                    await Task.Delay(25);
                 } while (waveOutIsStopped == false);
                 return true;
             }
@@ -227,6 +212,7 @@ namespace AutoBotCSharp
         }
 
         private static int humanismIndex = 0;
+
         public static void playHumanism()
         {
             string[] humanismClips = new string[]
@@ -247,8 +233,13 @@ namespace AutoBotCSharp
             }
             RollTheClip(clip);
         }
-
-
-
+        public static async void playDobClips()
+        {
+            string[] dobby = getAgent().getDob();
+            string moday = dobby[0] + dobby[1];
+            string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
+            bool isDone = await RollTheClipAndWait(modayPath);
+            RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+        }
     }
 }
