@@ -27,7 +27,7 @@ namespace AutoBotCSharp
 
         public static MainWindow getWindow()
         {
-            var mainwindow = App.Current.MainWindow as MainWindow;
+            var mainwindow = Current.MainWindow as MainWindow;
             return mainwindow;
         }
 

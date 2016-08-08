@@ -296,7 +296,8 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
-            
+            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
+            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
         }
 
         //---------------------------------------------------------------

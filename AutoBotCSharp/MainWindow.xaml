@@ -16,9 +16,9 @@
             <ColumnDefinition Width="0*"/>
             <ColumnDefinition Width="299*"/>
         </Grid.ColumnDefinitions>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" Grid.Column="2">
-            <TabItem x:Name="tbIntro" Header="INTRO" Margin="1,0,-35,0" FontWeight="Bold">
-                <Grid Background="#FFE5E5E5">
+        <TabControl x:Name="tabControlTop" HorizontalAlignment="Right" Height="100" Margin="0,7,0,0" VerticalAlignment="Top" Width="598" Grid.Column="2">
+            <TabItem x:Name="tbIntro" Header="INTRO" Margin="10,0,-44,0" FontWeight="Bold">
+                <Grid Background="#FFE5E5E5" Margin="10,-1,13,1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="67*"/>
                         <ColumnDefinition Width="50*"/>
@@ -33,7 +33,7 @@
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="39,0,-39,0" FontWeight="Bold">
+            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
@@ -51,7 +51,7 @@
                     <Button x:Name="btnPolicyStart" Content="POLICY&#xA;START DATE" HorizontalAlignment="Left" Margin="108,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.RowSpan="2" Click="btnPolicyStart_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbVehicleInfo" Header="VEHICLE INFO" Margin="0,0,-45,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
+            <TabItem x:Name="tbVehicleInfo" Header="VEHICLE INFO" Margin="0,0,-52,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="177*"/>
@@ -68,7 +68,7 @@
                     <Button x:Name="btnYMMOnly1" Grid.ColumnSpan="2" Content="YMM One Car" HorizontalAlignment="Left" Margin="103,10,0,0" VerticalAlignment="Top" Width="94" Height="50" Click="btnYMMOnly1_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbDriverInfo" Header="DRIVER INFO" Margin="0,0,-50,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
+            <TabItem x:Name="tbDriverInfo" Header="DRIVER INFO" Margin="0,0,-57,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="140*"/>
@@ -84,7 +84,7 @@
                     <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="104,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="5" Click="btnSpouseDOB_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbPersonalInfo" Header="PERS INFO" Margin="0,0,-53,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
+            <TabItem x:Name="tbPersonalInfo" Header="PERS INFO" Margin="0,0,-63,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="177*"/>
@@ -102,7 +102,7 @@
                     <Button x:Name="btnLastName" Content="LAST NAME" HorizontalAlignment="Left" Margin="229,10,0,0" VerticalAlignment="Top" Width="74" Height="50" Grid.Column="4" Click="btnLastName_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbWrapUp" Header="WRAP UP" Margin="58,0,-58,0" FontWeight="Bold">
+            <TabItem x:Name="tbWrapUp" Header="WRAP UP" Margin="70,0,-70,0" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="177*"/>
@@ -135,7 +135,7 @@
         <Button x:Name="btnSadSorry" Content="SAD SORRY" HorizontalAlignment="Left" Margin="367,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnSadSorry_Click"/>
         <Button x:Name="butnThisIsCheryl" Content="THIS CHERYL" HorizontalAlignment="Left" Margin="452,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Click="butnThisIsCheryl_Click" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnYW" Content="YW" HorizontalAlignment="Left" Margin="238,64,0,0" VerticalAlignment="Top" Width="39" Height="30" Grid.Column="2" Grid.Row="1" Click="btnYW_Click"/>
-        <TabControl x:Name="tabControl_Copy" HorizontalAlignment="Left" Height="256" Margin="0,108,0,0" VerticalAlignment="Top" Width="588" Grid.Column="2" Grid.Row="1">
+        <TabControl x:Name="tabControlBottom" HorizontalAlignment="Left" Height="256" Margin="0,108,0,0" VerticalAlignment="Top" Width="588" Grid.Column="2" Grid.Row="1">
             <TabItem x:Name="tbQuestions" Header="QUESTIONS/OBJECTIONS" Margin="0,0,-47,0" HorizontalAlignment="Left" Width="218" Height="20" VerticalAlignment="Top" FontSize="14">
                 <Grid Background="#FFE5E5E5" Margin="0,0,7,0">
                     <Grid.ColumnDefinitions>
@@ -175,7 +175,7 @@
                     <Button x:Name="btnVerifyModel" Content="VERIFY MODEL" HorizontalAlignment="Left" Margin="272,192,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="2" FontSize="11" Background="#FFE813C1" Click="btnVerifyModel_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbDriverInfo1" Margin="226,0,-253,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
+            <TabItem x:Name="tbDriverInfo1" Margin="164,0,-191,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
                     <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="False"/>
                     <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click" IsEnabled="False"/>
@@ -187,7 +187,7 @@
                 </Grid>
 
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-73,0,73,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
+            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-105,0,105,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>

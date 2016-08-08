@@ -43,9 +43,9 @@ namespace AutoBotCSharp
             btnTheirName.Content = name;
         }
 
-        public int getTabControlIndex()
+        public int getTabControlTopIndex()
         {
-            return tabControl.TabIndex;
+            return tabControlTop.TabIndex;
         }
         public void setSpeechBoxText(string text)
         {
