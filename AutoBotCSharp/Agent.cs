@@ -250,6 +250,19 @@ namespace AutoBotCSharp
                 {
                     App.getWindow().setNameText(firstName);
                 }));
+                if (App.findNameClips(firstName)[0] == "no clip")
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().setNameBtns(false);
+                    }));
+                } else
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().setNameBtns(true);
+                    }));
+                }
             }
             catch (Exception ex)
             {

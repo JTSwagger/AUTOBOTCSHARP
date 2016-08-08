@@ -41,7 +41,7 @@
                 </Grid.ColumnDefinitions>
 
             </Grid>
-            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="30,0,-30,0" HorizontalAlignment="Left" Width="92" FontWeight="Bold">
+            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="0,0,-30,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>

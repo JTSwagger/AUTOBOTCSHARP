@@ -158,7 +158,7 @@ namespace AutoBotCSharp
         }
         private void btnAddress_Click(object sender, RoutedEventArgs e)
         {
-            string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\ADDRESS.mp3";
+            string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
             App.RollTheClip(clip);
         }
         private void btnEmail_Click(object sender, RoutedEventArgs e)
@@ -630,7 +630,7 @@ namespace AutoBotCSharp
 
         private void btnGreatDay_Click(object sender, RoutedEventArgs e)
         {
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.");
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
         }
     }
     
