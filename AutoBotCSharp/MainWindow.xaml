@@ -202,6 +202,9 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click"/>
                     <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus"/>
+                    <Label x:Name="lblDobTesting" Content="DATE OF BIRTH TESTING" HorizontalAlignment="Left" Margin="135,125,0,0" VerticalAlignment="Top" Height="23" Width="155" Grid.ColumnSpan="5"/>
+                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="120" Click="btnOpenTestPage_Click"/>
+                    <Button x:Name="btnGetDOBTest" Content="Get DOB" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Width="120" Click="btnGetDOBTest_Click"/>
                 </Grid>
             </TabItem>
 

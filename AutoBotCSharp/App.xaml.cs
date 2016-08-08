@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace AutoBotCSharp
 {
@@ -17,8 +20,11 @@ namespace AutoBotCSharp
     {
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
+        private static bool waveOutIsStopped = true;
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
+
+        public static ChromeDriver testDriver;
 
         //private static string clipDir;
         
@@ -41,6 +47,24 @@ namespace AutoBotCSharp
         {
             var mainwindow = App.Current.MainWindow as MainWindow;
             return mainwindow;
+        }
+
+        public static void openTestPage()
+        {
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            testDriver = new ChromeDriver(cds);
+
+            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+        }
+
+        public static void getDobTest()
+        {
+            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
+            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
+            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
+
+            getWindow().lblDobTesting.Content = month + " " + day + " " + year;
         }
 
         public static void testSpeechReco(int mode)
@@ -131,6 +155,42 @@ namespace AutoBotCSharp
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
                 waveOut.Init(Reader);
                 waveOut.Play();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException);
+                return false;
+            }
+        }
+
+        
+        public static void onPlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            waveOutIsStopped = true;
+        }
+
+        public static bool RollTheClipAndWait(string Clip)
+        {
+            //if (Clip == "no clip")
+            //{
+            //    return false;
+            //}
+            Console.WriteLine("CLIP");
+            try
+            {
+                StopTheClip();
+                waveOut = new WaveOut();
+                waveOut.PlaybackStopped += onPlaybackStopped;
+                Mp3FileReader Reader = new Mp3FileReader(Clip);
+                waveOutIsStopped = false;
+                waveOut.Init(Reader);
+                waveOut.Play();
+                do
+                {
+                    // nothing
+                } while (waveOutIsStopped == false);
                 return true;
             }
             catch (Exception ex)

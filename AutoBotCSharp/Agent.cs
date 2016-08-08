@@ -9,6 +9,7 @@ using OpenQA.Selenium.Support;
 using System.Net;
 using System.IO;
 using System.Windows.Media;
+using OpenQA.Selenium.Support.UI;
 
 namespace AutoBotCSharp
 {
@@ -181,6 +182,25 @@ namespace AutoBotCSharp
             {
                 return false;
             }
+        }
+
+        public string getBirthdayClip()
+        {
+
+            var month = new SelectElement(driver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
+            var day = new SelectElement(driver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
+            var year = new SelectElement(driver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
+
+            var moday = month + day;
+
+            string clip = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
+
+            if (App.RollTheClipAndWait(clip))
+            {
+                App.RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + year + ".mp3");
+            }
+
+            return "";
         }
 
         //------------------------------------------------------------------
