@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace AutoBotCSharp
 {
@@ -20,21 +22,8 @@ namespace AutoBotCSharp
         private static bool waveOutIsStopped = true;
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
-        
-        public static void setupMicRecogClient()
-        {
-            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
-            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
-            shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
-            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
 
-            shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
-            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
-
-            shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
-            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
-        }
-
+        private static ChromeDriver testDriver;
 
         public static MainWindow getWindow()
         {
@@ -49,6 +38,49 @@ namespace AutoBotCSharp
         public static Agent getAgent()
         {
             return getWindow().user;
+        }
+
+        /*
+         * Testing Stuff No Touchy
+         */
+        public static void openTestPage()
+        {
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            testDriver = new ChromeDriver(cds);
+            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+        }
+        public static async void testDobThings()
+        {
+
+            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
+            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
+            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
+
+            var birthdayPath = @"C:\Soundboard\Cheryl\Birthday\";
+
+            if (month != "" && day != "")
+            {
+                var moday = month + day;
+                bool isDone = await RollTheClipAndWait(birthdayPath + moday + ".mp3");
+            }
+            if (year != "")
+            {
+                RollTheClip(birthdayPath + year + ".mp3");
+            }
+        }
+        public static void setupMicRecogClient()
+        {
+            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
+            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
+            shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
+            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+
+            shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+
+            shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
         }
 
         public static void testSpeechReco(int mode)
@@ -90,6 +122,10 @@ namespace AutoBotCSharp
             }
         }
 
+        /*
+         *  End testing stuff. You can touch stuff again.
+         *  Creep.
+         */
         public static string[] findNameClips(string name)
         {
             string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
@@ -233,11 +269,22 @@ namespace AutoBotCSharp
         }
         public static async void playDobClips()
         {
-            string[] dobby = getAgent().getDob();
-            string moday = dobby[0] + dobby[1];
-            string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
-            bool isDone = await RollTheClipAndWait(modayPath);
-            RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+            string[] dobby = getAgent().dobInfo;
+            if (dobby[0] != "" && dobby[1] != "")
+            {
+                string moday = dobby[0] + dobby[1];
+                string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
+                bool isDone = await RollTheClipAndWait(modayPath);
+            }
+            else
+            {
+                RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                return;
+            }
+            if (dobby[2] != "")
+            {
+                RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+            }
         }
     }
 }

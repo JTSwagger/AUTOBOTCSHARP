@@ -50,6 +50,8 @@ namespace AutoBotCSharp
         private ChromeDriver driver;
 
 
+        public string[] dobInfo;
+
         WebRequest webRequest;
         WebResponse resp;
         StreamReader reader;
@@ -73,6 +75,7 @@ namespace AutoBotCSharp
                     {
                         if (newCall)
                         {
+                            dobInfo = getDob();
                             setupNameButtons();
                             newCall = false;
                         }
@@ -242,6 +245,16 @@ namespace AutoBotCSharp
             };
 
             return dob;
+        }
+        public void killDriver()
+        {
+            try
+            {
+                driver.Quit();
+            } catch (Exception)
+            {
+                // okey
+            }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupNameButtons()

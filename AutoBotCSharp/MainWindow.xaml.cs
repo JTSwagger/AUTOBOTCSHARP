@@ -127,9 +127,8 @@ namespace AutoBotCSharp
         // Driver info button group
         private void btnDOB_Click(object sender, RoutedEventArgs e)
         {
-
-            string clip = @"C:\SoundBoard\Cheryl\DRIVER INFO\DOB1.mp3";
-            App.RollTheClip(clip);
+            App.playDobClips();
+            
         }
         private void btnMaritalStatus_Click(object sender, RoutedEventArgs e)
         {
@@ -519,8 +518,9 @@ namespace AutoBotCSharp
             _source.RemoveHook(HwndHook);
             _source = null;
             UnregisterHotkeys();
-            
-            
+
+            user.killDriver();
+
             Application.Current.Shutdown();
             base.OnClosed(e);
         }
