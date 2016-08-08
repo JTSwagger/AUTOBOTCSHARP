@@ -999,31 +999,37 @@ namespace AutoBotCSharp
                 Thread.Sleep(250);
                 switch(dispo)
                 {
-                case "Not Available":
-                    h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
-                         r = h.GetResponse();
+                    case "Not Available":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        r = h.GetResponse();
                         break;
-               case "Not Interested":
+                    case "Not Interested":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
-                         r = h.GetResponse();
+                        r = h.GetResponse();
                         break;
-                case "Do Not Call":
+                    case "Do Not Call":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
-                         r = h.GetResponse();
+                        r = h.GetResponse();
                         break;
                     case "Wrong Number":
-                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
-                         r = h.GetResponse();
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
+                        r = h.GetResponse();
                         break;
                     case "No Car":
-                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum+ "&function=external_status&value=" + "NoCar");
-                         r = h.GetResponse();
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum+ "&function=external_status&value=" + "NoCar");
+                        r = h.GetResponse();
                         break;
                     case "No English":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value="  +"NoEng");
-                         r = h.GetResponse();
+                        r = h.GetResponse();
                         break;
-
+                    case "Auto Lead":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
+                        r = h.GetResponse();
+                        PauseUnPause("PAUSE");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
+                        r = h.GetResponse();
+                        break;
                 }
                 Thread.Sleep(250);
                 r.Close();
@@ -1096,8 +1102,8 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
-            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
-            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
+            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
         }
 
         //---------------------------------------------------------------
