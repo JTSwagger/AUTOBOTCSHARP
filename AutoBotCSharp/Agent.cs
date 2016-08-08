@@ -75,7 +75,6 @@ namespace AutoBotCSharp
                     {
                         if (newCall)
                         {
-                            dobInfo = getDob();
                             setupNameButtons();
                             newCall = false;
                         }
@@ -296,6 +295,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
+            dobInfo = getDob();
         }
 
         //---------------------------------------------------------------
