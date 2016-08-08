@@ -472,6 +472,26 @@ namespace AutoBotCSharp
             App.shortPhraseClient.AudioStop();
             Console.WriteLine("SP ended");
         }
+        private void btnGreatDay_Click(object sender, RoutedEventArgs e)
+        {
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+        }
+
+        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
+        {
+            App.openTestPage();
+        }
+
+        private void btnPlayDob_Click(object sender, RoutedEventArgs e)
+        {
+            App.testDobThings();
+        }
+
+        private void btnBestGuess_Click(object sender, RoutedEventArgs e)
+        {
+            string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
+            App.RollTheClip(clip);
+        }
 
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
@@ -519,7 +539,14 @@ namespace AutoBotCSharp
             _source = null;
             UnregisterHotkeys();
 
-            user.killDriver();
+            try
+            {
+                user.killDriver();
+            } catch
+            {
+                // okey
+            }
+            
 
             Application.Current.Shutdown();
             base.OnClosed(e);
@@ -629,10 +656,6 @@ namespace AutoBotCSharp
             }
         }
 
-        private void btnGreatDay_Click(object sender, RoutedEventArgs e)
-        {
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-        }
 
     }
     

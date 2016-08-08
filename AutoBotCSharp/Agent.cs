@@ -77,8 +77,7 @@ namespace AutoBotCSharp
                         {
                             setupBot();
                             newCall = false;
-                        }
-                        
+                        }                        
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
                     //Console.WriteLine("Agent Name: " + Agent_Name);
@@ -87,7 +86,6 @@ namespace AutoBotCSharp
                 catch
                 {
                     for(int i = 0; i < tempstr.Length-1;i++)
-
                     {
                         Console.WriteLine(tempstr[i]);
                     }
@@ -124,7 +122,6 @@ namespace AutoBotCSharp
                     
                     break;
             }
-
         }
         //----------------------------------------------------------------------------------------------------
         void StartWebRequest()
@@ -132,7 +129,6 @@ namespace AutoBotCSharp
             webRequest= WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
-
         }
 
      
@@ -163,8 +159,7 @@ namespace AutoBotCSharp
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
-                Task task = Task.Run((Action)doAgentStatusRequest);
-               
+                Task task = Task.Run((Action)doAgentStatusRequest);              
             }
             catch
             {
@@ -302,8 +297,8 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlTop.SelectedIndex = 0));
+            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
         }
 
         //---------------------------------------------------------------
@@ -397,7 +392,6 @@ namespace AutoBotCSharp
                     case TCPA:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
                         break;
-
                 }
                 return true;
             }
