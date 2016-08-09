@@ -231,6 +231,13 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
             }
             return false;
         }
@@ -243,7 +250,7 @@ namespace AutoBotCSharp
                 try
                 {
                     var select = new SelectElement(driver.FindElementById(elementId));
-                    select.DeselectByText(data);
+                    select.SelectByText(data);
                     return true;
                 }
                 catch (OpenQA.Selenium.ElementNotVisibleException)
@@ -251,9 +258,17 @@ namespace AutoBotCSharp
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
                 }
-                catch (OpenQA.Selenium.NoSuchElementException)
+                catch (OpenQA.Selenium.NoSuchElementException ex)
                 {
-                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    string message = ex.Message;
+                    if (message.Contains(data))
+                    {
+                        Console.WriteLine(data + " is not a valid option for " + elementId + "; try a different option.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    }
                     retry = false;
                 }
                 catch (OpenQA.Selenium.StaleElementReferenceException)
@@ -266,10 +281,16 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
             }
             return false;
         }
-
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
