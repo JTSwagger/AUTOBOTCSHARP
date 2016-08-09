@@ -163,17 +163,74 @@ namespace AutoBotCSharp
             return true;
         }
         //---------------------------------------------------------------
-        public bool EnterData(string Element, string Data)
+        public bool EnterData(string elementId, string data)
         {
-            try
+            bool retry = true;
+            int staleRefCount = 0;
+            while (retry)
             {
-                driver.FindElementById(Element).SendKeys(Data);
-                return true;
+                try
+                {
+                    driver.FindElementById(elementId).SendKeys(data);
+                    return true;
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException)
+                {
+                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
             }
-            catch
+            return false;
+        }
+        public bool selectData(string elementId, string data)
+        {
+            bool retry = true;
+            int staleRefCount = 0;
+            while (retry)
             {
-                return false;
+                try
+                {
+                    var select = new SelectElement(driver.FindElementById(elementId));
+                    select.DeselectByText(data);
+                    return true;
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException)
+                {
+                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
             }
+            return false;
         }
 
         //------------------------------------------------------------------
@@ -299,7 +356,7 @@ namespace AutoBotCSharp
         }
 
 
-        public bool unhideVehicleElement(string elementId)
+        public bool unhideElement(string elementId)
         {
             try
             {
