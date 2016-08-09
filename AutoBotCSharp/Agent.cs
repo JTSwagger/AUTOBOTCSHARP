@@ -52,7 +52,7 @@ namespace AutoBotCSharp
         private Dictionary<string, bool> elementChecks = new Dictionary<string, bool>();
 
         private ChromeDriver driver;
-        private System.Windows.Threading.Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
+        private Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
         public string[] dobInfo;
 
