@@ -49,6 +49,8 @@ namespace AutoBotCSharp
         public const string TCPA = "TCPA";
         private ChromeDriver driver;
 
+        
+
 
         public string[] dobInfo;
 
@@ -127,8 +129,15 @@ namespace AutoBotCSharp
             }
 
         }
+        public void openTestPage()
+        {
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            driver = new ChromeDriver(cds);
+            driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+        }
         //----------------------------------------------------------------------------------------------------
-        public bool EnterData(string elementId, string data)
+        public bool enterData(string elementId, string data)
         {
             bool retry = true;
             int staleRefCount = 0;
@@ -693,7 +702,7 @@ namespace AutoBotCSharp
             }
         }
         //--------------------------------------------------------------------------------------------------
-        public static void checkforData(string response)
+        public void checkforData(string response)
         {
             Agent temp = App.getAgent();
             string Data;
@@ -703,7 +712,7 @@ namespace AutoBotCSharp
                 case Agent.INS_PROVIDER:
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
-                    { if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; }; }
+                    { if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = INS_EXP; }; }
                     break;
                 case Agent.INS_EXP:
                     List<string> dates = checkExp(response);

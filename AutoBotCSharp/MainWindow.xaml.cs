@@ -25,7 +25,7 @@ namespace AutoBotCSharp
     public partial class MainWindow : Window
     {
         private Random randy;
-        public Agent user;
+        public Agent user = new Agent();
 
         public MainWindow()
         {
@@ -639,6 +639,15 @@ namespace AutoBotCSharp
         private void speechTxtBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (user == null)
+            {
+                user = new Agent();
+            }
+            user.openTestPage();
         }
     }
     
