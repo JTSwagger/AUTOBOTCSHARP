@@ -531,9 +531,12 @@ namespace AutoBotCSharp
             try
             {
                 user.killDriver();
-            } catch
+            } catch (NullReferenceException)
             {
                 // okey
+            } catch (Exception)
+            {
+                // this is how much I care.
             }
             
 
