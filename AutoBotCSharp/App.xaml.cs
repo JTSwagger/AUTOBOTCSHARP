@@ -23,8 +23,6 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
-        private static ChromeDriver testDriver;
-
         public static MainWindow getWindow()
         {
             var mainwindow = Current.MainWindow as MainWindow;

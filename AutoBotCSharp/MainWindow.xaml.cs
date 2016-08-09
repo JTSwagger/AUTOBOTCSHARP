@@ -476,17 +476,6 @@ namespace AutoBotCSharp
         {
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
         }
-
-        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
-        {
-            App.openTestPage();
-        }
-
-        private void btnPlayDob_Click(object sender, RoutedEventArgs e)
-        {
-            App.testDobThings();
-        }
-
         private void btnBestGuess_Click(object sender, RoutedEventArgs e)
         {
             string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
