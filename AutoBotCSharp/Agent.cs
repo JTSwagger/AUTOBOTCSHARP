@@ -128,6 +128,97 @@ namespace AutoBotCSharp
 
         }
         //----------------------------------------------------------------------------------------------------
+        public bool EnterData(string elementId, string data)
+        {
+            bool retry = true;
+            int staleRefCount = 0;
+            while (retry)
+            {
+                try
+                {
+                    driver.FindElementById(elementId).SendKeys(data);
+                    return true;
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException)
+                {
+                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
+            }
+            return false;
+        }
+        public bool selectData(string elementId, string data)
+        {
+            bool retry = true;
+            int staleRefCount = 0;
+            while (retry)
+            {
+                try
+                {
+                    var select = new SelectElement(driver.FindElementById(elementId));
+                    select.SelectByText(data);
+                    return true;
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException ex)
+                {
+                    string message = ex.Message;
+                    if (message.Contains(data))
+                    {
+                        Console.WriteLine(data + " is not a valid option for " + elementId + "; try a different option.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    }
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
+            }
+            return false;
+        }
         void StartWebRequest()
         {
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
@@ -463,7 +554,33 @@ namespace AutoBotCSharp
             else { return ("FALSE"); }
         }
 
-           
+        public List<string> checkExp(string s)
+        {
+            string expMonth;
+            string expyear;
+
+            if(s.Contains("january"))
+            {
+                expMonth = "Jan";
+            }
+            else if(s.Contains("february"))
+            {
+                expMonth = "Feb";
+            }
+
+        }
+        public bool unhideElement(string elementId)
+        {
+            try
+            {
+                driver.ExecuteScript("$('" + elementId + "').removeClass('hide')");
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public static void checkforData(string response)
         {
             Agent temp = App.getAgent();
@@ -574,18 +691,7 @@ namespace AutoBotCSharp
             return true;
         }
         //---------------------------------------------------------------
-        public bool EnterData(string Element, string Data)
-        {
-            try
-            {
-                driver.FindElementById(Element).SendKeys(Data);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+
 
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
