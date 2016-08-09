@@ -47,7 +47,7 @@ namespace AutoBotCSharp
         public const string PHONE_TYPE = "PHONE TYPE";
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
-        private ChromeDriver driver = App.getDriver();
+        public ChromeDriver driver;
 
 
         public string[] dobInfo;
@@ -132,6 +132,7 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+       
             while (retry)
             {
                 try
@@ -690,6 +691,14 @@ namespace AutoBotCSharp
             {
                 return false;
             }
+        }
+        //--------------------------------------------------------------------------------------------------
+        public void openTestPage()
+        {
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            driver = new ChromeDriver(cds);
+            driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
         //--------------------------------------------------------------------------------------------------
         public static void checkforData(string response)

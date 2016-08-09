@@ -649,11 +649,12 @@ namespace AutoBotCSharp
 
 
 
-            user = new AutoBotCSharp.Agent();
+            user = new Agent();
+            
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
-            testDriver = new ChromeDriver(cds);
-            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+            user.driver = new ChromeDriver(cds);
+           user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
     }
     
