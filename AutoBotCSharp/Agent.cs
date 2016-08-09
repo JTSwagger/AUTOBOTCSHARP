@@ -10,6 +10,7 @@ using System.Net;
 using System.IO;
 using System.Windows.Media;
 using OpenQA.Selenium.Support.UI;
+using System.Windows.Threading;
 
 namespace AutoBotCSharp
 {
@@ -47,8 +48,9 @@ namespace AutoBotCSharp
         public const string PHONE_TYPE = "PHONE TYPE";
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
-        private ChromeDriver driver;
 
+        private ChromeDriver driver;
+        private System.Windows.Threading.Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
         public string[] dobInfo;
 
@@ -79,9 +81,6 @@ namespace AutoBotCSharp
                             newCall = false;
                         }                        
                     }
-                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    //Console.WriteLine("Agent Name: " + Agent_Name);
-                    
                 }
                 catch
                 {
@@ -101,25 +100,24 @@ namespace AutoBotCSharp
            switch(Dialer_Status)
             {
                 case "READY":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.LightGoldenrodYellow;
                     }));
 
                     break;
                 case "PAUSED":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.IndianRed;
                     }));
 
                     break;
                 case "INCALL":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.ForestGreen;
                     }));
-                    
                     break;
             }
         }
@@ -130,9 +128,6 @@ namespace AutoBotCSharp
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
         }
-
-     
-
   //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)
         {
@@ -272,19 +267,19 @@ namespace AutoBotCSharp
             try
             {
                 string[] clips = App.findNameClips(firstName);
-                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                dispatcher.Invoke((() =>
                 {
                     App.getWindow().setNameText(firstName);
                 }));
                 if (App.findNameClips(firstName)[0] == "no clip")
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
                     }));
                 } else
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(true);
                     }));
@@ -297,8 +292,23 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
-            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlTop.SelectedIndex = 0));
-            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+            dispatcher.Invoke((Action)(() => App.getWindow().tabControlTop.SelectedIndex = 0));
+            dispatcher.Invoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+
+
+        }
+
+
+        public bool unhideVehicleElement(string elementId)
+        {
+            try
+            {
+                driver.ExecuteScript("$('" + elementId + "').removeClass('hide')");
+                return true;
+            } catch (Exception)
+            {
+                return false;
+            }
         }
 
         //---------------------------------------------------------------
