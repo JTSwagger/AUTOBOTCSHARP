@@ -85,8 +85,10 @@ namespace AutoBotCSharp
         // Insurance info button group
         private void btnInsuranceProvider_Click(object sender, RoutedEventArgs e)
         {
+            
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3";
             App.RollTheClip(clip);
+            user.Callpos = Agent.INS_PROVIDER;
         }
         private void btnPolicyExpiration_Click(object sender, RoutedEventArgs e)
         {
@@ -634,6 +636,10 @@ namespace AutoBotCSharp
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
         }
 
+        private void speechTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
     
 }

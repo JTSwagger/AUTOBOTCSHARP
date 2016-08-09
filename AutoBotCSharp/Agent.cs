@@ -58,7 +58,7 @@ namespace AutoBotCSharp
         //--------------------------------------------------------------------------------------------------------
         public void doAgentStatusRequest()
         {
-            
+
             while (LoggedIn)
             {
                 StartWebRequest();
@@ -78,15 +78,15 @@ namespace AutoBotCSharp
                             setupBot();
                             newCall = false;
                         }
-                        
+
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
                     //Console.WriteLine("Agent Name: " + Agent_Name);
-                    
+
                 }
                 catch
                 {
-                    for(int i = 0; i < tempstr.Length-1;i++)
+                    for (int i = 0; i < tempstr.Length - 1; i++)
 
                     {
                         Console.WriteLine(tempstr[i]);
@@ -100,7 +100,7 @@ namespace AutoBotCSharp
         private void setGlobals()
         {
 
-           switch(Dialer_Status)
+            switch (Dialer_Status)
             {
                 case "READY":
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
@@ -112,6 +112,7 @@ namespace AutoBotCSharp
                 case "PAUSED":
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
+
                         App.getWindow().Background = Brushes.IndianRed;
                     }));
 
@@ -121,7 +122,7 @@ namespace AutoBotCSharp
                     {
                         App.getWindow().Background = Brushes.ForestGreen;
                     }));
-                    
+
                     break;
             }
 
@@ -129,15 +130,415 @@ namespace AutoBotCSharp
         //----------------------------------------------------------------------------------------------------
         void StartWebRequest()
         {
-            webRequest= WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
+            webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
+        }
+        public static string CheckIProvider(string s)
+        {
 
+            if (s.Contains("none") || s.Contains("no insurance") || s.Contains("don't have") || s.Contains("don't have insurance") || s.Contains("not insured") || s.Contains("not with anybody"))
+            { return ("No current insurance"); }
+            if (s.Contains("twenty first") || s.Contains("21st") || s.Contains("twenty first century") || s.Contains("21st century") || s.Contains("twenty first century insurance") || s.Contains("21st century insurance") || s.Contains("first century"))
+            { return ("21st Century Insurance"); }
+            if (s.Contains("AAA") || s.Contains("triple A") || s.Contains("triple a") || s.Contains("aaa"))
+            { return ("AAA Insurance Co."); }
+            if (s.Contains("aarp") || s.Contains("AARP"))
+            { return ("AARP"); }
+            if (s.Contains("etna") || s.Contains("edna") || s.Contains("aetna") || s.Contains("AETNA") || s.Contains("Edna"))
+            { return ("AETNA"); }
+            if (s.Contains("aflac") || s.Contains("affleck") || s.Contains("afleck") || s.Contains("AFLAC"))
+            { return ("AFLAC"); }
+            if (s.Contains("aig") || s.Contains("AIG"))
+            { return ("AIG"); }
+            if (s.Contains("AIU") || s.Contains("eye you"))
+            { return ("AIU"); }
+            if (s.Contains("allied") || s.Contains("ally"))
+            { return ("Allied"); }
+            if (s.Contains("allstate") || s.Contains("all state") || s.Contains("ball state") || s.Contains("mall state"))
+            { return ("Allstate Insurance"); }
+            if (s.Contains("american"))
+            { return ("American Insurance"); }
+            if (s.Contains("ameriplan"))
+            { return ("AmeriPlan"); }
+            if (s.Contains("amica") || s.Contains("amiga") || s.Contains("amigo") || s.Contains("omika") || s.Contains("amika"))
+            { return ("Amica Insurance"); }
+            if (s.Contains("answer") || s.Contains("answer financial"))
+            { return ("Answer Financial"); }
+            if (s.Contains("arbella") || s.Contains("bella"))
+            { return ("Arbella"); }
+            if (s.Contains("associated"))
+            { return ("Associated Indemnity"); }
+            if (s.Contains("atlanta casualty"))
+            { return ("Atlanta Casualty"); }
+            if (s.Contains("atlantic") || s.Contains("atlantic indemnity"))
+            { return ("Atlantic Indemnity"); }
+            if (s.Contains("auto club"))
+            { return ("Auto Club Insurance Company"); }
+            if (s.Contains("auto owners"))
+            { return ("Auto-Owners Insurance"); }
+            if (s.Contains("axa") || s.Contains("axe"))
+            { return ("AXA Advisors"); }
+            if (s.Contains("bankers"))
+            { return ("Bankers Life and Casualty"); }
+            if (s.Contains("banner"))
+            { return ("Banner Life"); }
+            if (s.Contains("best"))
+            { return ("Best Agency USA"); }
+            if (s.Contains("blue cross") || s.Contains("blue cross blue shield") || s.Contains("bcbs"))
+            { return ("Blue Cross and Blue Shield"); }
+            if (s.Contains("brooke"))
+            { return ("Brooke Insurance"); }
+            if (s.Contains("cal farm") || s.Contains("call form") || s.Contains("cal form") || s.Contains("call farm"))
+            { return ("Cal Farm Insurance"); }
+            if (s.Contains("california state") || s.Contains("cal state"))
+            { return ("California State Automobile Association"); }
+            if (s.Contains("chub"))
+            { return ("chub"); }
+            if (s.Contains("citizen") || s.Contains("citizens"))
+                        { return ("Citizens"); }
+            if (s.Contains("clarendon"))
+            { return ("Clarendon American Insurance"); }
+            if (s.Contains("cna") || s.Contains("see na"))
+                { return ("CNA"); }
+            if (s.Contains("colonial"))
+            { return ("Colonial Insurance"); }
+            if (s.Contains("comparison"))
+            { return ("Comparison Market"); }
+            if (s.Contains("continental"))
+            { return ("Continental Insurance"); }
+            if (s.Contains("cotton") || s.Contains("cotton states"))
+            { return ("Cotton States Insurance"); }
+            if (s.Contains("country insurance"))
+            { return ("Country Insurance and Financial Services"); }
+            if (s.Contains("countrywide"))
+            { return ("Countrywide Insurance"); }
+            if (s.Contains("cse") || s.Contains("easy"))
+            { return ("CSE Insurance Group"); }
+            if (s.Contains("dairy"))
+            { return ("Dairyland Insurance"); }
+            if (s.Contains("e health") || s.Contains("ehealth"))
+            { return ("eHealthInsurance Services"); }
+            if (s.Contains("electric"))
+            { return ("Electric Insurance"); }
+            if (s.Contains("erie") || s.Contains("eerie") || s.Contains("hear ye"))
+            { return ("Erie Insurance Company"); }
+            if (s.Contains("esurance"))
+            { return ("Esurance"); }
+            if (s.Contains("farm bureau"))
+                { return ("Farm Bureau/Farm Family/Rural"); }
+            if (s.Contains("farmers"))
+            { return ("Farmers Insurance"); }
+            if (s.Contains("finance box"))
+            { return ("FinanceBox.com"); }
+            if (s.Contains("fire and casualty"))
+            { return ("Fire and Casualty Insurance Co of CT"); }
+            if (s.Contains("fireman") || s.Contains("firemens") || s.Contains("firemens fund"))
+            { return ("Fireman's Fund"); }
+            if (s.Contains("foremost"))
+            { return ("Foremost"); }
+            if (s.Contains("forester"))
+            { return ("Foresters"); }
+            if (s.Contains("frank") || s.Contains("frankenstein") || s.Contains("frankenmuth"))
+            { return ("Frankenmuth Insurance"); }
+            if (s.Contains("geico") || s.Contains("gecko") || s.Contains("i go"))
+            { return ("Geico General Insurance"); }
+            if (s.Contains("gmac") || s.Contains("gee em"))
+            { return ("GMAC Insurance"); }
+            if (s.Contains("golden rule"))
+            { return ("Golden Rule Insurance"); }
+            if (s.Contains("government"))
+            { return ("Government Employees Insurance"); }
+            if (s.Contains("i am a panda hear me moo"))
+            { return ("Progressive"); }
+            if (s.Contains("guaranty") || s.Contains("guarantee"))
+            { return ("Guaranty National Insurance"); }
+            if (s.Contains("guide") || s.Contains("guide one"))
+            { return ("Guide One Insurance"); }
+            if (s.Contains("hanover") || s.Contains("lloyd"))
+            { return ("Hanover Lloyd's Insurance Company"); }
+            if (s.Contains("hartford"))
+            { return ("Hartfod Insurance Co of the Southeast"); }
+            if (s.Contains("hastings") || s.Contains("hasting mutual"))
+            { return ("Hastings Mutual Insurance Company"); }
+            if (s.Contains("health benefits"))
+            { return ("Health Benefits Direct"); }
+            if (s.Contains("health plus"))
+            { return ("Health Plus of America"); }
+            if (s.Contains("health share"))
+            { return ("HealthShare American"); }
+            if (s.Contains("human") || s.Contains("humana"))
+            { return ("Humana"); }
+            if (s.Contains("ifa") || s.Contains("eye f a"))
+            { return ("IFA Auto Insurance"); }
+            if (s.Contains("igf"))
+            { return ("IGF Insurance"); }
+            if (s.Contains("infinity") || s.Contains("infinite"))
+            { return ("Infinity Insurance"); }
+            if (s.Contains("insurance insight"))
+            { return ("Insurance Insight"); }
+            if (s.Contains("insurance dot com") || s.Contains("insurance.com"))
+            { return ("Insurance.com"); }
+            if (s.Contains("insurance leads dot com") || s.Contains("insuranceleads.com"))
+            { return ("InsuranceLeaders.com"); }
+            if (s.Contains("insweb") || s.Contains("in web"))
+                { return ("Insweb"); }
+            if (s.Contains("integon") || s.Contains("pentagon"))
+            { return ("Integon"); }
+            if (s.Contains("hancock") || s.Contains("john hancock"))
+            { return ("John Hancock"); }
+            if (s.Contains("kaiser") || s.Contains("kayser") || s.Contains("permanent"))
+            { return ("Kaiser Permanente"); }
+            if (s.Contains("kemper") || s.Contains("camper") || s.Contains("lloyd"))
+            { return ("Kemper Lloyds Insurance"); }
+            if (s.Contains("landmark"))
+            { return ("Landmark American Insurance"); }
+            if (s.Contains("leader"))
+            { return ("Leader National Insurance"); }
+            if (s.Contains("liberty") || s.Contains("liberty mutual"))
+            { return ("Liberty Mutual Insurance"); }
+            if (s.Contains("lumber"))
+            { return ("Lumbermens Mutual"); }
+            if (s.Contains("maryland"))
+            { return ("Maryland Casualty"); }
+            if (s.Contains("mass mutual"))
+            { return ("Mass Mutual"); }
+            if (s.Contains("mega") || s.Contains("midwest") || s.Contains("mega midwest"))
+            { return ("Mega/Midwest"); }
+            if (s.Contains("mercury"))
+            { return ("Mercury"); }
+            if (s.Contains("met life") || s.Contains("metlife"))
+            { return ("MetLife Auto and Home"); }
+            if (s.Contains("metropolitan"))
+            { return ("Metropolitan Insurance Co."); }
+            if (s.Contains("mid century"))
+            { return ("Mid Century Insurance"); }
+            if (s.Contains("mid continent"))
+            { return ("Mid-Continent Casualty"); }
+            if (s.Contains("middlesex"))
+            { return ("Middlesex Insurance"); }
+            if (s.Contains("midland national") || s.Contains("midland"))
+            { return ("Midland National Life"); }
+            if (s.Contains("mutual of new york"))
+            { return ("Mutual of New York"); }
+            if (s.Contains("mutual of omaha") || s.Contains("omaha"))
+            { return ("Mutual of Omaha"); }
+            if (s.Contains("national ben franklin") || s.Contains("ben franklin"))
+                { return ("National Ben Franklin Insurance"); }
+            if (s.Contains("national casualty"))
+            { return ("National Casualty"); }
+            if (s.Contains("national continental"))
+            { return ("National Continental Insurance"); }
+            if (s.Contains("national fire"))
+            { return ("National Fire Insurance Company of Hartford"); }
+            if (s.Contains("national health"))
+            { return ("National Health Insurance"); }
+            if (s.Contains("national indemnity"))
+            { return ("National Indemnity"); }
+            if (s.Contains("national union fire of los angeles") || s.Contains("national union fire insurance of los angeles") || s.Contains("national union fire of la") || s.Contains("national union fire insurance of los angeles"))
+            { return ("National Union Fire Insurance of LA"); }
+            if (s.Contains("national union fire of pennsylvania") || s.Contains("national union fire insurance of pennsylvania"))
+            { return ("National Union Fire Insurance of PA"); }
+            if (s.Contains("nationwide"))
+            { return ("Nationwood Insurance Company"); }
+            if (s.Contains("new england financial"))
+            { return ("New England Financial"); }
+            if (s.Contains("new york life"))
+            { return ("New York Life Insurance"); }
+            if (s.Contains("northwestern"))
+            { return ("Northwestern Mutual Life"); }
+            if (s.Contains("omni"))
+            { return ("Omni Insruance"); }
+            if (s.Contains("orion"))
+            { return ("Orion Insurance"); }
+            if (s.Contains("pacific insurance"))
+            { return ("Pacific Insurance"); }
+            if (s.Contains("pafco"))
+            { return ("Pafco General Insurance"); }
+            if (s.Contains("patriot"))
+            { return ("Patriot General Insurance"); }
+            if (s.Contains("peak property"))
+            { return ("Peak Property and Casualty Insurance"); }
+            if (s.Contains("pemco"))
+            { return ("PEMCO Insurance"); }
+            if (s.Contains("physicians"))
+            { return ("Physicians"); }
+            if (s.Contains("pioneer"))
+            { return ("Pioneer State Mutual Insurance Company"); }
+            if (s.Contains("preferred"))
+            { return ("Preferred Mutual"); }
+            if (s.Contains("progressive") || s.Contains("progress") || s.Contains("aggressive"))
+            { return ("Progressive"); }
+            if (s.Contains("prudential"))
+            { return ("Prudential Insurance Co."); }
+            if (s.Contains("reliance") || s.Contains("reliant"))
+            { return ("Reliance Insurance"); }
+            if (s.Contains("response"))
+            { return ("Response Insurance"); }
+            if (s.Contains("safeco") || s.Contains("safe co"))
+            { return ("SAFECO"); }
+            if (s.Contains("safeway") || s.Contains("safe way"))
+            { return ("Safeway Insurance"); }
+            if (s.Contains("security insurance"))
+            { return ("Security Insurance Co of Hartford"); }
+            if (s.Contains("security national"))
+            { return ("Security National Insurance Co of FL"); }
+            if (s.Contains("sentinel"))
+            { return ("Sentinel Insurance"); }
+            if (s.Contains("sentry"))
+            { return ("Sentry Insurance Group"); }
+            if (s.Contains("shelter"))
+            { return ("Shelter Insurance Co."); }
+            if (s.Contains("saint paul") || s.Contains("st. paul"))
+            { return ("St. Paul"); }
+            if (s.Contains("standard fire"))
+            { return ("Standard Fire Insurance Company"); }
+            if (s.Contains("state and county"))
+            { return ("State and County Mutual Fire Insurance"); }
+            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm"))
+            { return ("State Farm General"); }
+            if (s.Contains("state fund"))
+            { return ("State Fund"); }
+            if (s.Contains("state national"))
+            { return ("State National Insurance"); }
+            if (s.Contains("superior"))
+            { return ("Superior Insurance"); }
+            if (s.Contains("sure health") || s.Contains("sure"))
+            { return ("Sure Health Plans"); }
+            if (s.Contains("abe group") || s.Contains("ah be group"))
+            { return ("The Ahbe Group"); }
+            if (s.Contains("general") || s.Contains("the general"))
+            { return ("The General"); }
+            if (s.Contains("tico") || s.Contains("tye co") || s.Contains("tie co"))
+            { return ("TICO Insruance"); }
+            if (s.Contains("tig countrywide") || s.Contains("tig"))
+            { return ("TIG Countrywide Insurance"); }
+            if (s.Contains("the hartford"))
+            { return ("The Hartford"); }
+            if (s.Contains("titan"))
+            { return ("Titan"); }
+            if (s.Contains("trans") || s.Contains("transamerica") || s.Contains("trans america"))
+
+            { return ("TransAmerica"); }
+            if (s.Contains("travelers"))
+            { return ("Travelers Insurance Company"); }
+            if (s.Contains("tri-state") || s.Contains("tri state"))
+            { return ("Tri-State Consumer Insurance"); }
+            if (s.Contains("twin city"))
+            { return ("Twin City Fire Insurance"); }
+            if (s.Contains("unicare") || s.Contains("unicorn"))
+                { return ("UniCare"); }
+            if (s.Contains("united american"))
+            { return ("United American/Farm and Ranch"); }
+            if (s.Contains("united pacific"))
+            { return ("United Pacific Insurance"); }
+            if (s.Contains("united security"))
+            { return ("United Security"); }
+            if (s.Contains("united services"))
+            { return ("United Serviecs Automobile Association"); }
+            if (s.Contains("unitrin"))
+            { return ("Unitrin Direct"); }
+            if (s.Contains("universal"))
+                { return ("Universal Underwriters Insurance"); }
+            if (s.Contains("US financial"))
+            { return ("US Financial"); }
+            if (s.Contains("USA"))
+            { return ("USA Benefits/Continental General"); }
+            if (s.Contains("USAA") || s.Contains("USA"))
+            { return ("USAA"); }
+            if (s.Contains("usf and g"))
+            { return ("USF and G"); }
+            if (s.Contains("viking"))
+            { return ("Viking Insurance Co of WI"); }
+            if (s.Contains("western and"))
+            { return ("Western and Southern Life"); }
+            if (s.Contains("western"))
+            { return ("Western Mutual"); }
+            if (s.Contains("windsor"))
+            { return ("Windsor Insurance"); }
+            if (s.Contains("woodland"))
+            { return ("Woolands Financial Group"); }
+            if (s.Contains("zurich"))
+            { return ("Zurich North America"); }
+            else { return ("FALSE"); }
         }
 
-     
+           
+        public static void checkforData(string response)
+        {
+            Agent temp = App.getAgent();
+            string Data;
+            string pos = temp.Callpos;
+            switch (pos)
+            {
+                case Agent.INS_PROVIDER:
+                    Data = CheckIProvider(response);
+                    if(Data != "FALSE")
+                    { if (temp.EnterData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; }; }
+                    break;
+                case Agent.INS_EXP:
+                    break;
+                case Agent.INST_START:
+                    break;
+                case Agent.NUM_VEHICLES:
+                    break;
+                case Agent.YMM1:
+                    break;
+                case Agent.YMM2:
+                    break;
+                case Agent.YMM3:
+                    break;
+                case Agent.YMM4:
+                    break;
+                case Agent.DOB:
+                    break;
+                case Agent.MARITAL_STATUS:
+                    break;
+                case Agent.SPOUSE_NAME:
+                    break;
+                case Agent.SPOUSE_DOB:
+                    break;
+                case Agent.OWN_OR_RENT:
+                    break;
+                case Agent.RES_TYPE:
+                    break;
+                case Agent.CREDIT:
+                    break;
+                case Agent.ADDRESS:
+                    break;
+                case Agent.EMAIL:
+                    break;
+                case Agent.PHONE_TYPE:
+                    break;
+            }
 
-  //-----------------------------------------------------------------------------------------------------------
+
+
+        }
+        public static bool checkForObjection(string response)
+        {
+            string resp = response;
+            string clip;
+            if (resp.Contains("not interested") || resp.Contains("no interest") || resp.Contains("don't want it"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+
+            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+            else { return false;
+            }
+
+
+
+        }
+        //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)
         {
             AgentNum = AgentNumber;
