@@ -178,11 +178,11 @@
             <TabItem x:Name="tbDriverInfo1" Margin="164,0,-191,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
                     <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="False"/>
-                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click" IsEnabled="False"/>
-                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click" IsEnabled="False"/>
-                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click" IsEnabled="False"/>
-                    <Button x:Name="btnKillLongDictation" Content="Kill LD" HorizontalAlignment="Left" Margin="452,203,0,0" VerticalAlignment="Top" Width="120" Click="btnKillLongDictation_Click" IsEnabled="False"/>
-                    <Button x:Name="btnKillShortPhrase" Content="Kill SP" HorizontalAlignment="Left" Margin="452,183,0,0" VerticalAlignment="Top" Width="120" Click="btnKillShortPhrase_Click" IsEnabled="False"/>
+                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="122,198,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click"/>
+                    <Button x:Name="btnStartSpeechRecoShort" Content="Do Short Phrase Recognition" HorizontalAlignment="Left" Margin="281,183,0,0" VerticalAlignment="Top" Width="156" Click="btnStartSpeechRecoShort_Click"/>
+                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="281,203,135,5" Click="btnStartSpeechRecoLong_Click"/>
+                    <Button x:Name="btnKillLongDictation" Content="Kill LD" HorizontalAlignment="Left" Margin="452,203,0,0" VerticalAlignment="Top" Width="120" Click="btnKillLongDictation_Click"/>
+                    <Button x:Name="btnKillShortPhrase" Content="Kill SP" HorizontalAlignment="Left" Margin="452,183,0,0" VerticalAlignment="Top" Width="120" Click="btnKillShortPhrase_Click"/>
 
                 </Grid>
 

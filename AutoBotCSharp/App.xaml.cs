@@ -105,8 +105,59 @@ namespace AutoBotCSharp
             Application.Current.Dispatcher.Invoke((() =>
             {
                 getWindow().setSpeechBoxText("Partial: " + response);
+                checkForObjection(response);
+                checkforData(response);
+                
             }));
             
+        }
+        public static void checkforData(string response)
+        {
+            Agent temp = App.getAgent();
+            string pos = temp.Callpos;
+            switch (pos)
+            {
+                case Agent.INS_PROVIDER:
+                    break;
+
+                case Agent.INS_EXP:
+                    break;
+                case Agent.INST_START:
+                    break;
+                case Agent.NUM_VEHICLES:
+                case Agent.YMM1:
+                case Agent.YMM2:
+                case Agent.YMM3:
+                    break;
+                case Agent.YMM4:
+                    break;
+                         
+                case Agent.DOB:
+                    break;
+            }
+
+           
+
+        }
+        public static void checkForObjection(string response)
+        {
+            string resp = response;
+            string clip;
+
+            if (resp.Contains("not interested") || resp.Contains("no interest") || resp.Contains("don't want it"))
+            {
+
+                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                App.RollTheClip(clip);
+            }
+
+            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                App.RollTheClip(clip);
+            }
+
+
         }
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
@@ -117,7 +168,7 @@ namespace AutoBotCSharp
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
                 }));
-                (sender as MicrophoneRecognitionClient).AudioStop();
+     
                 
             }
         }
