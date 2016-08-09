@@ -33,7 +33,7 @@
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold">
+            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold" Height="20" VerticalAlignment="Top">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>

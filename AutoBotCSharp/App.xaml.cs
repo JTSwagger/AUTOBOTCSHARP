@@ -37,7 +37,15 @@ namespace AutoBotCSharp
          */ 
         public static Agent getAgent()
         {
-            return getWindow().user;
+            Agent temp;
+            try
+            {
+               temp = getWindow().user;
+            } catch (NullReferenceException)
+            {
+                temp = new Agent();
+            }
+            return temp;
         }
 
         /*
@@ -50,6 +58,10 @@ namespace AutoBotCSharp
             testDriver = new ChromeDriver(cds);
             testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
+        public static ChromeDriver getDriver()
+        {
+            return testDriver;
+        } 
         public static async void testDobThings()
         {
 

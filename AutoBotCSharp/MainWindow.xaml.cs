@@ -16,6 +16,7 @@ using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Diagnostics;
+using OpenQA.Selenium.Chrome;
 
 namespace AutoBotCSharp
 {
@@ -24,6 +25,7 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ChromeDriver testDriver;
         private Random randy;
         public Agent user;
 
@@ -92,6 +94,7 @@ namespace AutoBotCSharp
         }
         private void btnPolicyExpiration_Click(object sender, RoutedEventArgs e)
         {
+            user.Callpos = Agent.INS_EXP;
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3";
             App.RollTheClip(clip);
         }
@@ -639,6 +642,18 @@ namespace AutoBotCSharp
         private void speechTxtBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
+        {
+
+
+
+            user = new AutoBotCSharp.Agent();
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            testDriver = new ChromeDriver(cds);
+            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
     }
     

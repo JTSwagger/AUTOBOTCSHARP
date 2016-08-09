@@ -47,7 +47,7 @@ namespace AutoBotCSharp
         public const string PHONE_TYPE = "PHONE TYPE";
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
-        private ChromeDriver driver;
+        private ChromeDriver driver = App.getDriver();
 
 
         public string[] dobInfo;
@@ -554,7 +554,7 @@ namespace AutoBotCSharp
             else { return ("FALSE"); }
         }
         //---------------------------------------------------------------------------------------------------
-        public static List<string> checkExp(string s)
+        public static string checkExp(string s)
         {
             List<string> Dates = new List<string>(2);
             string expMonth;
@@ -675,9 +675,8 @@ namespace AutoBotCSharp
                 expMonth = "FALSE";
                 expyear = "FALSE";
             }
-            Dates.Add(expMonth);
-            Dates.Add(expyear);
-            return (Dates);
+        
+            return (expMonth + " " + expyear);
         }
     //-----------------------------------------------------------------------------------------------------
         public bool unhideElement(string elementId)
@@ -695,19 +694,29 @@ namespace AutoBotCSharp
         //--------------------------------------------------------------------------------------------------
         public static void checkforData(string response)
         {
-            Agent temp = App.getAgent();
+            Agent temp =  App.getAgent();
+            
             string Data;
             string pos = temp.Callpos;
             switch (pos)
             {
                 case Agent.INS_PROVIDER:
+                    Console.WriteLine("INS_PROVIDER");
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
-                    { if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; }; }
+                    {
+                        Console.WriteLine("made it!!!!!! tacos");
+                        if (temp.EnterData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; };
+                    }
+                    else
+                    {
+                        Console.WriteLine("no tacos :(");
+                    }
                     break;
                 case Agent.INS_EXP:
-                    List<string> dates = checkExp(response);
-                    
+                    Data = checkExp(response);
+                    string[] theDates = Data.Split(' ');
+                    if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INST_START; }; };                  
                     break;
                 case Agent.INST_START:
                     break;
