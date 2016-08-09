@@ -49,6 +49,8 @@ namespace AutoBotCSharp
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
 
+        private Dictionary<string, bool> elementChecks = new Dictionary<string, bool>();
+
         private ChromeDriver driver;
         private System.Windows.Threading.Dispatcher dispatcher = System.Windows.Application.Current.Dispatcher;
 
@@ -57,6 +59,41 @@ namespace AutoBotCSharp
         WebRequest webRequest;
         WebResponse resp;
         StreamReader reader;
+        //--------------------------------------------------------------------------------------------------------
+        public void addElementCheck(string elementId, bool status)
+        {
+            elementChecks[elementId] = status;
+        }
+        public void listElementStatii(bool failuresOnly = false)
+        {
+            if (failuresOnly)
+            {
+                Console.WriteLine("[*] Only listing failures...");
+                foreach (var item in elementChecks)
+                {
+                    if (!item.Value)
+                    {
+                        Console.WriteLine("[-] " + item.Key);
+                    }
+                }
+                return;
+            }
+            else
+            {
+                Console.WriteLine("[*] Listing all element statii");
+                foreach (var item in elementChecks)
+                {
+                    if (item.Value)
+                    {
+                        Console.WriteLine("[+] " + item.Key);
+                    } else if (!item.Value)
+                    {
+                        Console.WriteLine("[-] " + item.Key);
+                    }
+                }
+            }
+
+        }
         //--------------------------------------------------------------------------------------------------------
         public void doAgentStatusRequest()
         {
@@ -163,7 +200,7 @@ namespace AutoBotCSharp
             return true;
         }
         //---------------------------------------------------------------
-        public bool EnterData(string elementId, string data)
+        public bool enterData(string elementId, string data)
         {
             bool retry = true;
             int staleRefCount = 0;
@@ -236,7 +273,6 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-           
             try
             {
               WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" +  AgentNum + "&function=external_hangup&value=1");
