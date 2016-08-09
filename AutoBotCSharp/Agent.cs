@@ -553,22 +553,133 @@ namespace AutoBotCSharp
             { return ("Zurich North America"); }
             else { return ("FALSE"); }
         }
-
-        public List<string> checkExp(string s)
+        //---------------------------------------------------------------------------------------------------
+        public static List<string> checkExp(string s)
         {
+            List<string> Dates = new List<string>(2);
             string expMonth;
             string expyear;
-
-            if(s.Contains("january"))
+            if (s.Contains("january"))
             {
                 expMonth = "Jan";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
             }
-            else if(s.Contains("february"))
+            else if (s.Contains("february"))
             {
                 expMonth = "Feb";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
             }
+            else if (s.Contains("march"))
+            {
+                expMonth = "Mar";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("april"))
+            {
+                expMonth = "Apr";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("may"))
+            {
+                expMonth = "May";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("june"))
+            {
+                expMonth = "Jun";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("july"))
+            {
+                expMonth = "Jul";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("august"))
+            {
+                expMonth = "Aug";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("september"))
+            {
+                expMonth = "Sep";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
 
+            }
+            else if (s.Contains("october"))
+            {
+                expMonth = "Oct";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+
+            }
+            else if (s.Contains("november"))
+            {
+                expMonth = "Nov";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+
+            }
+            else if (s.Contains("december"))
+            {
+                expMonth = "Dec";
+                if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else
+            {
+                expMonth = "FALSE";
+                expyear = "FALSE";
+            }
+            Dates.Add(expMonth);
+            Dates.Add(expyear);
+            return (Dates);
         }
+    //-----------------------------------------------------------------------------------------------------
         public bool unhideElement(string elementId)
         {
             try
@@ -581,6 +692,7 @@ namespace AutoBotCSharp
                 return false;
             }
         }
+        //--------------------------------------------------------------------------------------------------
         public static void checkforData(string response)
         {
             Agent temp = App.getAgent();
@@ -591,9 +703,11 @@ namespace AutoBotCSharp
                 case Agent.INS_PROVIDER:
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
-                    { if (temp.EnterData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; }; }
+                    { if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; }; }
                     break;
                 case Agent.INS_EXP:
+                    List<string> dates = checkExp(response);
+                    
                     break;
                 case Agent.INST_START:
                     break;
@@ -632,6 +746,7 @@ namespace AutoBotCSharp
 
 
         }
+//------------------------------------------------------------------------------------------------------------------------
         public static bool checkForObjection(string response)
         {
             string resp = response;
@@ -642,7 +757,6 @@ namespace AutoBotCSharp
                 App.RollTheClip(clip);
                 return true;
             }
-
             else if (resp.Contains("take me off your list") || resp.Contains("take me off your list"))
             {
                 clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
@@ -651,9 +765,6 @@ namespace AutoBotCSharp
             }
             else { return false;
             }
-
-
-
         }
         //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)

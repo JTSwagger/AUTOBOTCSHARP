@@ -202,6 +202,8 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click"/>
                     <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus"/>
+                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click"/>
+                    <Label x:Name="lblTestingDelim" Content="Here be Dragons" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="137"/>
                 </Grid>
             </TabItem>
 
