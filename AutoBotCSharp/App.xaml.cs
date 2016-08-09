@@ -40,35 +40,6 @@ namespace AutoBotCSharp
             return getWindow().user;
         }
 
-        /*
-         * Testing Stuff No Touchy
-         */
-        public static void openTestPage()
-        {
-            var cds = ChromeDriverService.CreateDefaultService();
-            cds.HideCommandPromptWindow = true;
-            testDriver = new ChromeDriver(cds);
-            testDriver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
-        }
-        public static async void testDobThings()
-        {
-
-            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
-            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
-            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
-
-            var birthdayPath = @"C:\Soundboard\Cheryl\Birthday\";
-
-            if (month != "" && day != "")
-            {
-                var moday = month + day;
-                bool isDone = await RollTheClipAndWait(birthdayPath + moday + ".mp3");
-            }
-            if (year != "")
-            {
-                RollTheClip(birthdayPath + year + ".mp3");
-            }
-        }
         public static void setupMicRecogClient()
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
@@ -121,11 +92,6 @@ namespace AutoBotCSharp
                 
             }
         }
-
-        /*
-         *  End testing stuff. You can touch stuff again.
-         *  Creep.
-         */
         public static string[] findNameClips(string name)
         {
             string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
