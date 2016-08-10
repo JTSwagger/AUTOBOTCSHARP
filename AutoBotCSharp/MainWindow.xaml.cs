@@ -155,7 +155,7 @@ namespace AutoBotCSharp
         private void btnDOB_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "DOB";
-            user.Callpos = "INBETWEEN";
+            //user.Callpos = "INBETWEEN";
             App.playDobClips();
             
         }

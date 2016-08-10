@@ -155,7 +155,7 @@ namespace AutoBotCSharp
             Console.WriteLine("PLAYBACK STOPPED");
             Console.WriteLine(user.Callpos);
             Console.WriteLine(user.Question);
-          
+            waveOutIsStopped = true;
             if(user.Callpos == "INBETWEEN")
             {
                 switch(user.Question)
@@ -278,6 +278,10 @@ namespace AutoBotCSharp
         public static async void playDobClips()
         {
             string[] dobby = getAgent().dobInfo;
+            foreach (string clippy in dobby)
+            {
+                Console.WriteLine(clippy);
+            }
             if (dobby[0] != "" && dobby[1] != "")
             {
                 string moday = dobby[0] + dobby[1];

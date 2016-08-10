@@ -854,29 +854,195 @@ namespace AutoBotCSharp
                 case Agent.DOB:
                     break;
                 case Agent.MARITAL_STATUS:
+                    var maritalStatus = App.getAgent().checkMaritalStatus(response);
+                    if (maritalStatus.Length > 0)
+                    {
+                        App.getAgent().selectData("frmMaritalStatus", maritalStatus);
+                    }
                     break;
                 case Agent.SPOUSE_NAME:
                     break;
                 case Agent.SPOUSE_DOB:
                     break;
                 case Agent.OWN_OR_RENT:
+                    var ownership = App.getAgent().checkOwnership(response);
+                    if (ownership.Length > 0)
+                    {
+                        App.getAgent().selectData("frmResidenceType", ownership);
+                    }
                     break;
                 case Agent.RES_TYPE:
+                    var resType = App.getAgent().checkResType(response);
+                    if (resType.Length > 0)
+                    {
+                        App.getAgent().selectData("frmDwellingType", resType);
+                    }
                     break;
                 case Agent.CREDIT:
+                    var credit = App.getAgent().checkCredit(response);
+                    if (credit.Length > 0)
+                    {
+                        App.getAgent().selectData("frmCreditRating", credit);
+                    }
                     break;
                 case Agent.ADDRESS:
+                    string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
+                    App.RollTheClip(clip);
+                    App.getAgent().driver.FindElementById("btnValidate").Click();
                     break;
                 case Agent.EMAIL:
                     break;
                 case Agent.PHONE_TYPE:
+                    var phoneType = App.getAgent().checkPhoneType(response);
+                    if (phoneType.Length > 0)
+                    {
+                        App.getAgent().selectData("frmPhoneType1", phoneType);
+                    }
+                    break;
+                case Agent.LAST_NAME:
+                    clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
+                    App.RollTheClip(clip);
+                    break;
+                case Agent.TCPA:
+                    if (App.getAgent().checkTCPAResponse(response))
+                    {
+                        temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
+                        //App.getAgent().driver.FindElementById("btnSubmit").Click();
+                        App.getAgent().HangUpandDispo("Auto Lead");
+                        App.getAgent().driver.FindElementById("btnSubmit").Click();
+                    }
+                    else
+                    {
+                        temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                        App.getAgent().HangUpandDispo("LOW");
+                    }
                     break;
             }
 
 
 
         }
-//------------------------------------------------------------------------------------------------------------------------
+
+        public bool checkTCPAResponse(string response)
+        {
+            if (response.Contains("yes") || response.Contains("sure") || response.Contains("alright"))
+            {
+                return true;
+            }
+            else if (response.Contains("no"))
+            {
+                return false;
+            }
+            return false;
+        }
+        //------------------------------------------------------------------
+        public string checkPhoneType(string response)
+        {
+            if (response.Contains("cell") || response.Contains("mobile"))
+            {
+                return "Mobile/Cell";
+            }
+            else if (response.Contains("work") || response.Contains("office"))
+            {
+                return "Work";
+            }
+            else if (response.Contains("home") || response.Contains("landline"))
+            {
+                return "Home";
+            }
+            return "";
+        }
+        //------------------------------------------------------------------
+        public string checkCredit(string response)
+        {
+            if (response.Contains("fair") || response.Contains("poor"))
+            {
+                return "Fair";
+            }
+            else if (response.Contains("good"))
+            {
+                return "Good";
+            }
+            else if (response.Contains("excellent"))
+            {
+                return "Excellent";
+            }
+            return "";
+        }
+        //------------------------------------------------------------------
+        public string checkResType(string response)
+        {
+            if (response.Contains("single family") || response.Contains("a house"))
+            {
+                return "Single Family";
+            }
+            else if (response.Contains("apartment"))
+            {
+                return "Apartment";
+            }
+            else if (response.Contains("duplex"))
+            {
+                return "Duplex";
+            }
+            else if (response.Contains("condo") || response.Contains("condominium"))
+            {
+                return "Condominium";
+            }
+            else if (response.Contains("townhome") || response.Contains("townhouse") || response.Contains("town house") || response.Contains("town home"))
+            {
+                return "Townhome";
+            }
+            else if (response.Contains("mobile home") || response.Contains("trailer"))
+            {
+                return "Mobile Home";
+            }
+            return "";
+        }
+        //------------------------------------------------------------------
+        public string checkOwnership(string response)
+        {
+            if (response.Contains("own"))
+            {
+                return "Own";
+            }
+            else if (response.Contains("rent"))
+            {
+                return "Rent";
+            }
+            return "";
+        }
+        //------------------------------------------------------------------
+        public string checkMaritalStatus(string response)
+        {
+            if (response.Contains("married"))
+            {
+                return "Married";
+            }
+            else if (response.Contains("divorced"))
+            {
+                return "Divorced";
+            }
+            else if (response.Contains("separated") || response.Contains("not together"))
+            {
+                return "Separated";
+            }
+            else if (response.Contains("widow"))
+            {
+                return "Widowed";
+            }
+            else if (response.Contains("domestic"))
+            {
+                return "Domestic Partner";
+            }
+
+            return "";
+        }
+        //------------------------------------------------------------------
+
+
+        //------------------------------------------------------------------------------------------------------------------------
         public static async Task<bool> checkForObjection(string response)
         {
             string resp = response;
@@ -900,11 +1066,12 @@ namespace AutoBotCSharp
                 try
                 {
                     App.getAgent().HangUpandDispo("Do Not Call");
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
                 }
-                
+
                 return true;
             }
             else if (resp.Contains("who are you") || resp.Contains("who is this"))
@@ -938,7 +1105,8 @@ namespace AutoBotCSharp
                 x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                 App.getAgent().HangUpandDispo("Wrong Number");
                 return true;
-            } else if (resp.Contains("don't have a car") || resp.Contains("don't own a vehicle") || resp.Contains("no car"))
+            }
+            else if (resp.Contains("don't have a car") || resp.Contains("don't own a vehicle") || resp.Contains("no car"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                 bool x = await App.RollTheClipAndWait(clip);
@@ -948,6 +1116,7 @@ namespace AutoBotCSharp
             }
             return false;
         }
+    
         //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)
         {
@@ -989,15 +1158,15 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-           
+
             try
             {
-              WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" +  AgentNum + "&function=external_hangup&value=1");
-              WebResponse r = h.GetResponse();
+                WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
+                WebResponse r = h.GetResponse();
                 Thread.Sleep(250);
                 r.Close();
                 Thread.Sleep(250);
-                switch(dispo)
+                switch (dispo)
                 {
                     case "Not Available":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
@@ -1016,11 +1185,11 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                     case "No Car":
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum+ "&function=external_status&value=" + "NoCar");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoCar");
                         r = h.GetResponse();
                         break;
                     case "No English":
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value="  +"NoEng");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoEng");
                         r = h.GetResponse();
                         break;
                     case "Auto Lead":
@@ -1028,6 +1197,10 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         PauseUnPause("PAUSE");
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
+                        r = h.GetResponse();
+                        break;
+                    case "LOW":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "LOW");
                         r = h.GetResponse();
                         break;
                 }
