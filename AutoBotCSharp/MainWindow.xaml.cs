@@ -32,6 +32,7 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
+            user = new Agent();
             randy = new Random();
             InitializeComponent();
             string procName = Process.GetCurrentProcess().ProcessName;
@@ -77,9 +78,13 @@ namespace AutoBotCSharp
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            user = new Agent();
             string AgentNum = txtAgentNum.Text;
+            if (user == null)
+            {
+                user = new Agent();
+            }
             user.Login(AgentNum);
+
         }
         private void btnTheirName_Click(object sender, RoutedEventArgs e)
         {
@@ -692,11 +697,10 @@ namespace AutoBotCSharp
 
         private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
         {
-
-
-
-            user = new Agent();
-            
+            if (user == null)
+            {
+                user = new Agent();
+            }
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             user.driver = new ChromeDriver(cds);
