@@ -26,6 +26,8 @@ namespace AutoBotCSharp
         public string Callpos;
 
         private bool newCall = false;
+        public string Question;
+        public const string INBETWEEN = "INBETWEEN";
         public const string INTRO = "INTRO";
         public const string INS_PROVIDER = "INS_PROVIDER";
         public const string INS_EXP = "INS_EXP";
@@ -572,7 +574,7 @@ namespace AutoBotCSharp
             else if (s.Contains("february"))
             {
                 expMonth = "Feb";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 2)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -581,7 +583,7 @@ namespace AutoBotCSharp
             else if (s.Contains("march"))
             {
                 expMonth = "Mar";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 3)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -590,7 +592,7 @@ namespace AutoBotCSharp
             else if (s.Contains("april"))
             {
                 expMonth = "Apr";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 4)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -599,7 +601,7 @@ namespace AutoBotCSharp
             else if (s.Contains("may"))
             {
                 expMonth = "May";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 5)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -608,7 +610,7 @@ namespace AutoBotCSharp
             else if (s.Contains("june"))
             {
                 expMonth = "Jun";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 6)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -617,7 +619,7 @@ namespace AutoBotCSharp
             else if (s.Contains("july"))
             {
                 expMonth = "Jul";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 7)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -626,7 +628,7 @@ namespace AutoBotCSharp
             else if (s.Contains("august"))
             {
                 expMonth = "Aug";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 8)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -635,7 +637,7 @@ namespace AutoBotCSharp
             else if (s.Contains("september"))
             {
                 expMonth = "Sep";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 9)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -645,7 +647,7 @@ namespace AutoBotCSharp
             else if (s.Contains("october"))
             {
                 expMonth = "Oct";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 10)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -655,7 +657,7 @@ namespace AutoBotCSharp
             else if (s.Contains("november"))
             {
                 expMonth = "Nov";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 11)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -665,7 +667,7 @@ namespace AutoBotCSharp
             else if (s.Contains("december"))
             {
                 expMonth = "Dec";
-                if (DateTime.Now.Month > 1)
+                if (DateTime.Now.Month > 12)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -701,6 +703,110 @@ namespace AutoBotCSharp
             driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
         //--------------------------------------------------------------------------------------------------
+
+        public string HowLong(string response)
+        {
+            string month = driver.FindElementById("frmPolicyExpiration_Month").Text;
+            if (response.Contains("year"))
+            {
+
+
+                if (response.Contains("two"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 2).ToString());
+                }
+                else if (response.Contains("three"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 3).ToString());
+                }
+                else if (response.Contains("four"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 4).ToString());
+                }
+                else if (response.Contains("five"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 5).ToString());
+                }
+                if (response.Contains("six"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 6).ToString());
+                }
+                else if (response.Contains("seven"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 7).ToString());
+                }
+                else if (response.Contains("eight"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 8).ToString());
+                }
+                else if (response.Contains("nine"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 9).ToString());
+                }
+                if (response.Contains("ten"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 10).ToString());
+                }
+                else if (response.Contains("eleven"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 11).ToString());
+                }
+                else if (response.Contains("twelve"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 12).ToString());
+                }
+                else if (response.Contains("thirteen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 13).ToString());
+                }
+                if (response.Contains("fourteen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 14).ToString());
+                }
+                else if (response.Contains("fiften"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 15).ToString());
+                }
+                else if (response.Contains("sixteen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 16).ToString());
+                }
+                else if (response.Contains("seventeen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 17).ToString());
+                }
+                else if (response.Contains("eighteen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 18).ToString());
+                }
+                else if (response.Contains("nineteen"))
+                {
+                    return (month + " " + (DateTime.Now.Year - 19).ToString());
+                }
+                else
+                {
+                    return (month + " " + (DateTime.Now.Year - 20).ToString());
+                }
+            }
+            else if(response.Contains("just started") || response.Contains("last month"))
+            {
+                return ((DateTime.Now.Month - 1).ToString() + " " + DateTime.Now.Year.ToString());
+            }
+
+            else
+            {
+                return "FALSE";
+            }
+
+            
+            
+        }
+        //===================================================================================================
+        public void getNumVehicles()
+        {
+
+        }
+        //===================================================================================================
         public static void checkforData(string response)
         {
             Agent temp =  App.getAgent();
@@ -714,31 +820,37 @@ namespace AutoBotCSharp
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
                     {
-                        Console.WriteLine("made it!!!!!! tacos");
-                        if (temp.EnterData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INS_EXP; };
-                    }
-                    else
-                    {
-                        Console.WriteLine("no tacos :(");
+                   
+                        if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; };
                     }
                     break;
                 case Agent.INS_EXP:
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
-                    if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INST_START; }; };                  
+                    if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INBETWEEN; }; };                  
                     break;
                 case Agent.INST_START:
+                    Data = App.getAgent().HowLong(response);
+                    theDates = Data.Split(' ');
+                    if (theDates.Length > 0) { if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
                     break;
                 case Agent.NUM_VEHICLES:
+
                     break;
                 case Agent.YMM1:
+
                     break;
                 case Agent.YMM2:
+
                     break;
                 case Agent.YMM3:
+
                     break;
                 case Agent.YMM4:
+
                     break;
+
+
                 case Agent.DOB:
                     break;
                 case Agent.MARITAL_STATUS:

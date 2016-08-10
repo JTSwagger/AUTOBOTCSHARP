@@ -173,7 +173,26 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            waveOutIsStopped = true;
+            Agent user = App.getAgent();
+            Console.WriteLine("PLAYBACK STOPPED");
+            Console.WriteLine(user.Callpos);
+            Console.WriteLine(user.Question);
+          
+            if(user.Callpos == "INBETWEEN")
+            {
+                switch(user.Question)
+                {
+                    case "INS_PROVIDER":
+                        user.Callpos = Agent.INS_PROVIDER;
+                        break;
+                    case "INS_EXP":
+                        user.Callpos = Agent.INS_EXP;
+                        break;
+                  
+                }
+            }
+           
+
         }
 
         public static bool RollTheClip(string Clip)
@@ -187,6 +206,7 @@ namespace AutoBotCSharp
             {
                 StopTheClip();
                 waveOut = new WaveOut();
+                waveOut.PlaybackStopped += onPlaybackStopped;
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
                 waveOut.Init(Reader);
                 waveOut.Play();
