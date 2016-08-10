@@ -23,6 +23,8 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
+
+
         public static MainWindow getWindow()
         {
             var mainwindow = Current.MainWindow as MainWindow;
@@ -49,30 +51,8 @@ namespace AutoBotCSharp
         /*
          * Testing Stuff No Touchy
          */
+     
       
-        public static ChromeDriver getDriver()
-        {
-            return testDriver;
-        } 
-        public static async void testDobThings()
-        {
-
-            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
-            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
-            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
-
-            var birthdayPath = @"C:\Soundboard\Cheryl\Birthday\";
-
-            if (month != "" && day != "")
-            {
-                var moday = month + day;
-                bool isDone = await RollTheClipAndWait(birthdayPath + moday + ".mp3");
-            }
-            if (year != "")
-            {
-                RollTheClip(birthdayPath + year + ".mp3");
-            }
-        }
         public static void setupMicRecogClient()
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";

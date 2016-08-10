@@ -702,6 +702,12 @@ namespace AutoBotCSharp
             user.driver = new ChromeDriver(cds);
            user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
+
+        private void btnBestGuess_Click(object sender, RoutedEventArgs e)
+        {
+            string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
+            App.RollTheClip(clip);
+        }
     }
     
 }
