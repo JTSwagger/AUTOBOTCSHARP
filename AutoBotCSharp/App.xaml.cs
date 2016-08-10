@@ -23,6 +23,8 @@ namespace AutoBotCSharp
         public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
+
+
         public static MainWindow getWindow()
         {
             var mainwindow = Current.MainWindow as MainWindow;
@@ -49,7 +51,7 @@ namespace AutoBotCSharp
         /*
          * Testing Stuff No Touchy
          */
-      
+     
       
         public static void setupMicRecogClient()
         {
