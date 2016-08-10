@@ -524,7 +524,13 @@ namespace AutoBotCSharp
             _source = null;
             UnregisterHotkeys();
 
-            user.killDriver();
+            try
+            {
+                user.killDriver();
+            } catch (NullReferenceException)
+            {
+                Console.WriteLine("screw it");
+            }
 
             Application.Current.Shutdown();
             base.OnClosed(e);

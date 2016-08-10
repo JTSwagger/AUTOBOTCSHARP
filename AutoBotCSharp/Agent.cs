@@ -765,24 +765,76 @@ namespace AutoBotCSharp
 
         }
 //------------------------------------------------------------------------------------------------------------------------
-        public static bool checkForObjection(string response)
+        public static async Task<bool> checkForObjection(string response)
         {
             string resp = response;
             string clip;
-            if (resp.Contains("not interested") || resp.Contains("no interest") || resp.Contains("don't want it"))
+            if (resp.Contains("don't want it"))
             {
                 clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                 App.RollTheClip(clip);
                 return true;
             }
-            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list"))
+            else if (resp.Contains("not interested") || resp.Contains("no interest"))
             {
-                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
                 App.RollTheClip(clip);
                 return true;
             }
-            else { return false;
+            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
+                bool x = await App.RollTheClipAndWait(clip);
+                try
+                {
+                    App.getAgent().HangUpandDispo("Do Not Call");
+                } catch (Exception)
+                {
+                    Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
+                }
+                
+                return true;
             }
+            else if (resp.Contains("who are you") || resp.Contains("who is this"))
+            {
+                clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+            else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+            else if (resp.Contains("already have") || resp.Contains("already got"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+            else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+            else if (resp.Contains("wrong number"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
+                bool x = await App.RollTheClipAndWait(clip);
+                x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                App.getAgent().HangUpandDispo("Wrong Number");
+                return true;
+            } else if (resp.Contains("don't have a car") || resp.Contains("don't own a vehicle") || resp.Contains("no car"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
+                bool x = await App.RollTheClipAndWait(clip);
+                x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                App.getAgent().HangUpandDispo("No Car");
+                return true;
+            }
+            return false;
         }
         //-----------------------------------------------------------------------------------------------------------
         public bool Login(string AgentNumber)

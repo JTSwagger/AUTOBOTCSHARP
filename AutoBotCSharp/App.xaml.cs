@@ -108,13 +108,12 @@ namespace AutoBotCSharp
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            Application.Current.Dispatcher.Invoke((() =>
+            Application.Current.Dispatcher.Invoke((async () =>
             {
+                bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
-                if(!Agent.checkForObjection(response))
-                {Agent.checkforData(response);}
-                
-                
+                if (!(x = await Agent.checkForObjection(response)))
+                { Agent.checkforData(response); }
             }));
             
         }
