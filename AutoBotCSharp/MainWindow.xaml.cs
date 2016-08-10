@@ -16,6 +16,7 @@ using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Diagnostics;
+using OpenQA.Selenium.Chrome;
 
 namespace AutoBotCSharp
 {
@@ -24,8 +25,10 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ChromeDriver testDriver;
         private Random randy;
         public Agent user;
+        
 
         public MainWindow()
         {
@@ -85,104 +88,146 @@ namespace AutoBotCSharp
         // Insurance info button group
         private void btnInsuranceProvider_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "INS_PROVIDER";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3";
             App.RollTheClip(clip);
+            
         }
         private void btnPolicyExpiration_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "INS_EXP";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3";
             App.RollTheClip(clip);
         }
         private void btnPolicyStart_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "INS_START";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3";
             App.RollTheClip(clip);
         }
         // Vehicle info button group
         private void btnHowManyVehicles_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "NUM_VEHICLES";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3";
             App.RollTheClip(clip);
         }
         private void btnYmm1_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "YMM1";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3";
             App.RollTheClip(clip);
         }
         private void btnYMM2_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "YMM2";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\2nd Vehicle.mp3";
             App.RollTheClip(clip);
         }
         private void btnYMM3_Click(object sender, RoutedEventArgs e)
         {
+
+            user.Question = "YMM3";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\Third Vehicle.mp3";
             App.RollTheClip(clip);
         }
         private void btnYMM4_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "YMM4";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\Fourth Vehicle.mp3";
             App.RollTheClip(clip);
         }
         // Driver info button group
         private void btnDOB_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "DOB";
+            user.Callpos = "INBETWEEN";
             App.playDobClips();
             
         }
         private void btnMaritalStatus_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "MARITAL_STATUS";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\DRIVER INFO\Marital Status.mp3";
             App.RollTheClip(clip);
         }
         private void btnSpouseName_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "SPOUSE_NAME";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\DRIVER INFO\Spouses First name.mp3";
             App.RollTheClip(clip);
         }
         private void btnSpouseDOB_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "SPOUSE_DOB";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\DRIVER INFO\Spouses Date of Birth.mp3";
             App.RollTheClip(clip);
         }
         // Personal info button group
         private void cmboOwnRent_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "OWN_RENT";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Do You Own Or Rent the Home.mp3";
             App.RollTheClip(clip);
         }
         private void btnHomeType_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "HOME_TYPE";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\HOMETYPE.mp3";
             App.RollTheClip(clip);
         }
         private void btnAddress_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "ADDRESS";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
             App.RollTheClip(clip);
         }
         private void btnEmail_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "EMAIL";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\EMAIL.mp3";
             App.RollTheClip(clip);
         }
         private void btnCredit_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "CREDIT";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Credit.mp3";
             App.RollTheClip(clip);
         }
         private void btnPhoneType_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "PHONE_TYPE";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\PHONETYPE.mp3";
             App.RollTheClip(clip);
         }
         private void btnLastName_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "LAST_NAME";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
             App.RollTheClip(clip);
         }
         private void btnTCPA_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "TCPA";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3";
             App.RollTheClip(clip);
         }
@@ -472,15 +517,6 @@ namespace AutoBotCSharp
             App.shortPhraseClient.AudioStop();
             Console.WriteLine("SP ended");
         }
-        private void btnGreatDay_Click(object sender, RoutedEventArgs e)
-        {
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-        }
-        private void btnBestGuess_Click(object sender, RoutedEventArgs e)
-        {
-            string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
-            App.RollTheClip(clip);
-        }
 
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
@@ -533,12 +569,8 @@ namespace AutoBotCSharp
                 user.killDriver();
             } catch (NullReferenceException)
             {
-                // okey
-            } catch (Exception)
-            {
-                // this is how much I care.
+                Console.WriteLine("screw it");
             }
-            
 
             Application.Current.Shutdown();
             base.OnClosed(e);
@@ -648,7 +680,28 @@ namespace AutoBotCSharp
             }
         }
 
+        private void btnGreatDay_Click(object sender, RoutedEventArgs e)
+        {
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+        }
 
+        private void speechTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
+        {
+
+
+
+            user = new Agent();
+            
+            var cds = ChromeDriverService.CreateDefaultService();
+            cds.HideCommandPromptWindow = true;
+            user.driver = new ChromeDriver(cds);
+           user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+        }
     }
     
 }

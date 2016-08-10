@@ -35,9 +35,44 @@ namespace AutoBotCSharp
          */ 
         public static Agent getAgent()
         {
-            return getWindow().user;
+            Agent temp;
+            try
+            {
+               temp = getWindow().user;
+            } catch (NullReferenceException)
+            {
+                temp = new Agent();
+            }
+            return temp;
         }
 
+        /*
+         * Testing Stuff No Touchy
+         */
+      
+        public static ChromeDriver getDriver()
+        {
+            return testDriver;
+        } 
+        public static async void testDobThings()
+        {
+
+            var month = new SelectElement(testDriver.FindElementById("frmDOB_Month")).SelectedOption.GetAttribute("value");
+            var day = new SelectElement(testDriver.FindElementById("frmDOB_Day")).SelectedOption.GetAttribute("value");
+            var year = new SelectElement(testDriver.FindElementById("frmDOB_Year")).SelectedOption.GetAttribute("value");
+
+            var birthdayPath = @"C:\Soundboard\Cheryl\Birthday\";
+
+            if (month != "" && day != "")
+            {
+                var moday = month + day;
+                bool isDone = await RollTheClipAndWait(birthdayPath + moday + ".mp3");
+            }
+            if (year != "")
+            {
+                RollTheClip(birthdayPath + year + ".mp3");
+            }
+        }
         public static void setupMicRecogClient()
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
@@ -71,12 +106,16 @@ namespace AutoBotCSharp
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            Application.Current.Dispatcher.Invoke((() =>
+            Application.Current.Dispatcher.Invoke((async () =>
             {
+                bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
+                if (!(x = await Agent.checkForObjection(response)))
+                { Agent.checkforData(response); }
             }));
             
         }
+     
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
@@ -86,10 +125,15 @@ namespace AutoBotCSharp
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
                 }));
-                (sender as MicrophoneRecognitionClient).AudioStop();
+     
                 
             }
         }
+
+        /*
+         *  End testing stuff. You can touch stuff again.
+         *  Creep.
+         */
         public static string[] findNameClips(string name)
         {
             string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
@@ -127,7 +171,26 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            waveOutIsStopped = true;
+            Agent user = App.getAgent();
+            Console.WriteLine("PLAYBACK STOPPED");
+            Console.WriteLine(user.Callpos);
+            Console.WriteLine(user.Question);
+          
+            if(user.Callpos == "INBETWEEN")
+            {
+                switch(user.Question)
+                {
+                    case "INS_PROVIDER":
+                        user.Callpos = Agent.INS_PROVIDER;
+                        break;
+                    case "INS_EXP":
+                        user.Callpos = Agent.INS_EXP;
+                        break;
+                  
+                }
+            }
+           
+
         }
 
         public static bool RollTheClip(string Clip)
@@ -141,6 +204,7 @@ namespace AutoBotCSharp
             {
                 StopTheClip();
                 waveOut = new WaveOut();
+                waveOut.PlaybackStopped += onPlaybackStopped;
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
                 waveOut.Init(Reader);
                 waveOut.Play();
