@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Diagnostics;
 using OpenQA.Selenium.Chrome;
+using Microsoft.ProjectOxford.SpeechRecognition;
 
 namespace AutoBotCSharp
 {
@@ -711,6 +712,16 @@ namespace AutoBotCSharp
         {
             string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
             App.RollTheClip(clip);
+        }
+
+        private void btnTurnOnAutoStuff_Click(object sender, RoutedEventArgs e)
+        {
+            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
+            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
+            MicrophoneRecognitionClient longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+            longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            longDictationClient.StartMicAndRecognition();
         }
     }
     
