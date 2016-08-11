@@ -166,6 +166,9 @@ namespace AutoBotCSharp
                     case "INS_EXP":
                         user.Callpos = Agent.INS_EXP;
                         break;
+                    case "YMM1":
+                        user.Callpos = Agent.YMM1;
+                        break;
                   
                 }
             }

@@ -667,6 +667,8 @@ namespace AutoBotCSharp
 
         private void btnYMMOnly1_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "YMM1";
+            user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3";
             App.RollTheClip(clip);
         }

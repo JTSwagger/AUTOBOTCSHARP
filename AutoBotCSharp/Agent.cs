@@ -10,6 +10,7 @@ using System.Net;
 using System.IO;
 using System.Windows.Media;
 using OpenQA.Selenium.Support.UI;
+using System.ComponentModel;
 
 namespace AutoBotCSharp
 {
@@ -134,7 +135,7 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
-       
+
             while (retry)
             {
                 try
@@ -222,6 +223,60 @@ namespace AutoBotCSharp
             }
             return false;
         }
+
+      
+
+        //===============================================================================
+        public async Task AselectData(string elementId, string data)
+        {
+            bool retry = true;
+            int staleRefCount = 0;
+            while (retry)
+            {
+                try
+                {
+                    var select = new SelectElement(driver.FindElementById(elementId));
+                    select.SelectByText(data);
+                 
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException ex)
+                {
+                    string message = ex.Message;
+                    if (message.Contains(data))
+                    {
+                        Console.WriteLine(data + " is not a valid option for " + elementId + "; try a different option.");
+                    }
+                    else
+                    {
+                        Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    }
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
+            }
+        }
+        //================================================================================================================
         void StartWebRequest()
         {
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
@@ -290,11 +345,11 @@ namespace AutoBotCSharp
             if (s.Contains("chub"))
             { return ("chub"); }
             if (s.Contains("citizen") || s.Contains("citizens"))
-                        { return ("Citizens"); }
+            { return ("Citizens"); }
             if (s.Contains("clarendon"))
             { return ("Clarendon American Insurance"); }
             if (s.Contains("cna") || s.Contains("see na"))
-                { return ("CNA"); }
+            { return ("CNA"); }
             if (s.Contains("colonial"))
             { return ("Colonial Insurance"); }
             if (s.Contains("comparison"))
@@ -320,7 +375,7 @@ namespace AutoBotCSharp
             if (s.Contains("esurance"))
             { return ("Esurance"); }
             if (s.Contains("farm bureau"))
-                { return ("Farm Bureau/Farm Family/Rural"); }
+            { return ("Farm Bureau/Farm Family/Rural"); }
             if (s.Contains("farmers"))
             { return ("Farmers Insurance"); }
             if (s.Contains("finance box"))
@@ -376,7 +431,7 @@ namespace AutoBotCSharp
             if (s.Contains("insurance leads dot com") || s.Contains("insuranceleads.com"))
             { return ("InsuranceLeaders.com"); }
             if (s.Contains("insweb") || s.Contains("in web"))
-                { return ("Insweb"); }
+            { return ("Insweb"); }
             if (s.Contains("integon") || s.Contains("pentagon"))
             { return ("Integon"); }
             if (s.Contains("hancock") || s.Contains("john hancock"))
@@ -418,7 +473,7 @@ namespace AutoBotCSharp
             if (s.Contains("mutual of omaha") || s.Contains("omaha"))
             { return ("Mutual of Omaha"); }
             if (s.Contains("national ben franklin") || s.Contains("ben franklin"))
-                { return ("National Ben Franklin Insurance"); }
+            { return ("National Ben Franklin Insurance"); }
             if (s.Contains("national casualty"))
             { return ("National Casualty"); }
             if (s.Contains("national continental"))
@@ -521,7 +576,7 @@ namespace AutoBotCSharp
             if (s.Contains("twin city"))
             { return ("Twin City Fire Insurance"); }
             if (s.Contains("unicare") || s.Contains("unicorn"))
-                { return ("UniCare"); }
+            { return ("UniCare"); }
             if (s.Contains("united american"))
             { return ("United American/Farm and Ranch"); }
             if (s.Contains("united pacific"))
@@ -533,7 +588,7 @@ namespace AutoBotCSharp
             if (s.Contains("unitrin"))
             { return ("Unitrin Direct"); }
             if (s.Contains("universal"))
-                { return ("Universal Underwriters Insurance"); }
+            { return ("Universal Underwriters Insurance"); }
             if (s.Contains("US financial"))
             { return ("US Financial"); }
             if (s.Contains("USA"))
@@ -678,10 +733,10 @@ namespace AutoBotCSharp
                 expMonth = "FALSE";
                 expyear = "FALSE";
             }
-        
+
             return (expMonth + " " + expyear);
         }
-    //-----------------------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------
         public bool unhideElement(string elementId)
         {
             try
@@ -788,7 +843,7 @@ namespace AutoBotCSharp
                     return (month + " " + (DateTime.Now.Year - 20).ToString());
                 }
             }
-            else if(response.Contains("just started") || response.Contains("last month"))
+            else if (response.Contains("just started") || response.Contains("last month"))
             {
                 return ((DateTime.Now.Month - 1).ToString() + " " + DateTime.Now.Year.ToString());
             }
@@ -798,20 +853,164 @@ namespace AutoBotCSharp
                 return "FALSE";
             }
 
-            
-            
-        }
-        //===================================================================================================
-        public void getNumVehicles()
-        {
+
 
         }
         //===================================================================================================
+        public string getNumVehicles(string response)
+        {
+            if (response.Contains("1") || response.Contains("one"))
+            { return "1"; }
+            else if (response.Contains("2") || response.Contains("two"))
+            { return "2"; }
+            else if (response.Contains("3") || response.Contains("three"))
+            { return "3"; }
+            else if (response.Contains("4") || response.Contains("four"))
+            { return "4"; }
+            else { return "1"; }
+        }
+        //==================================================================================================
+
+
+
+        public string GETYMM(string response,int vehicleNum)
+        {
+            
+            List<string> VModels = new List<string>();
+            string Modelcontrol = "1";
+            string year;
+            string make = "";
+            string model = "FALSE";
+            string searcher = "";
+            OpenQA.Selenium.IWebElement models;
+
+            switch(vehicleNum)
+            {
+                case 1:
+                    Modelcontrol = "vehicle-model";
+                    break;
+                case 2:
+                    Modelcontrol = "vehicle2-model";
+                    break;
+                case 3:
+                    Modelcontrol = "vehicle3-model";
+                    break;
+                case 4:
+                    Modelcontrol = "vehicle4-model";
+                    break;
+            }
+
+            if (response.Contains("1981")) { year = "1981"; }
+            else if (response.Contains("1982") || response.Contains("82")) { year = "1982"; }
+            else if (response.Contains("1983") || response.Contains("83")) { year = "1983"; }
+            else if (response.Contains("1984") || response.Contains("84")) { year = "1984"; }
+            else if (response.Contains("1985") || response.Contains("85")) { year = "1985"; }
+            else if (response.Contains("1986") || response.Contains("86")) { year = "1986"; }
+            else if (response.Contains("1987") || response.Contains("87")) { year = "1987"; }
+            else if (response.Contains("1988") || response.Contains("88")) { year = "1988"; }
+            else if (response.Contains("1989") || response.Contains("89")) { year = "1989"; }
+            else if (response.Contains("1990") || response.Contains("90")) { year = "1990"; }
+            else if (response.Contains("1991") || response.Contains("91")) { year = "1991"; }
+            else if (response.Contains("1992") || response.Contains("92")) { year = "1992"; }
+            else if (response.Contains("1993") || response.Contains("93")) { year = "1993"; }
+            else if (response.Contains("1994") || response.Contains("94")) { year = "1994"; }
+            else if (response.Contains("1995") || response.Contains("95")) { year = "1995"; }
+            else if (response.Contains("1996") || response.Contains("96")) { year = "1996"; }
+            else if (response.Contains("1997") || response.Contains("97")) { year = "1997"; }
+            else if (response.Contains("1998") || response.Contains("98")) { year = "1998"; }
+            else if (response.Contains("1999") || response.Contains("99")) { year = "1999"; }
+            else if (response.Contains("2000")) { year = "2000"; }
+            else if (response.Contains("2001")) { year = "2001"; }
+            else if (response.Contains("2002")) { year = "2002"; }
+            else if (response.Contains("2003")) { year = "2003"; }
+            else if (response.Contains("2004")) { year = "2004"; }
+            else if (response.Contains("2005")) { year = "2005"; }
+            else if (response.Contains("2006")) { year = "2006"; }
+            else if (response.Contains("2007")) { year = "2007"; }
+            else if (response.Contains("2008")) { year = "2008"; }
+            else if (response.Contains("2009")) { year = "2009"; }
+            else if (response.Contains("2010")) { year = "2010"; }
+            else if (response.Contains("2011")) { year = "2011"; }
+            else if (response.Contains("2012")) { year = "2012"; }
+            else if (response.Contains("2013")) { year = "2013"; }
+            else if (response.Contains("2014")) { year = "2014"; }
+            else if (response.Contains("2015")) { year = "2015"; }
+            else { year = "FALSE"; }
+          
+            if (response.Contains("acura")) { make = "ACURA"; }
+            else if (response.ToUpper().Contains("ALFA ROMEO")) { make = "ALFA ROMEO"; }
+            else if (response.ToUpper().Contains("ASTON MARTIN")) { make = "ASTON MARTIN"; }
+            else if (response.ToUpper().Contains("AUDI")) { make = "AUDI"; }
+            else if (response.ToUpper().Contains("BENTLEY")) { make = "BENTLEY"; }
+            else if (response.ToUpper().Contains("BMW")) { make = "BMW"; }
+            else if (response.ToUpper().Contains("BUICK")) { make = "BUICK"; }
+            else if (response.ToUpper().Contains("CADILLAC")) { make = "CADILLAC"; }
+            else if (response.ToUpper().Contains("CHEVROLET")) { make = "CHEVROLET"; }         
+            else if (response.ToUpper().Contains("CHRYSLER")) { make = "CHRYSLER"; }
+            else if (response.ToUpper().Contains("DODGE")) { make = "DODGE"; }
+            else if (response.ToUpper().Contains("FERRARI")) { make = "FERRARI"; }
+            else if (response.ToUpper().Contains("FIAT")) { make = "FIAT"; }
+            else if (response.ToUpper().Contains("FORD")) { make = "FORD"; }
+            else if (response.ToUpper().Contains("GMC")) { make = "GMC"; }
+            else if (response.ToUpper().Contains("HONDA")) { make = "HONDA"; }
+            else if (response.ToUpper().Contains("HYUNDAI")) { make = "HYUNDAI"; }
+            else if (response.ToUpper().Contains("INFINITI")) { make = "INFINITI"; }
+            else if (response.ToUpper().Contains("ISUZU")) { make = "ISUZU"; }
+            else if (response.ToUpper().Contains("JAGUAR")) { make = "JAGUAR"; }
+            else if (response.ToUpper().Contains("JEEP")) { make = "JEEP"; }
+            else if (response.ToUpper().Contains("KAWASAKI")) { make = "KAWASAKI"; }
+            else if (response.ToUpper().Contains("KIA")) { make = "KIA"; }
+            else if (response.ToUpper().Contains("LAMBORGHINI")) { make = "LAMBORGHINI"; }
+            else if (response.ToUpper().Contains("LAND ROVER")) { make = "LAND ROVER"; }
+            else if (response.ToUpper().Contains("LEXUS")) { make = "LEXUS"; }
+            else if (response.ToUpper().Contains("LINCOLN")) { make = "LINCOLN"; }
+            else if (response.ToUpper().Contains("LOTUS")) { make = "LOTUS"; }
+            else if (response.ToUpper().Contains("MASERATI")) { make = "MASERATI"; }
+            else if (response.ToUpper().Contains("MAZDA")) { make = "MAZDA"; }
+            else if (response.ToUpper().Contains("MCLAREN AUTOMOTIVE")) { make = "MCLAREN AUTOMOTIVE"; }
+            else if (response.ToUpper().Contains("MERCEDES-BENZ")) { make = "MERCEDES-BENZ"; }
+            else if (response.ToUpper().Contains("MINI")) { make = "MINI"; }
+            else if (response.ToUpper().Contains("MITSUBISHI")) { make = "MITSUBISHI"; }
+            else if (response.ToUpper().Contains("NISSAN")) { make = "NISSAN"; }
+            else if (response.ToUpper().Contains("PORSCHE")) { make = "PORSCHE"; }
+            else if (response.ToUpper().Contains("RAM")) { make = "RAM"; }
+            else if (response.ToUpper().Contains("ROLLS-ROYCE")) { make = "ROLLS-ROYCE"; }
+            else if (response.ToUpper().Contains("SMART")) { make = "SMART"; }
+            else if (response.ToUpper().Contains("SUBARU")) { make = "SUBARU"; }
+            else if (response.ToUpper().Contains("SUZUKI")) { make = "SUZUKI"; }
+            else if (response.ToUpper().Contains("TESLA")) { make = "TESLA"; }
+            else if (response.ToUpper().Contains("TOYOTA")) { make = "TOYOTA"; }
+            else if (response.ToUpper().Contains("VOLKSWAGEN")) { make = "VOLKSWAGEN"; }
+            else if (response.ToUpper().Contains("VOLVO")) { make = "VOLVO"; }
+            else if (response.ToUpper().Contains("YAMAHA")) { make = "YAMAHA"; }
+            else { make = "FALSE"; }
+
+            if (year != "FALSE" && make != "FALSE")
+            {
+                App.getAgent().selectData("vehicle-year", year);
+                App.getAgent().selectData("vehicle-make", make);
+                models = driver.FindElementById(Modelcontrol);   
+                IReadOnlyCollection<OpenQA.Selenium.IWebElement> theModels = models.FindElements(OpenQA.Selenium.By.TagName("option"));
+                foreach(OpenQA.Selenium.IWebElement option in theModels)
+                {           
+                    searcher = option.Text.Split(' ')[0]; 
+                    if (response.Contains(searcher.ToLower())) { Console.WriteLine("FOUND MODEL!" + option.Text); model = option.Text;return (model); }
+                }
+              
+
+            }
+            
+            return (year + " " + make + " " + model);
+
+        }
+      
+
         public static void checkforData(string response)
         {
             Agent temp =  App.getAgent();
             
             string Data;
+           
             string pos = temp.Callpos;
             switch (pos)
             {
@@ -830,28 +1029,53 @@ namespace AutoBotCSharp
                     if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INBETWEEN; }; };                  
                     break;
                 case Agent.INST_START:
-                    Data = App.getAgent().HowLong(response);
+                    Data = temp.HowLong(response);
                     theDates = Data.Split(' ');
                     if (theDates.Length > 0) { if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
                     break;
                 case Agent.NUM_VEHICLES:
+                    Data = temp.getNumVehicles(response);
+                    temp.Callpos = Agent.INBETWEEN;
 
                     break;
                 case Agent.YMM1:
-
+                    Data =  temp.GETYMM(response, 1);
+                    if (!Data.Contains("FALSE"))
+                    { temp.Callpos = Agent.INBETWEEN;
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args) 
+                        {
+                            temp.selectData("vehicle-model", Data);
+                        });
+                        bw.RunWorkerAsync();                                    
+                    }
                     break;
                 case Agent.YMM2:
+                    Data = temp.GETYMM(response, 1);
+                    if (!Data.Contains("FALSE"))
+                    {
+                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                    }
+                        break;
 
-                    break;
+
                 case Agent.YMM3:
-
+                    Data = temp.GETYMM(response, 3);
+                    if (!Data.Contains("FALSE"))
+                    {
+                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                    }
                     break;
                 case Agent.YMM4:
-
+                    Data = temp.GETYMM(response, 4);
+                    if (!Data.Contains("FALSE"))
+                    {
+                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                    }
                     break;
 
-
                 case Agent.DOB:
+
                     break;
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
