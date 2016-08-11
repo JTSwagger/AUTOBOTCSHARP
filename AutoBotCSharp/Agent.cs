@@ -227,7 +227,7 @@ namespace AutoBotCSharp
       
 
         //===============================================================================
-        public async Task AselectData(string elementId, string data)
+        public async void async_selectData(string elementId, string data)
         {
             bool retry = true;
             int staleRefCount = 0;
@@ -236,8 +236,7 @@ namespace AutoBotCSharp
                 try
                 {
                     var select = new SelectElement(driver.FindElementById(elementId));
-                    select.SelectByText(data);
-                 
+                    await Task.Run(() => select.SelectByText(data)); 
                 }
                 catch (OpenQA.Selenium.ElementNotVisibleException)
                 {
@@ -873,9 +872,9 @@ namespace AutoBotCSharp
 
 
 
-        public string GETYMM(string response,int vehicleNum)
+        public string GETYMM(string response, int vehicleNum)
         {
-            
+
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -884,7 +883,7 @@ namespace AutoBotCSharp
             string searcher = "";
             OpenQA.Selenium.IWebElement models;
 
-            switch(vehicleNum)
+            switch (vehicleNum)
             {
                 case 1:
                     Modelcontrol = "vehicle-model";
@@ -936,7 +935,7 @@ namespace AutoBotCSharp
             else if (response.Contains("2014")) { year = "2014"; }
             else if (response.Contains("2015")) { year = "2015"; }
             else { year = "FALSE"; }
-          
+
             if (response.Contains("acura")) { make = "ACURA"; }
             else if (response.ToUpper().Contains("ALFA ROMEO")) { make = "ALFA ROMEO"; }
             else if (response.ToUpper().Contains("ASTON MARTIN")) { make = "ASTON MARTIN"; }
@@ -945,7 +944,7 @@ namespace AutoBotCSharp
             else if (response.ToUpper().Contains("BMW")) { make = "BMW"; }
             else if (response.ToUpper().Contains("BUICK")) { make = "BUICK"; }
             else if (response.ToUpper().Contains("CADILLAC")) { make = "CADILLAC"; }
-            else if (response.ToUpper().Contains("CHEVROLET")) { make = "CHEVROLET"; }         
+            else if (response.ToUpper().Contains("CHEVROLET")) { make = "CHEVROLET"; }
             else if (response.ToUpper().Contains("CHRYSLER")) { make = "CHRYSLER"; }
             else if (response.ToUpper().Contains("DODGE")) { make = "DODGE"; }
             else if (response.ToUpper().Contains("FERRARI")) { make = "FERRARI"; }
@@ -987,7 +986,7 @@ namespace AutoBotCSharp
 
             if (year != "FALSE" && make != "FALSE")
             {
-                switch(vehicleNum)
+                switch (vehicleNum)
                 {
                     case 1:
                         App.getAgent().selectData("vehicle-year", year);
@@ -1008,22 +1007,16 @@ namespace AutoBotCSharp
 
                 }
 
-                models = driver.FindElementById(Modelcontrol);   
+                models = driver.FindElementById(Modelcontrol);
                 IReadOnlyCollection<OpenQA.Selenium.IWebElement> theModels = models.FindElements(OpenQA.Selenium.By.TagName("option"));
-                foreach(OpenQA.Selenium.IWebElement option in theModels)
-                {           
-                    searcher = option.Text.Split(' ')[0]; 
-                    if (response.Contains(searcher.ToLower())) { Console.WriteLine("FOUND MODEL!" + option.Text); model = option.Text;return (model); }
+                foreach (OpenQA.Selenium.IWebElement option in theModels)
+                {
+                    searcher = option.Text.Split(' ')[0];
+                    if (response.Contains(searcher.ToLower())) { Console.WriteLine("FOUND MODEL!" + option.Text); model = option.Text; return (model); }
                 }
-              
-
             }
-            
             return (year + " " + make + " " + model);
-
         }
-      
-
         public static void checkforData(string response)
         {
             Agent temp =  App.getAgent();
@@ -1038,7 +1031,6 @@ namespace AutoBotCSharp
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
                     {
-                   
                         if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; };
                     }
                     break;

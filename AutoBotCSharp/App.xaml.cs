@@ -20,7 +20,7 @@ namespace AutoBotCSharp
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
         private static bool waveOutIsStopped = true;
-        public static MicrophoneRecognitionClient shortPhraseClient;
+        //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
 
@@ -57,15 +57,12 @@ namespace AutoBotCSharp
         {
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
             string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
-            shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
+            //shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
 
-            shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            //shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
-
-
-
 
             shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
@@ -190,12 +187,9 @@ namespace AutoBotCSharp
                     case "YMM4":
                         user.Callpos = Agent.YMM4;
                         break;
-                    
-
                 }
             }
         }
-
         public static bool RollTheClip(string Clip)
         {
             //if (Clip == "no clip")
