@@ -62,6 +62,10 @@ namespace AutoBotCSharp
 
             shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
+
+
+
 
             shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
@@ -81,6 +85,14 @@ namespace AutoBotCSharp
                     Console.WriteLine("longdictation started");
                     break;
             }
+        }
+        public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
+        {
+            if(!e.Recording)
+            {
+                ((MicrophoneRecognitionClient)sender).StartMicAndRecognition();
+            }
+
         }
 
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)

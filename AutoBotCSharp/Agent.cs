@@ -987,8 +987,27 @@ namespace AutoBotCSharp
 
             if (year != "FALSE" && make != "FALSE")
             {
-                App.getAgent().selectData("vehicle-year", year);
-                App.getAgent().selectData("vehicle-make", make);
+                switch(vehicleNum)
+                {
+                    case 1:
+                        App.getAgent().selectData("vehicle-year", year);
+                        App.getAgent().selectData("vehicle-make", make);
+                        break;
+                    case 2:
+                        App.getAgent().selectData("vehicle2-year", year);
+                        App.getAgent().selectData("vehicle2-make", make);
+                        break;
+                    case 3:
+                        App.getAgent().selectData("vehicle3-year", year);
+                        App.getAgent().selectData("vehicle3-make", make);
+                        break;
+                    case 4:
+                        App.getAgent().selectData("vehicle4-year", year);
+                        App.getAgent().selectData("vehicle4-make", make);
+                        break;
+
+                }
+
                 models = driver.FindElementById(Modelcontrol);   
                 IReadOnlyCollection<OpenQA.Selenium.IWebElement> theModels = models.FindElements(OpenQA.Selenium.By.TagName("option"));
                 foreach(OpenQA.Selenium.IWebElement option in theModels)
@@ -1055,7 +1074,7 @@ namespace AutoBotCSharp
                     Data = temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
                     {
-                        t BackgroundWorker bw = new BackgroundWorker();
+                        BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                         {
                             temp.selectData("vehicle2-model", Data);
