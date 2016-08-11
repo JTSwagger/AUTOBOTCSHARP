@@ -1071,7 +1071,7 @@ namespace AutoBotCSharp
                     }
                     break;
                 case Agent.YMM2:
-                    Data = temp.GETYMM(response, 1);
+                    Data = temp.GETYMM(response, 2);
                     if (!Data.Contains("FALSE"))
                     {
                         BackgroundWorker bw = new BackgroundWorker();
