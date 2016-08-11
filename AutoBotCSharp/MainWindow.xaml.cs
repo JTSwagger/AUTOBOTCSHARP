@@ -74,6 +74,8 @@ namespace AutoBotCSharp
         }
         private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
+            user.Question = "INS_PROVIDER";
+            user.Callpos = Agent.INBETWEEN;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
             App.RollTheClip(clip);
         }
