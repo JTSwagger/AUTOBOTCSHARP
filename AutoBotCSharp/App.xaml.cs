@@ -64,7 +64,7 @@ namespace AutoBotCSharp
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
 
-            shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
+            //shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
         }
 
@@ -74,7 +74,7 @@ namespace AutoBotCSharp
             switch (mode)
             {
                 case 0:
-                    shortPhraseClient.StartMicAndRecognition();
+                    //shortPhraseClient.StartMicAndRecognition();
                     Console.WriteLine("shortphrase started");
                     break;
                 case 1:
@@ -82,6 +82,10 @@ namespace AutoBotCSharp
                     Console.WriteLine("longdictation started");
                     break;
             }
+        }
+        public static void startReco()
+        {
+            longDictationClient.StartMicAndRecognition();
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {
@@ -104,7 +108,6 @@ namespace AutoBotCSharp
             }));
             
         }
-     
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
@@ -113,9 +116,7 @@ namespace AutoBotCSharp
                 Application.Current.Dispatcher.Invoke((() =>
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
-                }));
-     
-                
+                }));  
             }
         }
 

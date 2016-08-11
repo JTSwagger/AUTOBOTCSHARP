@@ -518,14 +518,6 @@ namespace AutoBotCSharp
             App.longDictationClient.EndMicAndRecognition();
             Console.WriteLine("LD ended");
         }
-
-        private void btnKillShortPhrase_Click(object sender, RoutedEventArgs e)
-        {
-            App.shortPhraseClient.EndMicAndRecognition();
-            App.shortPhraseClient.AudioStop();
-            Console.WriteLine("SP ended");
-        }
-
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
             App.playHumanism();
@@ -626,15 +618,9 @@ namespace AutoBotCSharp
         {
             App.setupMicRecogClient();
         }
-
-        private void btnStartSpeechRecoShort_Click(object sender, RoutedEventArgs e)
-        {
-            App.testSpeechReco(0);
-        }
-
         private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
         {
-            App.testSpeechReco(1);
+            App.startReco();
         }
 
         private void frmReactions_Navigated(object sender, NavigationEventArgs e)
@@ -646,14 +632,12 @@ namespace AutoBotCSharp
         {
             Console.WriteLine("Hanging up and dispoing as: " + cmbDispo.Text);
             user.HangUpandDispo(cmbDispo.Text);
-
         }
 
         private void cmbDispo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
-
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             switch(user.Dialer_Status)

@@ -54,51 +54,90 @@ namespace AutoBotCSharp
 
 
         public string[] dobInfo;
+        private bool notInterestedFutureBool = false;
 
         WebRequest webRequest;
         WebResponse resp;
         StreamReader reader;
         //--------------------------------------------------------------------------------------------------------
+        private double calltime = 0;
         public void doAgentStatusRequest()
         {
 
             while (LoggedIn)
             {
+                
                 StartWebRequest();
                 string stats = reader.ReadToEnd();
                 string[] tempstr = stats.Split(',');
+                string dead = "";
                 try
                 {
                     Dialer_Status = tempstr[0];
                     Agent_Name = tempstr[5];
+                    try
+                    {
+                        foreach (string stat in tempstr)
+                        {
+                            if (stat.Contains("DEAD"))
+                            {
+                                dead = stat;
+                            }
+                        }
+                    } catch (Exception)
+                    {
+                        Console.WriteLine("moo");
+                    }
+                    if (dead == "DEAD")
+                    {
+                        if (calltime < 10)
+                        {
+                            HangUpandDispo("Not Available");
+                        } else if (calltime > 10 || Callpos == INTRO)
+                        {
+                            if (notInterestedFutureBool)
+                            {
+                                HangUpandDispo("Not Interested");
+                            } else if (!notInterestedFutureBool)
+                            {
+                                HangUpandDispo("Not Available");
+                            }
+                            
+                        }
+                    }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
                     } else if (Dialer_Status == "INCALL")
                     {
+                        calltime += 0.5;
+                        Console.WriteLine("calltime: " + calltime.ToString() + " seconds");
                         if (newCall)
                         {
+                            notInterestedFutureBool = false;
+                            calltime = 0;
                             setupBot();
                             newCall = false;
                         }
 
                     }
-                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    //Console.WriteLine("Agent Name: " + Agent_Name);
-
+                    Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    Console.WriteLine("Agent Name: " + Agent_Name);
+                    Console.WriteLine("dead? " + dead);
                 }
                 catch
                 {
-                    for (int i = 0; i < tempstr.Length - 1; i++)
+                    //for (int i = 0; i < tempstr.Length - 1; i++)
 
-                    {
-                        Console.WriteLine(tempstr[i]);
-                    }
+                    //{
+                    //    Console.WriteLine(tempstr[i]);
+                    //}
                 }
                 setGlobals();
                 Thread.Sleep(500);
             }
         }
+        //------------------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
@@ -1311,6 +1350,7 @@ namespace AutoBotCSharp
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
                 App.RollTheClip(clip);
+                App.getAgent().notInterestedFutureBool = true;
                 return true;
             }
             else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your"))
