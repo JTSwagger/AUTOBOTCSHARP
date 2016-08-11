@@ -1497,6 +1497,10 @@ namespace AutoBotCSharp
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "LOW");
                         r = h.GetResponse();
                         break;
+                    case "Resource Not Found":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "ResNo");
+                        r = h.GetResponse();
+                        break;
                 }
                 Thread.Sleep(250);
                 r.Close();
@@ -1539,7 +1543,16 @@ namespace AutoBotCSharp
             Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title);
-            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            try
+            {
+                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            } catch (OpenQA.Selenium.NoSuchElementException) {
+                if (driver.PageSource.Contains("not found"))
+                {
+                    HangUpandDispo("Resource Not Found");
+                }
+            }
+            
             
             try
             {
