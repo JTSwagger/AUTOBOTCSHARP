@@ -169,8 +169,6 @@ namespace AutoBotCSharp
                   
                 }
             }
-           
-
         }
 
         public static bool RollTheClip(string Clip)
