@@ -138,6 +138,84 @@ namespace AutoBotCSharp
             }
         }
         //------------------------------------------------------------------------------------------------------
+        private /*static*/ void parseDOB(string response)
+        {
+            int month;
+            // Tries to find the birth month as a word in the response.
+            var possibleMonth = parseDOBWords(response);
+            if (possibleMonth != 0)
+            {
+                month = possibleMonth;
+            }
+        }
+        /*
+         * Tries to find a word form of a month in the response string, and returns it in int form
+         * Will return 0 if it can't find anything.
+         */ 
+        private static int parseDOBWords(string response)
+        {
+            int theMonth = 0;
+            response = response.ToLower();
+            string[] months = new string[12] 
+            {
+                "january","february","march",
+                "april","may","june","july",
+                "august","september","october","november","december"
+            };
+            foreach (string month in months)
+            {
+                if (response.Contains(month))
+                {
+                    theMonth = Array.IndexOf(months, month) + 1;
+                }
+            }
+            
+            return theMonth;
+        }
+        private static string[] parseDOBNums(string response, bool monthFound)
+        {
+            string[] jimmers = new string[2];
+            int day, year;
+            string numString = "";
+            foreach (char c in response)
+            {
+                int temp;
+                bool result = int.TryParse(c.ToString(), out temp);
+                if (result)
+                {
+                    numString += temp.ToString();
+                }
+            }
+            if (monthFound)
+            {
+                switch (numString.Length)
+                {
+                    // ex. 697
+                    case 3:
+                        int.TryParse(numString[0].ToString(), out day);
+                        int.TryParse(numString.Substring(1, 2), out year);
+                        break;
+                    // ex. 0697
+                    case 4:
+                        int.TryParse(numString[1].ToString(), out day);
+                        int.TryParse(numString.Substring(2, 2), out day);
+                        break;
+                    // ex 61997
+                    case 5:
+                        int.TryParse(numString[0].ToString(), out day);
+                        int.TryParse(numString.Substring(1, 4), out year);
+                        break;
+                    // ex 061997
+                    case 6:
+                        int.TryParse(numString[1].ToString(), out day);
+                        int.TryParse(numString.Substring(2, 4), out year);
+                        break;
+                }
+            }
+            
+
+            return jimmers;
+        }
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
@@ -262,9 +340,6 @@ namespace AutoBotCSharp
             }
             return false;
         }
-
-      
-
         //===============================================================================
         public async void async_selectData(string elementId, string data)
         {
@@ -1585,9 +1660,7 @@ namespace AutoBotCSharp
             //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
             //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
         }
-
         //---------------------------------------------------------------
-
         public void PauseUnPause(string pauseAction)
         {
             WebRequest Pause;
@@ -1628,7 +1701,7 @@ namespace AutoBotCSharp
                         break;
                     case NUM_VEHICLES:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have");
-                            break;
+                        break;
                     case YMM1:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3");
                         break;
