@@ -169,7 +169,17 @@ namespace AutoBotCSharp
                     case "YMM1":
                         user.Callpos = Agent.YMM1;
                         break;
-                  
+                    case "YMM2":
+                        user.Callpos = Agent.YMM1;
+                        break;
+                    case "YMM3":
+                        user.Callpos = Agent.YMM1;
+                        break;
+                    case "YMM4":
+                        user.Callpos = Agent.YMM1;
+                        break;
+                    
+
                 }
             }
         }

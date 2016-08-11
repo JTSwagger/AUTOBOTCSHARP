@@ -1041,11 +1041,12 @@ namespace AutoBotCSharp
                 case Agent.YMM1:
                     Data =  temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
-                    { temp.Callpos = Agent.INBETWEEN;
+                    { 
                         BackgroundWorker bw = new BackgroundWorker();
                         bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args) 
                         {
                             temp.selectData("vehicle-model", Data);
+                            temp.Callpos = Agent.INBETWEEN;
                         });
                         bw.RunWorkerAsync();                                    
                     }
@@ -1054,7 +1055,13 @@ namespace AutoBotCSharp
                     Data = temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
                     {
-                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                        t BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
+                        {
+                            temp.selectData("vehicle2-model", Data);
+                            temp.Callpos = Agent.INBETWEEN;
+                        });
+                        bw.RunWorkerAsync();
                     }
                         break;
 
@@ -1063,14 +1070,26 @@ namespace AutoBotCSharp
                     Data = temp.GETYMM(response, 3);
                     if (!Data.Contains("FALSE"))
                     {
-                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
+                        {
+                            temp.selectData("vehicle3-model", Data);
+                            temp.Callpos = Agent.INBETWEEN;
+                        });
+                        bw.RunWorkerAsync();
                     }
                     break;
                 case Agent.YMM4:
                     Data = temp.GETYMM(response, 4);
                     if (!Data.Contains("FALSE"))
                     {
-                        temp.Callpos = Agent.INBETWEEN; //temp.selectData("vehicle-model", Data); 
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
+                        {
+                            temp.selectData("vehicle4-model", Data);
+                            temp.Callpos = Agent.INBETWEEN;
+                        });
+                        bw.RunWorkerAsync();
                     }
                     break;
 
