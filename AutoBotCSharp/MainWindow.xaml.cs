@@ -33,7 +33,6 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
-            
             string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
             string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
@@ -654,7 +653,7 @@ namespace AutoBotCSharp
 
         private void btnYMMOnly1_Click(object sender, RoutedEventArgs e)
         {
-            user.Question = "YMM1";
+            user.Question = "YMM ONLY ONE";
             user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3";
             App.RollTheClip(clip);

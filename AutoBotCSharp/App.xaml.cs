@@ -56,36 +56,32 @@ namespace AutoBotCSharp
          */
      
       
-        public static void setupMicRecogClient()
-        {
-            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
-            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
-            //shortPhraseClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.ShortPhrase, "en-US", apiKey1, apiKey2);
-            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+        //public static void setupMicRecogClient()
+        //{
+        //    string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
+        //    string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
+        //    longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
 
-            //shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
-            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
-            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
-            
-            //shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
-            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
-        }
+        //    longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+        //    longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;     
+        //    longDictationClient.OnResponseReceived += onResponseReceivedHandler;
+        //}
 
-        public static void testSpeechReco(int mode)
-        {
-            Console.WriteLine("testing now");
-            switch (mode)
-            {
-                case 0:
-                    //shortPhraseClient.StartMicAndRecognition();
-                    Console.WriteLine("shortphrase started");
-                    break;
-                case 1:
-                    longDictationClient.StartMicAndRecognition();
-                    Console.WriteLine("longdictation started");
-                    break;
-            }
-        }
+        //public static void testSpeechReco(int mode)
+        //{
+        //    Console.WriteLine("testing now");
+        //    switch (mode)
+        //    {
+        //        case 0:
+        //            //shortPhraseClient.StartMicAndRecognition();
+        //            Console.WriteLine("shortphrase started");
+        //            break;
+        //        case 1:
+        //            longDictationClient.StartMicAndRecognition();
+        //            Console.WriteLine("longdictation started");
+        //            break;
+        //    }
+        //}
         public static void startReco()
         {
             longDictationClient.StartMicAndRecognition();
@@ -98,7 +94,6 @@ namespace AutoBotCSharp
             if(!e.Recording)
             {
                 ((MicrophoneRecognitionClient)sender).StartMicAndRecognition();
-                
             }
 
         }
@@ -129,6 +124,63 @@ namespace AutoBotCSharp
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                                       
                 }));  
+            }
+            Agent ag = getAgent();
+            // call position advancement
+            switch (ag.Question)
+            {
+                case Agent.INTRO: ag.Question = Agent.INS_PROVIDER; ag.AskQuestion(); break;
+                case Agent.INS_PROVIDER: ag.Question = Agent.INS_EXP; ag.AskQuestion(); break;
+                case Agent.INS_EXP: ag.Question = Agent.INST_START; ag.AskQuestion(); break;
+                case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; ag.AskQuestion(); break;
+                case Agent.NUM_VEHICLES:
+                    if (ag.cust.numVehicles > 1)
+                    {
+                        ag.Question = Agent.YMM1;
+                    } else if (ag.cust.numVehicles == 1)
+                    {
+                        ag.Question = Agent.YMM_ONLY_ONE;
+                    }
+                    ag.AskQuestion();
+                    break;
+                case Agent.YMM_ONLY_ONE: ag.Question = Agent.DOB; ag.AskQuestion(); break;
+                case Agent.YMM1: ag.Question = Agent.YMM2; ag.AskQuestion(); break;
+                case Agent.YMM2:
+                    if (ag.cust.numVehicles > 2)
+                    {
+                        ag.Question = Agent.YMM3;
+                    }
+                    ag.AskQuestion();
+                    break;
+                case Agent.YMM3:
+                    if (ag.cust.numVehicles > 3)
+                    {
+                        ag.Question = Agent.YMM4;
+                    }
+                    ag.AskQuestion();
+                    break;
+                case Agent.YMM4: ag.Question = Agent.DOB; ag.AskQuestion();  break;
+                case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; ag.AskQuestion(); break;
+                case Agent.MARITAL_STATUS:
+                    if (ag.cust.maritalStatus == "Married")
+                    {
+                        ag.Question = Agent.SPOUSE_NAME;
+                    } else
+                    {
+                        ag.Question = Agent.OWN_OR_RENT;
+                    }
+                    ag.AskQuestion();
+                    break;
+                case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; ag.AskQuestion(); break;
+                case Agent.SPOUSE_DOB: ag.Question = Agent.OWN_OR_RENT; ag.AskQuestion(); break;
+                case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; ag.AskQuestion(); break;
+                case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; ag.AskQuestion(); break;
+                case Agent.ADDRESS: ag.Question = Agent.EMAIL; ag.AskQuestion(); break;
+                case Agent.EMAIL: ag.Question = Agent.CREDIT; ag.AskQuestion(); break;
+                case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; ag.AskQuestion(); break;
+                case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; ag.AskQuestion(); break;
+                case Agent.LAST_NAME: ag.Question = Agent.TCPA; ag.AskQuestion(); break;
+                
             }
         }
 

@@ -36,6 +36,7 @@ namespace AutoBotCSharp
         public const string INS_EXP = "INS_EXP";
         public const string INST_START = "INS_START";
         public const string NUM_VEHICLES = "NUM_VEHICLES";
+        public const string YMM_ONLY_ONE = "YMM ONLY ONE";
         public const string YMM1 = "YMM1";
         public const string YMM2 = "YMM2";
         public const string YMM3 = "YMM3";
@@ -53,6 +54,13 @@ namespace AutoBotCSharp
         public const string LAST_NAME = "LAST NAME";
         public const string TCPA = "TCPA";
         public ChromeDriver driver;
+
+        public class Customer
+        {
+            public int numVehicles { get; set; }
+            public string maritalStatus { get; set; }
+        }
+        public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single" };
 
 
         public string[] dobInfo;
@@ -893,17 +901,17 @@ namespace AutoBotCSharp
 
         }
         //===================================================================================================
-        public string getNumVehicles(string response)
+        public int getNumVehicles(string response)
         {
             if (response.Contains("1") || response.Contains("one"))
-            { return "1"; }
+            { return 1; }
             else if (response.Contains("2") || response.Contains("two"))
-            { return "2"; }
+            { return 2; }
             else if (response.Contains("3") || response.Contains("three"))
-            { return "3"; }
+            { return 3; }
             else if (response.Contains("4") || response.Contains("four"))
-            { return "4"; }
-            else { return "1"; }
+            { return 4; }
+            else { return 1; }
         }
         //==================================================================================================
 
@@ -1056,7 +1064,7 @@ namespace AutoBotCSharp
         }
         public static void checkforData(string response)
         {
-            Agent temp =  App.getAgent();
+            Agent temp = App.getAgent();
             
             string Data;
            
@@ -1070,6 +1078,7 @@ namespace AutoBotCSharp
                     {
                         if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; };
                     }
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.INS_EXP:
                     Data = checkExp(response);
@@ -1080,11 +1089,25 @@ namespace AutoBotCSharp
                     Data = temp.HowLong(response);
                     theDates = Data.Split(' ');
                     if (theDates.Length > 0) { if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.NUM_VEHICLES:
-                    Data = temp.getNumVehicles(response);
+                    int data = temp.getNumVehicles(response);
                     temp.Callpos = Agent.INBETWEEN;
-
+                    temp.cust.numVehicles = data;
+                    break;
+                case Agent.YMM_ONLY_ONE:
+                    Data = temp.GETYMM(response, 1);
+                    if (!Data.Contains("FALSE"))
+                    {
+                        BackgroundWorker bw = new BackgroundWorker();
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
+                        {
+                            temp.selectData("vehicle-model", Data);
+                            temp.Callpos = Agent.INBETWEEN;
+                        });
+                        bw.RunWorkerAsync();
+                    }
                     break;
                 case Agent.YMM1:
                     Data =  temp.GETYMM(response, 1);
@@ -1142,18 +1165,23 @@ namespace AutoBotCSharp
                     break;
 
                 case Agent.DOB:
-
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
                     if (maritalStatus.Length > 0)
                     {
                         App.getAgent().selectData("frmMaritalStatus", maritalStatus);
+
                     }
+                    temp.Callpos = Agent.INBETWEEN;
+                    temp.cust.maritalStatus = maritalStatus;
                     break;
                 case Agent.SPOUSE_NAME:
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.SPOUSE_DOB:
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.OWN_OR_RENT:
                     var ownership = App.getAgent().checkOwnership(response);
@@ -1168,6 +1196,7 @@ namespace AutoBotCSharp
                     {
                         App.getAgent().selectData("frmDwellingType", resType);
                     }
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.CREDIT:
                     var credit = App.getAgent().checkCredit(response);
@@ -1175,13 +1204,16 @@ namespace AutoBotCSharp
                     {
                         App.getAgent().selectData("frmCreditRating", credit);
                     }
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.ADDRESS:
                     string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().driver.FindElementById("btnValidate").Click();
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.EMAIL:
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.PHONE_TYPE:
                     var phoneType = App.getAgent().checkPhoneType(response);
@@ -1189,10 +1221,12 @@ namespace AutoBotCSharp
                     {
                         App.getAgent().selectData("frmPhoneType1", phoneType);
                     }
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.LAST_NAME:
                     clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
                     App.RollTheClip(clip);
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.TCPA:
                     if (App.getAgent().checkTCPAResponse(response))
@@ -1550,6 +1584,7 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupBot()
         {
+
             string firstName = "";
             while (driver.WindowHandles.Count < 2)
             {
@@ -1621,7 +1656,7 @@ namespace AutoBotCSharp
         {
             try
             {
-                switch (Callpos)
+                switch (Question)
                 {
                     case INTRO:
                         App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
@@ -1637,7 +1672,10 @@ namespace AutoBotCSharp
                         break;
                     case NUM_VEHICLES:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have");
-                            break;
+                        break;
+                    case YMM_ONLY_ONE:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3");
+                        break;
                     case YMM1:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3");
                         break;
