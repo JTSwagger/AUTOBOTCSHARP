@@ -92,7 +92,6 @@ namespace AutoBotCSharp
                     }
                     if (dead == "DEAD")
                     {
-                      
                         if (calltime < 10)
                         {
                             HangUpandDispo("Not Available");
@@ -105,7 +104,6 @@ namespace AutoBotCSharp
                             {
                                 HangUpandDispo("Not Available");
                             }
-
                             
                         }
                     }
@@ -122,17 +120,15 @@ namespace AutoBotCSharp
                         Console.WriteLine("calltime: " + calltime.ToString() + " seconds");
                         if (newCall)
                         {
-                            App.longDictationClient.StartMicAndRecognition();
                             notInterestedFutureBool = false;
                             calltime = 0;
-                            setupBot();
                             newCall = false;
                         }
 
                     }
-                    Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    Console.WriteLine("Agent Name: " + Agent_Name);
-                    Console.WriteLine("dead? " + dead);
+                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    //Console.WriteLine("Agent Name: " + Agent_Name);
+                    //Console.WriteLine("dead? " + dead);
                 }
                 catch
                 {
@@ -1281,7 +1277,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkResType(string response)
         {
-            if (response.Contains("single family") || response.Contains("a house"))
+            if (response.Contains("single family") || response.Contains("a house") || response.Contains("single"))
             {
                 return "Single Family";
             }
@@ -1347,8 +1343,29 @@ namespace AutoBotCSharp
             return "";
         }
         //------------------------------------------------------------------
+        public void autoDispo(double calltime)
+        {
+            if (calltime < 10)
+            {
+                HangUpandDispo("Not Available");
+            }
+            else if (calltime > 10)
+            {
+                if (Callpos == "INTRO")
+                {
+                    HangUpandDispo("Not Interested");
+                }
+                if (notInterestedFutureBool)
+                {
+                    HangUpandDispo("Not Interested");
+                }
+            }
+            else
+            {
+                HangUpandDispo("Not Available");
+            }
 
-
+        }
         //------------------------------------------------------------------------------------------------------------------------
         public static async Task<bool> checkForObjection(string response)
         {
@@ -1554,7 +1571,6 @@ namespace AutoBotCSharp
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title);
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
-            
             try
             {
                 string[] clips = App.findNameClips(firstName);
@@ -1582,9 +1598,13 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            Task.Run((Action)getDob);
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+            Task task = Task.Run((Action)getDob);
+            System.Windows.Application.Current.Dispatcher.Invoke((() =>
+            {
+                App.getWindow().tabControlTop.SelectedIndex = 0;
+                App.getWindow().tabControlBottom.SelectedIndex = 0;
+            }));
+            App.longDictationClient.StartMicAndRecognition();
         }
 
         //---------------------------------------------------------------
