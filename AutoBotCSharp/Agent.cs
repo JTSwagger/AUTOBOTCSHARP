@@ -108,6 +108,11 @@ namespace AutoBotCSharp
                             calltime = 0;
                             newCall = false;
                         }
+                        if (calltime >= 115)
+                        {
+                            App.longDictationClient.EndMicAndRecognition();
+                            App.longDictationClient.StartMicAndRecognition();
+                        }
 
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
