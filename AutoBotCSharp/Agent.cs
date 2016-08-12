@@ -17,6 +17,8 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public bool isListening = false;
+        public int waitTime = 0;
         public bool LoggedIn = false;
         public string Campaign;
         public int CallsToday;
@@ -90,6 +92,7 @@ namespace AutoBotCSharp
                     }
                     if (dead == "DEAD")
                     {
+                      
                         if (calltime < 10)
                         {
                             HangUpandDispo("Not Available");
@@ -102,18 +105,24 @@ namespace AutoBotCSharp
                             {
                                 HangUpandDispo("Not Available");
                             }
+
                             
                         }
                     }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
+                        App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL")
                     {
+
+                     
+
                         calltime += 0.5;
                         Console.WriteLine("calltime: " + calltime.ToString() + " seconds");
                         if (newCall)
                         {
+                            App.longDictationClient.StartMicAndRecognition();
                             notInterestedFutureBool = false;
                             calltime = 0;
                             setupBot();
@@ -170,6 +179,11 @@ namespace AutoBotCSharp
 
         }
         //----------------------------------------------------------------------------------------------------
+
+            public void waitForNext()
+        {
+          
+        }
         public bool EnterData(string elementId, string data)
         {
             bool retry = true;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
+using Microsoft.ProjectOxford;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
@@ -17,18 +18,20 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
+        public Preferences prefs;
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
         private static bool waveOutIsStopped = true;
         //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
-
-
+       
+       
 
         public static MainWindow getWindow()
         {
             var mainwindow = Current.MainWindow as MainWindow;
             return mainwindow;
+          
         }
 
         /*
@@ -63,7 +66,7 @@ namespace AutoBotCSharp
             //shortPhraseClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
-
+            
             //shortPhraseClient.OnResponseReceived += onResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
         }
@@ -89,9 +92,13 @@ namespace AutoBotCSharp
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {
+            Agent temp = App.getAgent();
+            Console.WriteLine(e.Recording);
+            temp.isListening = e.Recording;
             if(!e.Recording)
             {
                 ((MicrophoneRecognitionClient)sender).StartMicAndRecognition();
+                
             }
 
         }
@@ -111,11 +118,16 @@ namespace AutoBotCSharp
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
+            Console.WriteLine(e.PhraseResponse.RecognitionStatus);
+            if(e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
+            {
+                longDictationClient.StartMicAndRecognition();
+            }
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
                 Application.Current.Dispatcher.Invoke((() =>
                 {
-                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
+                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                                       
                 }));  
             }
         }

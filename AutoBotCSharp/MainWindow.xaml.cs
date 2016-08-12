@@ -33,6 +33,17 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
+            
+                string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
+                string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
+                App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+                App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+                App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+             
+
+             
+        
+        
             user = new Agent();
             randy = new Random();
             InitializeComponent();
@@ -704,12 +715,12 @@ namespace AutoBotCSharp
 
         private void btnTurnOnAutoStuff_Click(object sender, RoutedEventArgs e)
         {
-            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
-            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
-            MicrophoneRecognitionClient longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-            longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            longDictationClient.StartMicAndRecognition();
+            
+        }
+
+        private void btnInitSpeechReco_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     

@@ -179,7 +179,7 @@
             <TabItem x:Name="tbDriverInfo1" Margin="164,0,-191,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
                     <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="True" TextChanged="speechTxtBox_TextChanged"/>
-                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="139,183,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click"/>
+                    <Button x:Name="btnInitSpeechReco" Content="Init Speech Reco" HorizontalAlignment="Left" Margin="139,183,0,0" VerticalAlignment="Top" Width="123" GotFocus="btnInitSpeechReco_Click" Click="btnInitSpeechReco_Click_1"/>
                     <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="282,183,134,25" Click="btnStartSpeechRecoLong_Click"/>
 
                 </Grid>
@@ -192,15 +192,16 @@
                         <RowDefinition Height="25*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="177*"/>
+                        <ColumnDefinition Width="174*"/>
                         <ColumnDefinition Width="29*"/>
-                        <ColumnDefinition Width="50*"/>
-                        <ColumnDefinition Width="30*"/>
-                        <ColumnDefinition Width="304*"/>
+                        <ColumnDefinition Width="49*"/>
+                        <ColumnDefinition Width="29*"/>
+                        <ColumnDefinition Width="108*"/>
+                        <ColumnDefinition Width="191*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click"/>
                     <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus"/>
-                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click" IsEnabled="False"/>
+                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click"/>
                     <Label x:Name="lblTestingDelim" Content="Here be Dragons" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="137"/>
                 </Grid>
             </TabItem>
