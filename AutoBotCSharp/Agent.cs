@@ -90,40 +90,29 @@ namespace AutoBotCSharp
                     }
                     if (dead == "DEAD")
                     {
-                        if (calltime < 10)
-                        {
-                            HangUpandDispo("Not Available");
-                        } else if (calltime > 10 || Callpos == INTRO)
-                        {
-                            if (notInterestedFutureBool)
-                            {
-                                HangUpandDispo("Not Interested");
-                            } else if (!notInterestedFutureBool)
-                            {
-                                HangUpandDispo("Not Available");
-                            }
-                            
-                        }
+                        App.longDictationClient.EndMicAndRecognition();
+                        autoDispo(calltime);
                     }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
+                        App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL")
                     {
                         calltime += 0.5;
                         Console.WriteLine("calltime: " + calltime.ToString() + " seconds");
                         if (newCall)
                         {
+                            setupBot();
                             notInterestedFutureBool = false;
                             calltime = 0;
-                            setupBot();
                             newCall = false;
                         }
 
                     }
-                    Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    Console.WriteLine("Agent Name: " + Agent_Name);
-                    Console.WriteLine("dead? " + dead);
+                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
+                    //Console.WriteLine("Agent Name: " + Agent_Name);
+                    //Console.WriteLine("dead? " + dead);
                 }
                 catch
                 {
@@ -1342,7 +1331,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkResType(string response)
         {
-            if (response.Contains("single family") || response.Contains("a house"))
+            if (response.Contains("single family") || response.Contains("a house") || response.Contains("single"))
             {
                 return "Single Family";
             }
@@ -1408,8 +1397,29 @@ namespace AutoBotCSharp
             return "";
         }
         //------------------------------------------------------------------
+        public void autoDispo(double calltime)
+        {
+            if (calltime < 10)
+            {
+                HangUpandDispo("Not Available");
+            }
+            else if (calltime > 10)
+            {
+                if (Callpos == "INTRO")
+                {
+                    HangUpandDispo("Not Interested");
+                }
+                if (notInterestedFutureBool)
+                {
+                    HangUpandDispo("Not Interested");
+                }
+            }
+            else
+            {
+                HangUpandDispo("Not Available");
+            }
 
-
+        }
         //------------------------------------------------------------------------------------------------------------------------
         public static async Task<bool> checkForObjection(string response)
         {
@@ -1618,17 +1628,7 @@ namespace AutoBotCSharp
             Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title);
-            try
-            {
-                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
-            } catch (OpenQA.Selenium.NoSuchElementException) {
-                if (driver.PageSource.Contains("not found"))
-                {
-                    HangUpandDispo("Resource Not Found");
-                }
-            }
-            
-            
+            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
             try
             {
                 string[] clips = App.findNameClips(firstName);
@@ -1656,9 +1656,13 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            Task.Run((Action)getDob);
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action) (() => App.getWindow().tabControlTop.SelectedIndex = 0));
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() => App.getWindow().tabControlBottom.SelectedIndex = 0));
+            Task task = Task.Run((Action)getDob);
+            System.Windows.Application.Current.Dispatcher.Invoke((() =>
+            {
+                App.getWindow().tabControlTop.SelectedIndex = 0;
+                App.getWindow().tabControlBottom.SelectedIndex = 0;
+            }));
+            App.longDictationClient.StartMicAndRecognition();
         }
         //---------------------------------------------------------------
         public void PauseUnPause(string pauseAction)
