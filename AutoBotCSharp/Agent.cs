@@ -92,20 +92,8 @@ namespace AutoBotCSharp
                     }
                     if (dead == "DEAD")
                     {
-                        if (calltime < 10)
-                        {
-                            HangUpandDispo("Not Available");
-                        } else if (calltime > 10 || Callpos == INTRO)
-                        {
-                            if (notInterestedFutureBool)
-                            {
-                                HangUpandDispo("Not Interested");
-                            } else if (!notInterestedFutureBool)
-                            {
-                                HangUpandDispo("Not Available");
-                            }
-                            
-                        }
+                        App.longDictationClient.EndMicAndRecognition();
+                        autoDispo(calltime);
                     }
                     if (Dialer_Status == "READY")
                     {
