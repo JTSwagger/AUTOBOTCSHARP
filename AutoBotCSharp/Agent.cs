@@ -109,13 +109,10 @@ namespace AutoBotCSharp
                         App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL")
                     {
-
-                     
-
                         calltime += 0.5;
-                        Console.WriteLine("calltime: " + calltime.ToString() + " seconds");
                         if (newCall)
                         {
+                            setupBot();
                             notInterestedFutureBool = false;
                             calltime = 0;
                             newCall = false;
@@ -1621,7 +1618,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            Task task = Task.Run((Action)getDob);
+            Task.Run((Action)getDob);
             System.Windows.Application.Current.Dispatcher.Invoke((() =>
             {
                 App.getWindow().tabControlTop.SelectedIndex = 0;
@@ -1658,9 +1655,9 @@ namespace AutoBotCSharp
             {
                 switch (Question)
                 {
-                    case INTRO:
-                        App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
-                        break;
+                    //case INTRO:
+                    //    App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
+                    //    break;
                     case INS_PROVIDER:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");                      
                         break;
