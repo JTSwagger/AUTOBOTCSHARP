@@ -125,6 +125,12 @@ namespace AutoBotCSharp
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                                       
                 }));  
             }
+
+            Task.Run((Action)doBackgroundQuestionSwitchingStuff);
+        }
+
+        public static void doBackgroundQuestionSwitchingStuff()
+        {
             Agent ag = getAgent();
             // call position advancement
             switch (ag.Question)
@@ -137,7 +143,8 @@ namespace AutoBotCSharp
                     if (ag.cust.numVehicles > 1)
                     {
                         ag.Question = Agent.YMM1;
-                    } else if (ag.cust.numVehicles == 1)
+                    }
+                    else if (ag.cust.numVehicles == 1)
                     {
                         ag.Question = Agent.YMM_ONLY_ONE;
                     }
@@ -159,13 +166,14 @@ namespace AutoBotCSharp
                     }
                     ag.AskQuestion();
                     break;
-                case Agent.YMM4: ag.Question = Agent.DOB; ag.AskQuestion();  break;
+                case Agent.YMM4: ag.Question = Agent.DOB; ag.AskQuestion(); break;
                 case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; ag.AskQuestion(); break;
                 case Agent.MARITAL_STATUS:
                     if (ag.cust.maritalStatus == "Married")
                     {
                         ag.Question = Agent.SPOUSE_NAME;
-                    } else
+                    }
+                    else
                     {
                         ag.Question = Agent.OWN_OR_RENT;
                     }
@@ -180,7 +188,7 @@ namespace AutoBotCSharp
                 case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; ag.AskQuestion(); break;
                 case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; ag.AskQuestion(); break;
                 case Agent.LAST_NAME: ag.Question = Agent.TCPA; ag.AskQuestion(); break;
-                
+
             }
         }
 
