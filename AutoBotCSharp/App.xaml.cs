@@ -114,7 +114,7 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            if(e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
                 longDictationClient.StartMicAndRecognition();
             }
@@ -122,11 +122,11 @@ namespace AutoBotCSharp
             {
                 Application.Current.Dispatcher.Invoke((() =>
                 {
-                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                                       
-                }));  
+                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
+                }));
             }
 
-            Task.Run((Action)doBackgroundQuestionSwitchingStuff);
+            doBackgroundQuestionSwitchingStuff();
         }
 
         public static void doBackgroundQuestionSwitchingStuff()
