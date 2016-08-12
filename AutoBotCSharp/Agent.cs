@@ -1619,11 +1619,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task.Run((Action)getDob);
-            System.Windows.Application.Current.Dispatcher.Invoke((() =>
-            {
-                App.getWindow().tabControlTop.SelectedIndex = 0;
-                App.getWindow().tabControlBottom.SelectedIndex = 0;
-            }));
+
             App.longDictationClient.StartMicAndRecognition();
         }
 
