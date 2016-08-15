@@ -278,6 +278,7 @@ namespace AutoBotCSharp
                         user.Callpos = Agent.TCPA;
                         break;
                 }
+                user.Question = "";
             }
         }
         public static bool RollTheClip(string Clip)
