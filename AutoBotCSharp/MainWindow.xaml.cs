@@ -33,8 +33,8 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
-            string apiKey1 = "da75bfe0a6bc4d2bacda60b10b5cef7e";
-            string apiKey2 = "c36c061f0b8748bd862aa5bbcceda683";
+            string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
+            string apiKey2 = "0d2797650c8648d18474399744512f17";
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
@@ -77,12 +77,14 @@ namespace AutoBotCSharp
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
-        private void btnIntro_Click(object sender, RoutedEventArgs e)
+        private async void btnIntro_Click(object sender, RoutedEventArgs e)
         {
-            user.Question = "INS_PROVIDER";
             user.Callpos = Agent.INBETWEEN;
+            user.Question = Agent.INTRO;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-            App.RollTheClip(clip);
+            bool x = await App.RollTheClipAndWait(clip);
+            user.Question = "INS_PROVIDER";
+
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -693,7 +695,7 @@ namespace AutoBotCSharp
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             user.driver = new ChromeDriver(cds);
-           user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+            user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
 
         private void btnBestGuess_Click(object sender, RoutedEventArgs e)

@@ -113,6 +113,8 @@ namespace AutoBotCSharp
                         if (newCall)
                         {
                             setupBot();
+                            Callpos = INTRO;
+                            Question = INTRO;
                             notInterestedFutureBool = false;
                             calltime = 0;
                             newCall = false;
@@ -1075,6 +1077,7 @@ namespace AutoBotCSharp
             switch (pos)
             {
                 case Agent.INS_PROVIDER:
+                case Agent.INTRO:
                     Console.WriteLine("INS_PROVIDER");
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
@@ -1099,19 +1102,6 @@ namespace AutoBotCSharp
                     temp.cust.numVehicles = data;
                     break;
                 case Agent.YMM_ONLY_ONE:
-                    Data = temp.GETYMM(response, 1);
-                    if (!Data.Contains("FALSE"))
-                    {
-                        BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
-                        {
-                            temp.selectData("vehicle-model", Data);
-                            temp.Callpos = Agent.INBETWEEN;
-                         
-                        });
-                        bw.RunWorkerAsync();
-                    }
-                    break;
                 case Agent.YMM1:
                     Data =  temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
@@ -1121,8 +1111,6 @@ namespace AutoBotCSharp
                         {
                             temp.selectData("vehicle-model", Data);
                             temp.Callpos = Agent.INBETWEEN;
-                            
-
                         });
                         bw.RunWorkerAsync();                                    
                     }
