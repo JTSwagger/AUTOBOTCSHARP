@@ -115,9 +115,7 @@ namespace AutoBotCSharp
                         }
 
                     }
-                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    //Console.WriteLine("Agent Name: " + Agent_Name);
-                    //Console.WriteLine("dead? " + dead);
+
                 }
                 catch
                 {
