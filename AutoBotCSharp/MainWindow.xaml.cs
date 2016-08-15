@@ -46,6 +46,16 @@ namespace AutoBotCSharp
             {
                 proc.Kill();
             }
+            foreach (Process proc in Process.GetProcessesByName("AutoBotCSharp"))
+            {
+                if (proc.Id == Process.GetCurrentProcess().Id)
+                {
+                    Console.WriteLine("cannot self terminate");
+                }else
+                {
+                    proc.Kill();
+                }
+            }
         }
 
         public void setNameText(string name)
@@ -83,8 +93,8 @@ namespace AutoBotCSharp
             user.Question = Agent.INTRO;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
             bool x = await App.RollTheClipAndWait(clip);
-            user.Question = "INS_PROVIDER";
-
+            user.Question = Agent.INTRO;
+            App.longDictationClient.StartMicAndRecognition();
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -712,6 +722,11 @@ namespace AutoBotCSharp
         private void btnInitSpeechReco_Click_1(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void doTestingStuff_Click(object sender, RoutedEventArgs e)
+        {
+            user.setupTesting();
         }
     }
     

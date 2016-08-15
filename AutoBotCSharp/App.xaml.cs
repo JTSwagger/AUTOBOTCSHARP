@@ -65,7 +65,6 @@ namespace AutoBotCSharp
             {
                 ((MicrophoneRecognitionClient)sender).StartMicAndRecognition();
             }
-
         }
 
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
@@ -84,7 +83,8 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout || 
+                e.PhraseResponse.RecognitionStatus == RecognitionStatus.InitialSilenceTimeout)
             {
                 longDictationClient.StartMicAndRecognition();
             }
@@ -96,16 +96,17 @@ namespace AutoBotCSharp
                 }));
             }
 
-            Task.Run((Action)doBackgroundQuestionSwitchingStuff);
             Current.Dispatcher.Invoke(() =>
             {
                 if (getAgent().Question == "INTRO")
                 {
-                    // pass
+                    Console.WriteLine("I AM INTRO");
                 }else
                 {
                     getAgent().AskQuestion();
                 }
+                doBackgroundQuestionSwitchingStuff();
+
             });
         }
 
@@ -115,8 +116,8 @@ namespace AutoBotCSharp
             // call position advancement
             switch (ag.Question)
             {
-                case Agent.INTRO: ag.Question = Agent.INS_PROVIDER; break;
-                case Agent.INS_PROVIDER: ag.Question = Agent.INS_EXP; break;
+                case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
+                case Agent.Intro: ag.Question = Agent.INS_EXP; break;
                 case Agent.INS_EXP: ag.Question = Agent.INST_START; break;
                 case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; break;
                 case Agent.NUM_VEHICLES:
@@ -224,7 +225,7 @@ namespace AutoBotCSharp
                 switch (user.Question)
                 {
                     case "INS_PROVIDER":
-                        user.Callpos = Agent.INS_PROVIDER;
+                        user.Callpos = Agent.Intro;
                         break;
                     case "INS_EXP":
                         user.Callpos = Agent.INS_EXP;

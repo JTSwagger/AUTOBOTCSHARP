@@ -32,7 +32,7 @@ namespace AutoBotCSharp
         public string Question;
         public const string INBETWEEN = "INBETWEEN";
         public const string INTRO = "INTRO";
-        public const string INS_PROVIDER = "INS_PROVIDER";
+        public const string Intro = "INS_PROVIDER";
         public const string INS_EXP = "INS_EXP";
         public const string INST_START = "INS_START";
         public const string NUM_VEHICLES = "NUM_VEHICLES";
@@ -1076,8 +1076,8 @@ namespace AutoBotCSharp
             string pos = temp.Callpos;
             switch (pos)
             {
-                case Agent.INS_PROVIDER:
                 case Agent.INTRO:
+                case Agent.Intro:
                     Console.WriteLine("INS_PROVIDER");
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
@@ -1618,7 +1618,43 @@ namespace AutoBotCSharp
 
             App.longDictationClient.StartMicAndRecognition();
         }
+        public void setupTesting()
+        {
+            string firstName = "";
 
+            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            try
+            {
+                string[] clips = App.findNameClips(firstName);
+                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                {
+                    App.getWindow().setNameText(firstName);
+                }));
+                if (App.findNameClips(firstName)[0] == "no clip")
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().setNameBtns(false);
+                    }));
+                }
+                else
+                {
+                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    {
+                        App.getWindow().setNameBtns(true);
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+            }
+            Task.Run((Action)getDob);
+
+            //App.longDictationClient.StartMicAndRecognition();
+        }
         //---------------------------------------------------------------
 
         public void PauseUnPause(string pauseAction)
@@ -1650,9 +1686,9 @@ namespace AutoBotCSharp
                     //case INTRO:
                     //    App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
                     //    break;
-                    case INS_PROVIDER:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");                      
-                        break;
+                    //case INS_PROVIDER:
+                    //    App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");                      
+                    //    break;
                     case INS_EXP:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
                         break;
@@ -1715,6 +1751,7 @@ namespace AutoBotCSharp
                         break;
 
                 }
+                Callpos = Agent.INBETWEEN;
                 return true;
             }
             catch
