@@ -56,6 +56,7 @@ namespace AutoBotCSharp
         public const string TCPA = "TCPA";
         public ChromeDriver driver;
 
+        public static Agent temp = App.getAgent();
         public class Customer
         {
             public int numVehicles { get; set; }
@@ -777,12 +778,6 @@ namespace AutoBotCSharp
                 }
                 else { expyear = DateTime.Now.Year.ToString(); }
             }
-            else if (s.Contains("next month"))
-            {
-                int month = DateTime.Now.Month + 1;
-                expMonth = month.ToString("MMMM").Substring(0, 3);
-                expyear = DateTime.Now.Year.ToString();
-            }
             else
             {
                 expMonth = "FALSE";
@@ -1072,11 +1067,12 @@ namespace AutoBotCSharp
         }
         public static bool checkforData(string response)
         {
-            Agent temp = App.getAgent();
+            
             
             string Data;
             bool mrMeseeks = true;
-            string pos = temp.Callpos;
+            Console.WriteLine("CHECKING FOR DATAS");
+            Console.WriteLine("QUESTION: " + temp.Question);
             switch (temp.Question)
             {
                 case Agent.INTRO:
@@ -1085,7 +1081,12 @@ namespace AutoBotCSharp
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
                     {
-                        if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; temp.Question = Agent.INS_EXP; };
+                        if (temp.selectData("frmInsuranceCarrier",Data))
+                        {
+                            temp.Callpos = Agent.INBETWEEN;
+                            
+                            Console.WriteLine("put stuff in, current question is: " + temp.Question);
+                        }
                     }else
                     {
                         mrMeseeks = false;
@@ -1100,7 +1101,7 @@ namespace AutoBotCSharp
                         if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1]))
                         {
                             temp.Callpos = Agent.INBETWEEN;
-                            temp.Question = Agent.INST_START;
+                            
                         }
                     }else
                     {
@@ -1116,7 +1117,8 @@ namespace AutoBotCSharp
                     {
                         if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1]))
                         {
-                            temp.Callpos = Agent.INBETWEEN; temp.Question =NUM_VEHICLES;
+                            temp.Callpos = Agent.INBETWEEN;
+                            
                         }
                     }else
                     {
@@ -1298,6 +1300,10 @@ namespace AutoBotCSharp
                         temp.HangUpandDispo("LOW");
                     }
                     break;
+            }
+            if (!mrMeseeks)
+            {
+                Console.WriteLine("\n\n\nMR MESEEKS FUCKING HATES YOU\n\n\n");
             }
             return mrMeseeks;
 
@@ -1637,7 +1643,7 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupBot()
         {
-
+            Question = INTRO;
             string firstName = "";
             while (driver.WindowHandles.Count < 2)
             {
@@ -1756,7 +1762,7 @@ namespace AutoBotCSharp
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3");
                         break;
                     case NUM_VEHICLES:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3");
                         break;
                     case YMM_ONLY_ONE:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3");

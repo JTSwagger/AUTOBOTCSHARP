@@ -50,6 +50,7 @@ namespace AutoBotCSharp
             }
             catch (Exception)
             {
+                Console.WriteLine("THIS IS NOT THE USER YOU WERE LOOKING FOR");
                 temp = new Agent();
             }
             return temp;
@@ -81,16 +82,8 @@ namespace AutoBotCSharp
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
                 {
-                    Console.WriteLine("checking for data in response");
-                    if (!(Agent.checkforData(response)))
-                    {
-                        Console.WriteLine("JUSTIN I DON'T KNOW WHAT TO DO HERE HELP");
-                    }
-                    else
-                    {
-                        doBackgroundQuestionSwitchingStuff();
-                        getAgent().AskQuestion();
-                    }
+                    Agent.checkforData(response);
+                    return;
                 }
             }));
             
@@ -113,9 +106,9 @@ namespace AutoBotCSharp
             }
 
             Current.Dispatcher.Invoke(() =>
-            {
+            { 
+                doBackgroundQuestionSwitchingStuff();  
                 getAgent().AskQuestion();
-                
             });
         }
 
@@ -288,7 +281,6 @@ namespace AutoBotCSharp
                         user.Callpos = Agent.TCPA;
                         break;
                 }
-                user.Question = "";
             }
         }
         public static bool RollTheClip(string Clip)
