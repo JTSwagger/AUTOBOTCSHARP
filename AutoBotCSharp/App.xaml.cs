@@ -82,9 +82,14 @@ namespace AutoBotCSharp
                 if (!(x = await Agent.checkForObjection(response)))
                 {
                     Console.WriteLine("checking for data in response");
-                    if (Agent.checkforData(response))
+                    if (!(Agent.checkforData(response)))
                     {
-                        return;
+                        Console.WriteLine("JUSTIN I DON'T KNOW WHAT TO DO HERE HELP");
+                    }
+                    else
+                    {
+                        doBackgroundQuestionSwitchingStuff();
+                        getAgent().AskQuestion();
                     }
                 }
             }));
@@ -110,7 +115,7 @@ namespace AutoBotCSharp
             Current.Dispatcher.Invoke(() =>
             {
                 getAgent().AskQuestion();
-                doBackgroundQuestionSwitchingStuff();
+                
             });
         }
 
@@ -367,7 +372,6 @@ namespace AutoBotCSharp
         }
 
         private static int humanismIndex = 0;
-        private static object console;
 
         public static void playHumanism()
         {

@@ -1075,7 +1075,7 @@ namespace AutoBotCSharp
             Agent temp = App.getAgent();
             
             string Data;
-           
+            bool mrMeseeks = true;
             string pos = temp.Callpos;
             switch (temp.Question)
             {
@@ -1086,6 +1086,9 @@ namespace AutoBotCSharp
                     if(Data != "FALSE")
                     {
                         if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; temp.Question = Agent.INS_EXP; };
+                    }else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.INS_EXP:
@@ -1099,6 +1102,9 @@ namespace AutoBotCSharp
                             temp.Callpos = Agent.INBETWEEN;
                             temp.Question = Agent.INST_START;
                         }
+                    }else
+                    {
+                        mrMeseeks = false;
                     }
                     
                     break;
@@ -1112,6 +1118,9 @@ namespace AutoBotCSharp
                         {
                             temp.Callpos = Agent.INBETWEEN; temp.Question =NUM_VEHICLES;
                         }
+                    }else
+                    {
+                        mrMeseeks = false;
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1133,6 +1142,10 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();                                    
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.YMM2:
                     Data = temp.GETYMM(response, 2);
@@ -1146,9 +1159,11 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
-                        break;
-
-
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
+                    break;
                 case Agent.YMM3:
                     Data = temp.GETYMM(response, 3);
                     if (!Data.Contains("FALSE"))
@@ -1160,6 +1175,10 @@ namespace AutoBotCSharp
                             temp.Callpos = Agent.INBETWEEN;
                         });
                         bw.RunWorkerAsync();
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.YMM4:
@@ -1174,8 +1193,11 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
-
                 case Agent.DOB:
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1185,6 +1207,10 @@ namespace AutoBotCSharp
                     {
                         temp.selectData("frmMaritalStatus", maritalStatus);
 
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     temp.cust.maritalStatus = maritalStatus;
@@ -1201,12 +1227,20 @@ namespace AutoBotCSharp
                     {
                         temp.selectData("frmResidenceType", ownership);
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.RES_TYPE:
                     var resType = App.getAgent().checkResType(response);
                     if (resType.Length > 0)
                     {
                         temp.selectData("frmDwellingType", resType);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1215,6 +1249,10 @@ namespace AutoBotCSharp
                     if (credit.Length > 0)
                     {
                         temp.selectData("frmCreditRating", credit);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1232,6 +1270,10 @@ namespace AutoBotCSharp
                     if (phoneType.Length > 0)
                     {
                         temp.selectData("frmPhoneType1", phoneType);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1257,7 +1299,7 @@ namespace AutoBotCSharp
                     }
                     break;
             }
-            return true;
+            return mrMeseeks;
 
         }
 
