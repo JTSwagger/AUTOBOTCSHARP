@@ -71,7 +71,7 @@ namespace AutoBotCSharp
                 StartWebRequest();
                 string stats = reader.ReadToEnd();
                 string[] tempstr = stats.Split(',');
-                string dead = "";
+                bool dead = false;
                 try
                 {
                     Dialer_Status = tempstr[0];
@@ -82,14 +82,15 @@ namespace AutoBotCSharp
                         {
                             if (stat.Contains("DEAD"))
                             {
-                                dead = stat;
+                                dead = true;
+                                break;
                             }
                         }
                     } catch (Exception)
                     {
                         Console.WriteLine("moo");
                     }
-                    if (dead == "DEAD")
+                    if (dead)
                     {
                         App.longDictationClient.EndMicAndRecognition();
                         autoDispo(calltime);
@@ -121,13 +122,20 @@ namespace AutoBotCSharp
                     }
 
                 }
-                catch
+                catch (IndexOutOfRangeException)
                 {
-                    //for (int i = 0; i < tempstr.Length - 1; i++)
-
-                    //{
-                    //    Console.WriteLine(tempstr[i]);
-                    //}
+                    if (stats.Contains("AGENT NOT LOGGED IN"))
+                    {
+                        MessageBox.Show("You're not logged in. K.");
+                        try
+                        {
+                            driver.Quit();
+                        } catch (Exception)
+                        {
+                            // letting go is important.
+                        }
+                        LoggedIn = false;
+                    }   
                 }
                 setGlobals();
                 Thread.Sleep(500);
