@@ -85,6 +85,8 @@ namespace AutoBotCSharp
                     Agent.checkforData(response);
                     return;
                 }
+                getAgent().custObjected = x;
+                
             }));
             
         }
@@ -103,8 +105,12 @@ namespace AutoBotCSharp
 
             Current.Dispatcher.Invoke(() =>
             { 
-                doBackgroundQuestionSwitchingStuff();  
-                getAgent().AskQuestion();
+                
+                if(getAgent().custObjected == false)
+                {
+                    doBackgroundQuestionSwitchingStuff();
+                    getAgent().AskQuestion();
+                }
             });
             longDictationClient.StartMicAndRecognition();
         }
@@ -137,6 +143,7 @@ namespace AutoBotCSharp
                     {
                         ag.Question = Agent.YMM3;
                     }
+                    else { ag.Question = Agent.DOB; }
                    
                     break;
                 case Agent.YMM3:
@@ -144,7 +151,7 @@ namespace AutoBotCSharp
                     {
                         ag.Question = Agent.YMM4;
                     }
-                   
+                    else { ag.Question = Agent.DOB;}
                     break;
                 case Agent.YMM4: ag.Question = Agent.DOB; break;
                 case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
@@ -232,6 +239,13 @@ namespace AutoBotCSharp
             Console.WriteLine(user.Callpos);
             Console.WriteLine(user.Question);
             waveOutIsStopped = true;
+            if(user.custObjected == true)
+            {
+                user.custObjected = false;
+                Console.WriteLine(user.Question);
+                user.AskQuestion();
+                return;
+            }
             if(user.Callpos == "INBETWEEN")
             {
                 // hidden below is a massive switch statement...

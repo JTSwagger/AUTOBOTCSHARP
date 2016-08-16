@@ -18,6 +18,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public bool custObjected = false;
         public bool isListening = false;
         public int waitTime = 0;
         public bool LoggedIn = false;
@@ -1778,12 +1779,10 @@ namespace AutoBotCSharp
             {
                 switch (Question)
                 {
-                    //case INTRO:
-                    //    App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
-                    //    break;
-                    //case INS_PROVIDER:
-                    //    App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");                      
-                    //    break;
+                    case INTRO:
+                      
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
+                        break;
                     case INS_EXP:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
                         break;
