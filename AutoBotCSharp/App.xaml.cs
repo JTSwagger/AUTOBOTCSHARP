@@ -92,11 +92,7 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout || 
-                e.PhraseResponse.RecognitionStatus == RecognitionStatus.InitialSilenceTimeout)
-            {
-                longDictationClient.StartMicAndRecognition();
-            }
+            
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
                 Application.Current.Dispatcher.Invoke((() =>
@@ -110,6 +106,7 @@ namespace AutoBotCSharp
                 doBackgroundQuestionSwitchingStuff();  
                 getAgent().AskQuestion();
             });
+            longDictationClient.StartMicAndRecognition();
         }
 
         public static void doBackgroundQuestionSwitchingStuff()
