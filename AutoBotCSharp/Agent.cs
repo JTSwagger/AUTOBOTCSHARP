@@ -1164,7 +1164,8 @@ namespace AutoBotCSharp
                     theDates = Data.Split(' ');
                     if (theDates.Length > 0) {
                         if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1]))
-                        { temp.Callpos = Agent.INBETWEEN;
+                        {
+                            temp.Callpos = Agent.INBETWEEN;
                         }
                     }
                     break;
@@ -1230,10 +1231,10 @@ namespace AutoBotCSharp
                 case Agent.DOB:
                     break;
                 case Agent.MARITAL_STATUS:
-                    var maritalStatus = App.getAgent().checkMaritalStatus(response);
+                    var maritalStatus = temp.checkMaritalStatus(response);
                     if (maritalStatus.Length > 0)
                     {
-                        App.getAgent().selectData("frmMaritalStatus", maritalStatus);
+                        temp.selectData("frmMaritalStatus", maritalStatus);
                     }
                     break;
                 case Agent.SPOUSE_NAME:
@@ -1241,38 +1242,38 @@ namespace AutoBotCSharp
                 case Agent.SPOUSE_DOB:
                     break;
                 case Agent.OWN_OR_RENT:
-                    var ownership = App.getAgent().checkOwnership(response);
+                    var ownership = temp.checkOwnership(response);
                     if (ownership.Length > 0)
                     {
-                        App.getAgent().selectData("frmResidenceType", ownership);
+                       temp.selectData("frmResidenceType", ownership);
                     }
                     break;
                 case Agent.RES_TYPE:
-                    var resType = App.getAgent().checkResType(response);
+                    var resType = temp.checkResType(response);
                     if (resType.Length > 0)
                     {
-                        App.getAgent().selectData("frmDwellingType", resType);
+                       temp.selectData("frmDwellingType", resType);
                     }
                     break;
                 case Agent.CREDIT:
-                    var credit = App.getAgent().checkCredit(response);
+                    var credit = temp.checkCredit(response);
                     if (credit.Length > 0)
                     {
-                        App.getAgent().selectData("frmCreditRating", credit);
+                        temp.selectData("frmCreditRating", credit);
                     }
                     break;
                 case Agent.ADDRESS:
                     string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
                     App.RollTheClip(clip);
-                    App.getAgent().driver.FindElementById("btnValidate").Click();
+                    temp.driver.FindElementById("btnValidate").Click();
                     break;
                 case Agent.EMAIL:
                     break;
                 case Agent.PHONE_TYPE:
-                    var phoneType = App.getAgent().checkPhoneType(response);
+                    var phoneType = temp.checkPhoneType(response);
                     if (phoneType.Length > 0)
                     {
-                        App.getAgent().selectData("frmPhoneType1", phoneType);
+                        temp.selectData("frmPhoneType1", phoneType);
                     }
                     break;
                 case Agent.LAST_NAME:
@@ -1280,19 +1281,19 @@ namespace AutoBotCSharp
                     App.RollTheClip(clip);
                     break;
                 case Agent.TCPA:
-                    if (App.getAgent().checkTCPAResponse(response))
+                    if (temp.checkTCPAResponse(response))
                     {
                         temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
                         //App.getAgent().driver.FindElementById("btnSubmit").Click();
-                        App.getAgent().HangUpandDispo("Auto Lead");
-                        App.getAgent().driver.FindElementById("btnSubmit").Click();
+                        temp.HangUpandDispo("Auto Lead");
+                        temp.driver.FindElementById("btnSubmit").Click();
                     }
                     else
                     {
                         temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                        App.getAgent().HangUpandDispo("LOW");
+                        temp.HangUpandDispo("LOW");
                     }
                     break;
             }
