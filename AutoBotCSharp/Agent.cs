@@ -1142,18 +1142,31 @@ namespace AutoBotCSharp
                     Data = CheckIProvider(response);
                     if (Data != "FALSE")
                     {
-                        if (temp.selectData("frmInsuranceCarrier", Data)) { temp.Callpos = Agent.INBETWEEN; };
+                        if (temp.selectData("frmInsuranceCarrier", Data))
+                        {
+                            temp.Callpos = Agent.INBETWEEN;
+                        }
                     }
                     break;
                 case Agent.INS_EXP:
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
-                    if (theDates.Length > 0) { if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
+                    if (theDates.Length > 0)
+                    {
+                        if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year", theDates[1]))
+                        {
+                            temp.Callpos = Agent.INBETWEEN;
+                        }
+                    }
                     break;
                 case Agent.INST_START:
                     Data = temp.HowLong(response);
                     theDates = Data.Split(' ');
-                    if (theDates.Length > 0) { if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
+                    if (theDates.Length > 0) {
+                        if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1]))
+                        { temp.Callpos = Agent.INBETWEEN;
+                        }
+                    }
                     break;
                 case Agent.NUM_VEHICLES:
                     Data = temp.getNumVehicles(response);
