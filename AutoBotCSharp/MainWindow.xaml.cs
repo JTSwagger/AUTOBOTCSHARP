@@ -573,14 +573,6 @@ namespace AutoBotCSharp
             _source = null;
             UnregisterHotkeys();
 
-            try
-            {
-                user.killDriver();
-            } catch (NullReferenceException)
-            {
-                Console.WriteLine("screw it");
-            }
-
             Application.Current.Shutdown();
             base.OnClosed(e);
         }
@@ -697,7 +689,7 @@ namespace AutoBotCSharp
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             user.driver = new ChromeDriver(cds);
-           user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+            user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
         }
 
         private void btnBestGuess_Click(object sender, RoutedEventArgs e)
