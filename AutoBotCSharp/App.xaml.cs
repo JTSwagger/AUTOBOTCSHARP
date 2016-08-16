@@ -171,6 +171,20 @@ namespace AutoBotCSharp
 
             }
         }
+        public async void doIntroduction()
+        {
+            Agent ag = getAgent();
+            if (ag.cust.isNameEnabled)
+            {
+                string clip = findNameClips(ag.cust.firstName)[0];
+                bool x = await RollTheClipAndWait(clip);
+            }
+            else if (!ag.cust.isNameEnabled)
+            {
+                string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
+                bool x = await App.RollTheClipAndWait(clip);
+            }
+        }
 
         /*
          *  End testing stuff. You can touch stuff again.
@@ -223,6 +237,9 @@ namespace AutoBotCSharp
                 // hidden below is a massive switch statement...
                 switch (user.Question)
                 {
+                    case Agent.STARTYMCSTARTFACE:
+                        user.Callpos = Agent.INTRO; 
+                        break;
                     case "INS_PROVIDER":
                         user.Callpos = Agent.PROVIDER;
                         break;

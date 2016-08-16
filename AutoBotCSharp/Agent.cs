@@ -31,6 +31,8 @@ namespace AutoBotCSharp
 
         private bool newCall = false;
         public string Question;
+
+        public const string STARTYMCSTARTFACE = "START";
         public const string INBETWEEN = "INBETWEEN";
         public const string INTRO = "INTRO";
         public const string PROVIDER = "INS_PROVIDER";
@@ -61,6 +63,8 @@ namespace AutoBotCSharp
         {
             public int numVehicles { get; set; }
             public string maritalStatus { get; set; }
+            public string firstName { get; set; }
+            public bool isNameEnabled { get; set; }
         }
         public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single" };
 
@@ -920,6 +924,8 @@ namespace AutoBotCSharp
             else { return 1; }
         }
         //==================================================================================================
+
+        
         public string GETYMM(string response, int vehicleNum)
         {
 
@@ -1067,15 +1073,34 @@ namespace AutoBotCSharp
         }
         public static bool checkforData(string response)
         {
-            
-            
             string Data;
             bool mrMeseeks = true;
+
             Console.WriteLine("CHECKING FOR DATAS");
             Console.WriteLine("QUESTION: " + temp.Question);
+
             switch (temp.Question)
             {
-                case Agent.INTRO:
+                case Agent.STARTYMCSTARTFACE:
+                    if (temp.cust.isNameEnabled)
+                    {
+                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
+                        {
+                            string chip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
+                            App.RollTheClip(chip);
+                        }
+                        else if (response.Contains("no"))
+                        {
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                            temp.HangUpandDispo("Not Available");
+                        }
+                    }
+                    else
+                    {
+                        temp.Question = INTRO;
+                    }
+                    break;
+                case Agent.INTRO: // fall through
                 case Agent.PROVIDER:
                     Console.WriteLine("checking for provider stuff");
                     Data = CheckIProvider(response);
@@ -1653,6 +1678,7 @@ namespace AutoBotCSharp
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title);
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            cust.firstName = firstName;
             try
             {
                 string[] clips = App.findNameClips(firstName);
@@ -1665,14 +1691,17 @@ namespace AutoBotCSharp
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
+                        cust.isNameEnabled = false; 
                     }));
                 } else
                 {
                     System.Windows.Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(true);
+                        cust.isNameEnabled = true;
                     }));
                 }
+                
             }
             catch (Exception ex)
             {
