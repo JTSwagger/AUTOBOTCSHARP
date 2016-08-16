@@ -84,10 +84,6 @@ namespace AutoBotCSharp
                     Console.WriteLine("checking for data in response");
                     if (Agent.checkforData(response))
                     {
-                        Current.Dispatcher.Invoke(() =>
-                        {
-                            doBackgroundQuestionSwitchingStuff();
-                        });
                         return;
                     }
                 }
@@ -114,6 +110,7 @@ namespace AutoBotCSharp
             Current.Dispatcher.Invoke(() =>
             {
                 getAgent().AskQuestion();
+                doBackgroundQuestionSwitchingStuff();
             });
         }
 
