@@ -707,6 +707,12 @@ namespace AutoBotCSharp
             longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
             longDictationClient.StartMicAndRecognition();
         }
+
+        private void btnVerifyDOB_Click(object sender, RoutedEventArgs e)
+        {
+            string clip = @"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3";
+            App.RollTheClip(clip);
+        }
     }
     
 }

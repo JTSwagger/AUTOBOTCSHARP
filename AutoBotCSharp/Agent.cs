@@ -28,6 +28,7 @@ namespace AutoBotCSharp
         public string Callpos;
 
         private bool newCall = false;
+        private bool started = false;
         public string Question;
         public const string INBETWEEN = "INBETWEEN";
         public const string INTRO = "INTRO";
@@ -124,7 +125,7 @@ namespace AutoBotCSharp
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    if (stats.Contains("AGENT NOT LOGGED IN"))
+                    if (stats.Contains("AGENT NOT LOGGED IN") && started)
                     {
                         MessageBox.Show("You're not logged in. K.");
                         try
@@ -1136,13 +1137,14 @@ namespace AutoBotCSharp
             }
             return (year + " " + make + " " + model);
         }
-        public static void checkforData(string response)
+        public static bool checkforData(string response)
         {
             Agent temp =  App.getAgent();
-            
+
+            bool mrMeseeks = true;
             string Data;
            
-            string pos = temp.Callpos;
+            string pos = temp.Question;
             switch (pos)
             {
                 case Agent.INS_PROVIDER:
@@ -1155,6 +1157,10 @@ namespace AutoBotCSharp
                             temp.Callpos = Agent.INBETWEEN;
                         }
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.INS_EXP:
                     Data = checkExp(response);
@@ -1166,6 +1172,10 @@ namespace AutoBotCSharp
                             temp.Callpos = Agent.INBETWEEN;
                         }
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.INST_START:
                     Data = temp.HowLong(response);
@@ -1175,6 +1185,10 @@ namespace AutoBotCSharp
                         {
                             temp.Callpos = Agent.INBETWEEN;
                         }
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.NUM_VEHICLES:
@@ -1194,6 +1208,10 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.YMM2:
                     Data = temp.GETYMM(response, 2);
@@ -1207,9 +1225,11 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
-
-
                 case Agent.YMM3:
                     Data = temp.GETYMM(response, 3);
                     if (!Data.Contains("FALSE"))
@@ -1221,6 +1241,10 @@ namespace AutoBotCSharp
                             temp.Callpos = Agent.INBETWEEN;
                         });
                         bw.RunWorkerAsync();
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.YMM4:
@@ -1235,6 +1259,10 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
+                    else
+                    {
+                        mrMeseeks = false;
+                    }
                     break;
                 case Agent.DOB:
                     break;
@@ -1243,6 +1271,10 @@ namespace AutoBotCSharp
                     if (maritalStatus.Length > 0)
                     {
                         temp.selectData("frmMaritalStatus", maritalStatus);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.SPOUSE_NAME:
@@ -1254,6 +1286,10 @@ namespace AutoBotCSharp
                     if (ownership.Length > 0)
                     {
                        temp.selectData("frmResidenceType", ownership);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.RES_TYPE:
@@ -1268,6 +1304,10 @@ namespace AutoBotCSharp
                     if (credit.Length > 0)
                     {
                         temp.selectData("frmCreditRating", credit);
+                    }
+                    else
+                    {
+                        mrMeseeks = false;
                     }
                     break;
                 case Agent.ADDRESS:
@@ -1305,6 +1345,11 @@ namespace AutoBotCSharp
                     }
                     break;
             }
+            if (!mrMeseeks)
+            {
+                Console.WriteLine("\nMR MESEEKS FUCKING HATES YOU\n");
+            }
+            return mrMeseeks;
         }
         public bool checkTCPAResponse(string response)
         {
@@ -1681,6 +1726,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task task = Task.Run((Action)getDob);
+            started = true;
         }
         //---------------------------------------------------------------
         public void PauseUnPause(string pauseAction)

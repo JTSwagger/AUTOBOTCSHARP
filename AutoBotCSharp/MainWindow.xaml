@@ -78,10 +78,11 @@
                         <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="304*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnDOB" Content="DOB" HorizontalAlignment="Left" Margin="7,11,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnDOB_Click"/>
-                    <Button x:Name="btnMaritalStatus" Content="MARITAL STATUS" HorizontalAlignment="Left" Margin="136,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.ColumnSpan="5" FontWeight="Bold" Click="btnMaritalStatus_Click"/>
-                    <Button x:Name="btnSpouseName" Content="SPOUSE NAME" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.ColumnSpan="2" Click="btnSpouseName_Click"/>
-                    <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="104,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="5" Click="btnSpouseDOB_Click"/>
+                    <Button x:Name="btnDOB" Content="DOB" HorizontalAlignment="Left" Margin="7,10,0,0" VerticalAlignment="Top" Width="64" Height="50" Click="btnDOB_Click"/>
+                    <Button x:Name="btnMaritalStatus" Content="MARITAL STATUS" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.ColumnSpan="4" FontWeight="Bold" Click="btnMaritalStatus_Click" Grid.Column="1"/>
+                    <Button x:Name="btnSpouseName" Content="SPOUSE NAME" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.ColumnSpan="2" Click="btnSpouseName_Click"/>
+                    <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="117,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="5" Click="btnSpouseDOB_Click"/>
+                    <Button x:Name="btnVerifyDOB" Content="VERIFY&#x0a;  DOB" HorizontalAlignment="Left" Margin="71,10,0,0" VerticalAlignment="Top" Width="64" Height="50" Click="btnVerifyDOB_Click"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbPersonalInfo" Header="PERS INFO" Margin="0,0,-63,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
