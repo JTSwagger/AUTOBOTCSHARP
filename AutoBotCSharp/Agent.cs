@@ -11,6 +11,7 @@ using System.IO;
 using System.Windows.Media;
 using OpenQA.Selenium.Support.UI;
 using System.ComponentModel;
+using System.Windows;
 
 namespace AutoBotCSharp
 {
@@ -32,7 +33,7 @@ namespace AutoBotCSharp
         public string Question;
         public const string INBETWEEN = "INBETWEEN";
         public const string INTRO = "INTRO";
-        public const string Intro = "INS_PROVIDER";
+        public const string PROVIDER = "INS_PROVIDER";
         public const string INS_EXP = "INS_EXP";
         public const string INST_START = "INS_START";
         public const string NUM_VEHICLES = "NUM_VEHICLES";
@@ -666,6 +667,7 @@ namespace AutoBotCSharp
             List<string> Dates = new List<string>(2);
             string expMonth;
             string expyear;
+            s = s.ToLower();
             if (s.Contains("january"))
             {
                 expMonth = "Jan";
@@ -776,6 +778,12 @@ namespace AutoBotCSharp
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
                 else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("next month"))
+            {
+                int month = DateTime.Now.Month + 1;
+                expMonth = month.ToString("MMMM").Substring(0, 3);
+                expyear = DateTime.Now.Year.ToString();
             }
             else
             {
@@ -1067,18 +1075,18 @@ namespace AutoBotCSharp
             }
             return (year + " " + make + " " + model);
         }
-        public static void checkforData(string response)
+        public static bool checkforData(string response)
         {
             Agent temp = App.getAgent();
             
             string Data;
            
             string pos = temp.Callpos;
-            switch (pos)
+            switch (temp.Question)
             {
                 case Agent.INTRO:
-                case Agent.Intro:
-                    Console.WriteLine("INS_PROVIDER");
+                case Agent.PROVIDER:
+                    Console.WriteLine("checking for provider stuff");
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
                     {
@@ -1086,11 +1094,21 @@ namespace AutoBotCSharp
                     }
                     break;
                 case Agent.INS_EXP:
+                    Console.WriteLine("we really made it, fam");
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
-                    if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INBETWEEN; temp.Question = Agent.INST_START; }; };                  
+                    if (theDates.Length > 0)
+                    {
+                        if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1]))
+                        {
+                            temp.Callpos = Agent.INBETWEEN;
+                            temp.Question = Agent.INST_START;
+                        }
+                    }
+                    
                     break;
                 case Agent.INST_START:
+                    Console.WriteLine("This isn't the right place omg wtf bbq");
                     Data = temp.HowLong(response);
                     theDates = Data.Split(' ');
                     if (theDates.Length > 0) { if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; temp.Question =NUM_VEHICLES; }; };
@@ -1238,8 +1256,7 @@ namespace AutoBotCSharp
                     }
                     break;
             }
-
-
+            return true;
 
         }
 

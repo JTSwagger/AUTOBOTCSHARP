@@ -40,11 +40,15 @@ namespace AutoBotCSharp
          */ 
         public static Agent getAgent()
         {
-            Agent temp;
+            Agent temp = new Agent();
             try
             {
-               temp = getWindow().user;
-            } catch (NullReferenceException)
+                Current.Dispatcher.Invoke(() =>
+                {
+                    temp = getWindow().user;
+                });
+            }
+            catch (Exception)
             {
                 temp = new Agent();
             }
@@ -69,13 +73,24 @@ namespace AutoBotCSharp
 
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
+            Console.WriteLine(getAgent().Question);
             string response = e.PartialResult;
             Application.Current.Dispatcher.Invoke((async () =>
             {
                 bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
-                { Agent.checkforData(response); }
+                {
+                    Console.WriteLine("checking for data in response");
+                    if (Agent.checkforData(response))
+                    {
+                        Current.Dispatcher.Invoke(() =>
+                        {
+                            doBackgroundQuestionSwitchingStuff();
+                        });
+                        return;
+                    }
+                }
             }));
             
         }
@@ -98,15 +113,7 @@ namespace AutoBotCSharp
 
             Current.Dispatcher.Invoke(() =>
             {
-                if (getAgent().Question == "INTRO")
-                {
-                    Console.WriteLine("I AM INTRO");
-                }else
-                {
-                    getAgent().AskQuestion();
-                }
-                doBackgroundQuestionSwitchingStuff();
-
+                getAgent().AskQuestion();
             });
         }
 
@@ -117,7 +124,7 @@ namespace AutoBotCSharp
             switch (ag.Question)
             {
                 case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
-                case Agent.Intro: ag.Question = Agent.INS_EXP; break;
+                case Agent.PROVIDER: ag.Question = Agent.INS_EXP; break;
                 case Agent.INS_EXP: ag.Question = Agent.INST_START; break;
                 case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; break;
                 case Agent.NUM_VEHICLES:
@@ -225,7 +232,7 @@ namespace AutoBotCSharp
                 switch (user.Question)
                 {
                     case "INS_PROVIDER":
-                        user.Callpos = Agent.Intro;
+                        user.Callpos = Agent.PROVIDER;
                         break;
                     case "INS_EXP":
                         user.Callpos = Agent.INS_EXP;
@@ -363,6 +370,7 @@ namespace AutoBotCSharp
         }
 
         private static int humanismIndex = 0;
+        private static object console;
 
         public static void playHumanism()
         {
