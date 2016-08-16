@@ -241,12 +241,12 @@ namespace AutoBotCSharp
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
             App.RollTheClip(clip);
         }
-        private void btnTCPA_Click(object sender, RoutedEventArgs e)
+        private async void btnTCPA_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "TCPA";
             user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3";
-            App.RollTheClip(clip);
+            bool x = await App.RollTheClipAndWait(clip);
         }
         // Reactions button group
         private void btnWhatIGot_Click(object sender, RoutedEventArgs e)
