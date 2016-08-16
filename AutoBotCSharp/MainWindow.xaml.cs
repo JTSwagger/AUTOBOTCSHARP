@@ -46,16 +46,17 @@ namespace AutoBotCSharp
             {
                 proc.Kill();
             }
-            //foreach (Process proc in Process.GetProcessesByName("AutoBotCSharp"))
-            //{
-            //    if (proc.Id == Process.GetCurrentProcess().Id)
-            //    {
-            //        Console.WriteLine("cannot self terminate");
-            //    }else
-            //    {
-            //        proc.Kill();
-            //    }
-            //}
+            foreach (Process proc in Process.GetProcessesByName("AutoBotCSharp"))
+            {
+                if (proc.Id == Process.GetCurrentProcess().Id)
+                {
+                    Console.WriteLine("cannot self terminate");
+                }
+                else
+                {
+                    proc.Kill();
+                }
+            }
         }
 
         public void setNameText(string name)
