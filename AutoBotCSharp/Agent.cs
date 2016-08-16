@@ -11,6 +11,7 @@ using System.IO;
 using System.Windows.Media;
 using OpenQA.Selenium.Support.UI;
 using System.ComponentModel;
+using System.Windows;
 
 namespace AutoBotCSharp
 {
@@ -110,8 +111,11 @@ namespace AutoBotCSharp
                         }
                         if (calltime >= 115)
                         {
-                            App.longDictationClient.EndMicAndRecognition();
-                            App.longDictationClient.StartMicAndRecognition();
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                App.longDictationClient.EndMicAndRecognition();
+                                App.longDictationClient.StartMicAndRecognition();
+                            });
                         }
 
                     }
@@ -129,6 +133,7 @@ namespace AutoBotCSharp
                 Thread.Sleep(500);
             }
         }
+
         //------------------------------------------------------------------------------------------------------
         private /*static*/ void parseDOB(string response)
         {
@@ -1135,15 +1140,15 @@ namespace AutoBotCSharp
                 case Agent.INS_PROVIDER:
                     Console.WriteLine("INS_PROVIDER");
                     Data = CheckIProvider(response);
-                    if(Data != "FALSE")
+                    if (Data != "FALSE")
                     {
-                        if (temp.selectData("frmInsuranceCarrier",Data)) { temp.Callpos = Agent.INBETWEEN; };
+                        if (temp.selectData("frmInsuranceCarrier", Data)) { temp.Callpos = Agent.INBETWEEN; };
                     }
                     break;
                 case Agent.INS_EXP:
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
-                    if (theDates.Length > 0){ if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1])) {temp.Callpos = Agent.INBETWEEN; }; };                  
+                    if (theDates.Length > 0) { if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year", theDates[1])) { temp.Callpos = Agent.INBETWEEN; }; };
                     break;
                 case Agent.INST_START:
                     Data = temp.HowLong(response);
@@ -1156,16 +1161,16 @@ namespace AutoBotCSharp
 
                     break;
                 case Agent.YMM1:
-                    Data =  temp.GETYMM(response, 1);
+                    Data = temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
-                    { 
+                    {
                         BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args) 
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                         {
                             temp.selectData("vehicle-model", Data);
                             temp.Callpos = Agent.INBETWEEN;
                         });
-                        bw.RunWorkerAsync();                                    
+                        bw.RunWorkerAsync();
                     }
                     break;
                 case Agent.YMM2:
@@ -1180,7 +1185,7 @@ namespace AutoBotCSharp
                         });
                         bw.RunWorkerAsync();
                     }
-                        break;
+                    break;
 
 
                 case Agent.YMM3:
@@ -1209,9 +1214,7 @@ namespace AutoBotCSharp
                         bw.RunWorkerAsync();
                     }
                     break;
-
                 case Agent.DOB:
-
                     break;
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
@@ -1280,11 +1283,7 @@ namespace AutoBotCSharp
                     }
                     break;
             }
-
-
-
         }
-
         public bool checkTCPAResponse(string response)
         {
             if (response.Contains("yes") || response.Contains("sure") || response.Contains("alright"))
@@ -1635,19 +1634,19 @@ namespace AutoBotCSharp
             try
             {
                 string[] clips = App.findNameClips(firstName);
-                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                Application.Current.Dispatcher.Invoke((() =>
                 {
                     App.getWindow().setNameText(firstName);
                 }));
                 if (App.findNameClips(firstName)[0] == "no clip")
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
                     }));
                 } else
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(true);
                     }));
@@ -1660,7 +1659,6 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             Task task = Task.Run((Action)getDob);
-            App.longDictationClient.StartMicAndRecognition();
         }
         //---------------------------------------------------------------
         public void PauseUnPause(string pauseAction)

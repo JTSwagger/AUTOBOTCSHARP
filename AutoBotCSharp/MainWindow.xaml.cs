@@ -80,12 +80,13 @@ namespace AutoBotCSharp
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
-        private void btnIntro_Click(object sender, RoutedEventArgs e)
+        private async void btnIntro_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "INS_PROVIDER";
             user.Callpos = Agent.INBETWEEN;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-            App.RollTheClip(clip);
+            bool x = await App.RollTheClipAndWait(clip);
+            App.longDictationClient.StartMicAndRecognition();
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
