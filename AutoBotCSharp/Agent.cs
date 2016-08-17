@@ -30,6 +30,7 @@ namespace AutoBotCSharp
         public string Dialer_Status;
         public string Callpos;
 
+        private bool started = false;
         private bool newCall = false;
         public string Question;
 
@@ -127,13 +128,11 @@ namespace AutoBotCSharp
                             calltime = 0;
                             newCall = false;
                         }
-                        if(calltime >= 119)
+                        if(calltime >= 115)
                         {
                             App.longDictationClient.EndMicAndRecognition();
                             App.longDictationClient.StartMicAndRecognition();
-
                         }
-
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
                     //Console.WriteLine("Agent Name: " + Agent_Name);
@@ -141,8 +140,11 @@ namespace AutoBotCSharp
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    MessageBox.Show("You're not logged in anymore");
-                    driver.Quit();
+                    if (started)
+                    {
+                        MessageBox.Show("You're not logged in anymore");
+                        driver.Quit();
+                    }
                 }
                 setGlobals();
                 Thread.Sleep(500);
@@ -184,7 +186,11 @@ namespace AutoBotCSharp
 
         public void waitForNext()
         {
-          
+            Console.WriteLine("All hail the Dark Lord Satan!");
+            // seriously, I'm not sure why this method is in here at all.
+            // It was empty.
+            // Then I added this reminder to bring praise upon the glorious Dark Lord Satan.
+            // This codebase is weird.
         }
         public bool EnterData(string elementId, string data)
         {
@@ -1329,7 +1335,7 @@ namespace AutoBotCSharp
             }
             if (!mrMeseeks)
             {
-                Console.WriteLine("\n\n\nMR MESEEKS FUCKING HATES YOU\n\n\n");
+                Console.WriteLine("\n MR MESEEKS FUCKING HATES YOU \n");
             }
             return mrMeseeks;
 
@@ -1678,31 +1684,39 @@ namespace AutoBotCSharp
             Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title);
-            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
-            cust.firstName = firstName;
+            try
+            {
+                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+                cust.firstName = firstName;
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(100);
+                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+                cust.firstName = firstName;
+            }
             try
             {
                 string[] clips = App.findNameClips(firstName);
-                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                Application.Current.Dispatcher.Invoke((() =>
                 {
                     App.getWindow().setNameText(firstName);
                 }));
                 if (App.findNameClips(firstName)[0] == "no clip")
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
                         cust.isNameEnabled = false; 
                     }));
                 } else
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(true);
                         cust.isNameEnabled = true;
                     }));
                 }
-                
             }
             catch (Exception ex)
             {
@@ -1713,6 +1727,7 @@ namespace AutoBotCSharp
             Task.Run((Action)getDob);
 
             App.longDictationClient.StartMicAndRecognition();
+            started = true;
         }
         public void setupTesting()
         {
@@ -1722,20 +1737,20 @@ namespace AutoBotCSharp
             try
             {
                 string[] clips = App.findNameClips(firstName);
-                System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                Application.Current.Dispatcher.Invoke((() =>
                 {
                     App.getWindow().setNameText(firstName);
                 }));
                 if (App.findNameClips(firstName)[0] == "no clip")
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
                     }));
                 }
                 else
                 {
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(true);
                     }));
@@ -1780,7 +1795,6 @@ namespace AutoBotCSharp
                 switch (Question)
                 {
                     case INTRO:
-                      
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
                         break;
                     case INS_EXP:
