@@ -1882,9 +1882,10 @@ namespace AutoBotCSharp
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3");
                         break;
                     case TCPA:
+                        App.longDictationClient.EndMicAndRecognition();
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
+                        App.longDictationClient.StartMicAndRecognition();
                         break;
-
                 }
                 Callpos = Agent.INBETWEEN;
                 hasAsked = true;
