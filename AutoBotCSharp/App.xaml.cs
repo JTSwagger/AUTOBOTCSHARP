@@ -94,8 +94,14 @@ namespace AutoBotCSharp
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
+            
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.EndOfDictation) { ((MicrophoneRecognitionClient)sender).StartMicAndRecognition(); }
+            if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
+            {
+                Console.WriteLine("EETSA ME, MARIO!");
+                longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "ce43e8a4d7a844b1be7950b260d6b8bd", "0d2797650c8648d18474399744512f17");
+                longDictationClient.StartMicAndRecognition();
+            }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
                 //Console.WriteLine("Burning through another api call! Yay!");
