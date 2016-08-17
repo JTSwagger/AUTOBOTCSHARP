@@ -820,12 +820,14 @@ namespace AutoBotCSharp
             cds.HideCommandPromptWindow = true;
             driver = new ChromeDriver(cds);
             driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+            EnterData("frmFirstName", "James");
         }
         //--------------------------------------------------------------------------------------------------
 
         public string HowLong(string response)
         {
-            string month = driver.FindElementById("frmPolicyExpiration_Month").Text;
+            string month = cust.expMonth;
+            
             if (response.Contains("year"))
             {
                 if (response.Contains("two") || response.Contains("2"))
@@ -1096,8 +1098,7 @@ namespace AutoBotCSharp
                     {
                         if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
                         {
-                            string chip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-                            App.RollTheClip(chip);
+                            temp.Question = INTRO;
                         }
                         else if (response.Contains("no"))
                         {
@@ -1819,6 +1820,9 @@ namespace AutoBotCSharp
                 {
                     case INTRO:
                         App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
+                        break;
+                    case PROVIDER:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
                         break;
                     case INS_EXP:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
