@@ -94,6 +94,10 @@ namespace AutoBotCSharp
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.EndOfDictation)
+            {
+                ((MicrophoneRecognitionClient)sender).StartMicAndRecognition();
+            }
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
                 Application.Current.Dispatcher.Invoke((() =>
