@@ -1596,7 +1596,7 @@ namespace AutoBotCSharp
                 driver.FindElementById("agent-password").SendKeys("y" + AgentNum + "IE");
                 Thread.Sleep(500);
                 driver.FindElementById("btn-get-campaign").Click();
-                Thread.Sleep(500);
+                Thread.Sleep(750);
                 driver.FindElementById("select-campaign").Click();
                 driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click(); 
                 Thread.Sleep(250);
@@ -1747,6 +1747,8 @@ namespace AutoBotCSharp
             }
             Task.Run((Action)getDob);
 
+            AskQuestion();
+
             App.longDictationClient.StartMicAndRecognition();
             started = true;
         }
@@ -1819,6 +1821,20 @@ namespace AutoBotCSharp
             {
                 switch (Question)
                 {
+                    case STARTYMCSTARTFACE:
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (App.findNameClips(cust.firstName)[0] != "no clip")
+                            {
+                                App.RollTheClip(App.findNameClips(cust.firstName)[0]);
+                            }
+                            else
+                            {
+                                Question = INTRO;
+                                AskQuestion();
+                            }
+                        });
+                        break;
                     case INTRO:
                         App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
                         break;

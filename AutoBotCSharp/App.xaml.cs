@@ -270,7 +270,7 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            Agent user = App.getAgent();
+            Agent user = getAgent();
             //Console.WriteLine("PLAYBACK STOPPED");
             //Console.WriteLine(user.Callpos);
             //Console.WriteLine(user.Question);
@@ -278,7 +278,7 @@ namespace AutoBotCSharp
             if(user.custObjected == true)
             {
                 user.custObjected = false;
-                Console.WriteLine(user.Question);
+                //Console.WriteLine(user.Question);
                 user.AskQuestion();
                 return;
             }
@@ -372,8 +372,8 @@ namespace AutoBotCSharp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException);
+                //Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.InnerException);
                 return false;
             }
         }
@@ -402,8 +402,8 @@ namespace AutoBotCSharp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException);
+                //Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.InnerException);
                 return false;
             }
         }
