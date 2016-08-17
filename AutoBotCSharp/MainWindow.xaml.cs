@@ -692,6 +692,7 @@ namespace AutoBotCSharp
         private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
         {
             user = new Agent();
+            user.Question = "test";
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             user.openTestPage();
@@ -716,6 +717,11 @@ namespace AutoBotCSharp
         private void doTestingStuff_Click(object sender, RoutedEventArgs e)
         {
             user.setupTesting();
+        }
+
+        private void tabControlBottom_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
     

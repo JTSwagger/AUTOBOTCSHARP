@@ -95,6 +95,7 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.EndOfDictation) { ((MicrophoneRecognitionClient)sender).StartMicAndRecognition(); }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
                 //Console.WriteLine("Burning through another api call! Yay!");
