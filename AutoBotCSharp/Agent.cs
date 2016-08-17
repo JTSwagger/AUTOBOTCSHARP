@@ -794,8 +794,8 @@ namespace AutoBotCSharp
             }
             else
             {
-                expMonth = "FALSE";
-                expyear = "FALSE";
+                expMonth = (DateTime.Now.Month + 1).ToString();
+                expyear = DateTime.Now.Year.ToString();
             }
 
             return (expMonth + " " + expyear);
