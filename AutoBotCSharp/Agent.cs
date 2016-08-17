@@ -1487,7 +1487,6 @@ namespace AutoBotCSharp
             {
                 HangUpandDispo("Not Available");
             }
-
         }
         //------------------------------------------------------------------------------------------------------------------------
         public static async Task<bool> checkForObjection(string response)
@@ -1592,7 +1591,6 @@ namespace AutoBotCSharp
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
                 Task task = Task.Run((Action)doAgentStatusRequest);
-               
             }
             catch
             {
