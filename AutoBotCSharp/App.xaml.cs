@@ -95,7 +95,19 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.EndOfDictation) { ((MicrophoneRecognitionClient)sender).StartMicAndRecognition(); }
+            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
+            {
+                //Console.WriteLine("Burning through another api call! Yay!");
+                //longDictationClient.EndMicAndRecognition();
+                //string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
+                //string apiKey2 = "0d2797650c8648d18474399744512f17";
+                //longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+                //longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+                //longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+                longDictationClient.EndMicAndRecognition();
+                longDictationClient.StartMicAndRecognition();
+            }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.InitialSilenceTimeout)
             {
                 longDictationClient.EndMicAndRecognition();
