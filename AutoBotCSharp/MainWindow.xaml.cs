@@ -691,14 +691,10 @@ namespace AutoBotCSharp
 
         private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
         {
-            if (user == null)
-            {
-                user = new Agent();
-            }
+            user = new Agent();
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
-            user.driver = new ChromeDriver(cds);
-            user.driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
+            user.openTestPage();
         }
 
         private void btnBestGuess_Click(object sender, RoutedEventArgs e)

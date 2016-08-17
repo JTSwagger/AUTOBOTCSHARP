@@ -121,6 +121,7 @@ namespace AutoBotCSharp
             // call position advancement
             switch (ag.Question)
             {
+                case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
                 case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
                 case Agent.PROVIDER: ag.Question = Agent.INS_EXP; break;
                 case Agent.INS_EXP: ag.Question = Agent.INST_START; break;

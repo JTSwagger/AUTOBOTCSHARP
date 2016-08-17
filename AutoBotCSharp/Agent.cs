@@ -669,7 +669,7 @@ namespace AutoBotCSharp
             { return ("Woolands Financial Group"); }
             if (s.Contains("zurich"))
             { return ("Zurich North America"); }
-            else { return ("FALSE"); }
+            else { return ("Progressive"); }
         }
         //---------------------------------------------------------------------------------------------------
         public static string checkExp(string s)
@@ -1089,6 +1089,7 @@ namespace AutoBotCSharp
             switch (temp.Question)
             {
                 case Agent.STARTYMCSTARTFACE:
+                    Console.WriteLine("i am iron man");
                     if (temp.cust.isNameEnabled)
                     {
                         if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
@@ -1764,7 +1765,11 @@ namespace AutoBotCSharp
             }
             Task.Run((Action)getDob);
 
-            //App.longDictationClient.StartMicAndRecognition();
+            Question = STARTYMCSTARTFACE;
+            cust.firstName = firstName;
+            cust.isNameEnabled = true;
+            App.RollTheClip(App.findNameClips(firstName)[0]);
+            App.longDictationClient.StartMicAndRecognition();
         }
         //---------------------------------------------------------------
 
