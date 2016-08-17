@@ -76,14 +76,15 @@ namespace AutoBotCSharp
         {
             Console.WriteLine(getAgent().Question);
             string response = e.PartialResult;
-            Application.Current.Dispatcher.Invoke((async () =>
+            Current.Dispatcher.Invoke((async () =>
             {
                 bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
                 {
                     Agent.checkforData(response);
-                    return;
+                    
+                    getAgent().hasAsked = false;
                 }
                 getAgent().custObjected = x;
                 
@@ -97,7 +98,7 @@ namespace AutoBotCSharp
             
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
-                Application.Current.Dispatcher.Invoke((() =>
+                Current.Dispatcher.Invoke((() =>
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
                 }));
@@ -109,7 +110,12 @@ namespace AutoBotCSharp
                 if(getAgent().custObjected == false)
                 {
                     doBackgroundQuestionSwitchingStuff();
-                    getAgent().AskQuestion();
+                    if (!getAgent().hasAsked)
+                    {
+                        getAgent().AskQuestion();
+                        getAgent().hasAsked = true;
+                    }
+                    
                 }
             });
             longDictationClient.StartMicAndRecognition();
@@ -260,6 +266,12 @@ namespace AutoBotCSharp
                         break;
                     case "INS_EXP":
                         user.Callpos = Agent.INS_EXP;
+                        break;
+                    case "INS_START":
+                        user.Callpos = Agent.INST_START;
+                        break;
+                    case "NUM_VEHICLES":
+                        user.Callpos = Agent.NUM_VEHICLES;
                         break;
                     case "YMM1":
                         user.Callpos = Agent.YMM1;

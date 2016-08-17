@@ -20,6 +20,7 @@ namespace AutoBotCSharp
     {
         public bool custObjected = false;
         public bool isListening = false;
+        public bool hasAsked = false;
         public int waitTime = 0;
         public bool LoggedIn = false;
         public string Campaign;
@@ -67,6 +68,8 @@ namespace AutoBotCSharp
             public string maritalStatus { get; set; }
             public string firstName { get; set; }
             public bool isNameEnabled { get; set; }
+            public string expMonth { get; set; }
+            public string expYear { get; set; }
         }
         public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single" };
 
@@ -825,77 +828,75 @@ namespace AutoBotCSharp
             string month = driver.FindElementById("frmPolicyExpiration_Month").Text;
             if (response.Contains("year"))
             {
-
-
-                if (response.Contains("two"))
+                if (response.Contains("two") || response.Contains("2"))
                 {
                     return (month + " " + (DateTime.Now.Year - 2).ToString());
                 }
-                else if (response.Contains("three"))
+                else if (response.Contains("three") || response.Contains("3"))
                 {
                     return (month + " " + (DateTime.Now.Year - 3).ToString());
                 }
-                else if (response.Contains("four"))
+                else if (response.Contains("four") || response.Contains("4"))
                 {
                     return (month + " " + (DateTime.Now.Year - 4).ToString());
                 }
-                else if (response.Contains("five"))
+                else if (response.Contains("five") || response.Contains("5"))
                 {
                     return (month + " " + (DateTime.Now.Year - 5).ToString());
                 }
-                if (response.Contains("six"))
+                if (response.Contains("six") || response.Contains("6"))
                 {
                     return (month + " " + (DateTime.Now.Year - 6).ToString());
                 }
-                else if (response.Contains("seven"))
+                else if (response.Contains("seven") || response.Contains("7"))
                 {
                     return (month + " " + (DateTime.Now.Year - 7).ToString());
                 }
-                else if (response.Contains("eight"))
+                else if (response.Contains("eight") || response.Contains("8"))
                 {
                     return (month + " " + (DateTime.Now.Year - 8).ToString());
                 }
-                else if (response.Contains("nine"))
+                else if (response.Contains("nine") || response.Contains("9"))
                 {
                     return (month + " " + (DateTime.Now.Year - 9).ToString());
                 }
-                if (response.Contains("ten"))
+                if (response.Contains("ten") || response.Contains("10"))
                 {
                     return (month + " " + (DateTime.Now.Year - 10).ToString());
                 }
-                else if (response.Contains("eleven"))
+                else if (response.Contains("eleven") || response.Contains("11"))
                 {
                     return (month + " " + (DateTime.Now.Year - 11).ToString());
                 }
-                else if (response.Contains("twelve"))
+                else if (response.Contains("twelve") || response.Contains("12"))
                 {
                     return (month + " " + (DateTime.Now.Year - 12).ToString());
                 }
-                else if (response.Contains("thirteen"))
+                else if (response.Contains("thirteen") || response.Contains("13"))
                 {
                     return (month + " " + (DateTime.Now.Year - 13).ToString());
                 }
-                if (response.Contains("fourteen"))
+                if (response.Contains("fourteen") || response.Contains("14"))
                 {
                     return (month + " " + (DateTime.Now.Year - 14).ToString());
                 }
-                else if (response.Contains("fiften"))
+                else if (response.Contains("fiften") || response.Contains("15"))
                 {
                     return (month + " " + (DateTime.Now.Year - 15).ToString());
                 }
-                else if (response.Contains("sixteen"))
+                else if (response.Contains("sixteen") || response.Contains("16"))
                 {
                     return (month + " " + (DateTime.Now.Year - 16).ToString());
                 }
-                else if (response.Contains("seventeen"))
+                else if (response.Contains("seventeen") || response.Contains("17"))
                 {
                     return (month + " " + (DateTime.Now.Year - 17).ToString());
                 }
-                else if (response.Contains("eighteen"))
+                else if (response.Contains("eighteen") || response.Contains("18"))
                 {
                     return (month + " " + (DateTime.Now.Year - 18).ToString());
                 }
-                else if (response.Contains("nineteen"))
+                else if (response.Contains("nineteen") || response.Contains("19"))
                 {
                     return (month + " " + (DateTime.Now.Year - 19).ToString());
                 }
@@ -1090,6 +1091,7 @@ namespace AutoBotCSharp
             {
                 case Agent.STARTYMCSTARTFACE:
                     Console.WriteLine("i am iron man");
+                    response = response.ToLower();
                     if (temp.cust.isNameEnabled)
                     {
                         if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
@@ -1133,31 +1135,43 @@ namespace AutoBotCSharp
                     {
                         if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1]))
                         {
+                            temp.cust.expMonth = theDates[0];
+                            temp.cust.expYear = theDates[1];
                             temp.Callpos = Agent.INBETWEEN;
-                            
                         }
-                    }else
+                    }
+                    else
                     {
                         mrMeseeks = false;
                     }
                     
                     break;
                 case Agent.INST_START:
-                    Console.WriteLine("This isn't the right place omg wtf bbq");
+                    Console.WriteLine("omg wtf bbq");
                     Data = temp.HowLong(response);
-                    theDates = Data.Split(' ');
-                    if (theDates.Length > 0)
+                    
+                    if (Data != "FALSE")
                     {
-                        if (temp.selectData("frmPolicyStart_Month", theDates[0]) && temp.selectData("frmPolicyStart_Year", theDates[1]))
-                        {
-                            temp.Callpos = Agent.INBETWEEN;
-                            
-                        }
-                    }else
+                        theDates = Data.Split(' ');
+                        temp.selectData("frmPolicyStart_Month", theDates[0]);
+                        temp.selectData("frmPolicyStart_Year", theDates[1]);
+                        temp.Callpos = Agent.INBETWEEN;
+                        Console.WriteLine("\n BEYBLADE \n");
+                        
+                    } else if (Data == "FALSE")
+                    {
+                        int year;
+                        int.TryParse(temp.cust.expYear, out year);
+                        temp.selectData("frmPolicyStart_Month", temp.cust.expMonth);
+                        temp.selectData("frmPolicyStart_Year", (year - 1).ToString());
+                        
+                        temp.Callpos = Agent.INBETWEEN;
+                    }
+                    else
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    
                     break;
                 case Agent.NUM_VEHICLES:
                     int data = temp.getNumVehicles(response);
@@ -1234,6 +1248,10 @@ namespace AutoBotCSharp
                     }
                     break;
                 case Agent.DOB:
+                    if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right"))
+                    {
+                        App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
+                    }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.MARITAL_STATUS:
@@ -1292,8 +1310,6 @@ namespace AutoBotCSharp
                     temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.ADDRESS:
-                    string clip = @"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3";
-                    App.RollTheClip(clip);
                     temp.driver.FindElementById("btnValidate").Click();
                     temp.Callpos = Agent.INBETWEEN;
                     break;
@@ -1313,8 +1329,6 @@ namespace AutoBotCSharp
                     temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.LAST_NAME:
-                    clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
-                    App.RollTheClip(clip);
                     temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.TCPA:
@@ -1433,15 +1447,19 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkMaritalStatus(string response)
         {
+            if (response.Contains("single"))
+            {
+                return "Single";
+            }
             if (response.Contains("married"))
             {
                 return "Married";
             }
-            else if (response.Contains("divorced"))
+            else if (response.Contains("divorce"))
             {
                 return "Divorced";
             }
-            else if (response.Contains("separated") || response.Contains("not together"))
+            else if (response.Contains("separate") || response.Contains("not together"))
             {
                 return "Separated";
             }
@@ -1676,7 +1694,7 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void setupBot()
         {
-            Question = INTRO;
+            Question = STARTYMCSTARTFACE;
             string firstName = "";
             while (driver.WindowHandles.Count < 2)
             {
@@ -1800,7 +1818,7 @@ namespace AutoBotCSharp
                 switch (Question)
                 {
                     case INTRO:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
+                        App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
                         break;
                     case INS_EXP:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
@@ -1827,7 +1845,7 @@ namespace AutoBotCSharp
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\4th Vehicle.mp3");
                         break;
                     case DOB:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\DOB1.mp3");
+                        App.playDobClips();
                         break;
                     case MARITAL_STATUS:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Marital Status.mp3");
@@ -1865,6 +1883,7 @@ namespace AutoBotCSharp
 
                 }
                 Callpos = Agent.INBETWEEN;
+                hasAsked = true;
                 return true;
             }
             catch
