@@ -56,7 +56,17 @@ namespace AutoBotCSharp
             return temp;
         }
 
-       
+       public static void reInitMicClient()
+        {
+            
+            string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
+            string apiKey2 = "0d2797650c8648d18474399744512f17";
+            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
+            Console.WriteLine("Change the reco, don't let the reco change you."); 
+        }
+
         public static void startReco()
         {
             longDictationClient.StartMicAndRecognition();
@@ -65,7 +75,7 @@ namespace AutoBotCSharp
         {
             GC.KeepAlive(longDictationClient);
             Agent temp = getAgent();
-            Console.WriteLine(e.Recording);
+            //Console.WriteLine(e.Recording);
             temp.isListening = e.Recording;
             if(!e.Recording)
             {
@@ -76,7 +86,7 @@ namespace AutoBotCSharp
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             GC.KeepAlive(longDictationClient);
-            Console.WriteLine(getAgent().Question);
+            //Console.WriteLine(getAgent().Question);
             string response = e.PartialResult;
             Current.Dispatcher.Invoke((async () =>
             {
@@ -97,10 +107,10 @@ namespace AutoBotCSharp
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
             GC.KeepAlive(longDictationClient);
-            Console.WriteLine(e.PhraseResponse.RecognitionStatus);
+            //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
-                Console.WriteLine("EETSA ME, MARIO!");
+                Console.WriteLine("\nEETSA ME, MARIO!\n");
                 longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "ce43e8a4d7a844b1be7950b260d6b8bd", "0d2797650c8648d18474399744512f17");
                 longDictationClient.StartMicAndRecognition();
             }
@@ -215,7 +225,7 @@ namespace AutoBotCSharp
             else if (!ag.cust.isNameEnabled)
             {
                 string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-                bool x = await App.RollTheClipAndWait(clip);
+                bool x = await RollTheClipAndWait(clip);
             }
         }
 
@@ -261,9 +271,9 @@ namespace AutoBotCSharp
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
             Agent user = App.getAgent();
-            Console.WriteLine("PLAYBACK STOPPED");
-            Console.WriteLine(user.Callpos);
-            Console.WriteLine(user.Question);
+            //Console.WriteLine("PLAYBACK STOPPED");
+            //Console.WriteLine(user.Callpos);
+            //Console.WriteLine(user.Question);
             waveOutIsStopped = true;
             if(user.custObjected == true)
             {

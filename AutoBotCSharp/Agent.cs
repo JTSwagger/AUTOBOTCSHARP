@@ -125,8 +125,9 @@ namespace AutoBotCSharp
                         if (newCall)
                         {
                             setupBot();
-                            Callpos = INTRO;
-                            Question = INTRO;
+                            App.reInitMicClient();
+                            Callpos = STARTYMCSTARTFACE;
+                            Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;
                             calltime = 0;
                             newCall = false;
@@ -161,14 +162,14 @@ namespace AutoBotCSharp
             switch (Dialer_Status)
             {
                 case "READY":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.LightGoldenrodYellow;
                     }));
 
                     break;
                 case "PAUSED":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
 
                         App.getWindow().Background = Brushes.IndianRed;
@@ -176,7 +177,7 @@ namespace AutoBotCSharp
 
                     break;
                 case "INCALL":
-                    System.Windows.Application.Current.Dispatcher.Invoke((() =>
+                    Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.ForestGreen;
                     }));
@@ -279,9 +280,9 @@ namespace AutoBotCSharp
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Generic Exception");
-                    Console.WriteLine("Inner exception: " + ex.InnerException);
-                    Console.WriteLine("Message: " + ex.Message);
+                    //Console.WriteLine("Generic Exception");
+                    //Console.WriteLine("Inner exception: " + ex.InnerException);
+                    //Console.WriteLine("Message: " + ex.Message);
                     retry = false;
                 }
             }
@@ -332,9 +333,9 @@ namespace AutoBotCSharp
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Generic Exception");
-                    Console.WriteLine("Inner exception: " + ex.InnerException);
-                    Console.WriteLine("Message: " + ex.Message);
+                    //Console.WriteLine("Generic Exception");
+                    //Console.WriteLine("Inner exception: " + ex.InnerException);
+                    //Console.WriteLine("Message: " + ex.Message);
                     retry = false;
                 }
             }
@@ -672,7 +673,7 @@ namespace AutoBotCSharp
             { return ("Woolands Financial Group"); }
             if (s.Contains("zurich"))
             { return ("Zurich North America"); }
-            else { return ("Progressive"); }
+            else { return ("FALSE"); }
         }
         //---------------------------------------------------------------------------------------------------
         public static string checkExp(string s)
@@ -1086,13 +1087,13 @@ namespace AutoBotCSharp
             string Data;
             bool mrMeseeks = true;
 
-            Console.WriteLine("CHECKING FOR DATAS");
-            Console.WriteLine("QUESTION: " + temp.Question);
+            //Console.WriteLine("CHECKING FOR DATAS");
+            //Console.WriteLine("QUESTION: " + temp.Question);
 
             switch (temp.Question)
             {
                 case Agent.STARTYMCSTARTFACE:
-                    Console.WriteLine("i am iron man");
+                    //Console.WriteLine("i am iron man");
                     response = response.ToLower();
                     if (temp.cust.isNameEnabled)
                     {
@@ -1113,7 +1114,7 @@ namespace AutoBotCSharp
                     break;
                 case Agent.INTRO: // fall through
                 case Agent.PROVIDER:
-                    Console.WriteLine("checking for provider stuff");
+                    //Console.WriteLine("checking for provider stuff");
                     Data = CheckIProvider(response);
                     if(Data != "FALSE")
                     {
@@ -1129,7 +1130,7 @@ namespace AutoBotCSharp
                     }
                     break;
                 case Agent.INS_EXP:
-                    Console.WriteLine("we really made it, fam");
+                    //Console.WriteLine("we really made it, fam");
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
                     if (theDates.Length > 0)
@@ -1148,7 +1149,7 @@ namespace AutoBotCSharp
                     
                     break;
                 case Agent.INST_START:
-                    Console.WriteLine("omg wtf bbq");
+                    //Console.WriteLine("omg wtf bbq");
                     Data = temp.HowLong(response);
                     
                     if (Data != "FALSE")
@@ -1157,7 +1158,7 @@ namespace AutoBotCSharp
                         temp.selectData("frmPolicyStart_Month", theDates[0]);
                         temp.selectData("frmPolicyStart_Year", theDates[1]);
                         temp.Callpos = Agent.INBETWEEN;
-                        Console.WriteLine("\n BEYBLADE \n");
+                        //Console.WriteLine("\n BEYBLADE \n");
                         
                     } else if (Data == "FALSE")
                     {
@@ -1527,7 +1528,7 @@ namespace AutoBotCSharp
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
+                    //Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
                 }
 
                 return true;

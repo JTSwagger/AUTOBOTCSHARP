@@ -38,6 +38,7 @@ namespace AutoBotCSharp
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
             randy = new Random();
             InitializeComponent();
