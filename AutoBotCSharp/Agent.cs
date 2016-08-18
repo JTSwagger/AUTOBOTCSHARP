@@ -124,8 +124,8 @@ namespace AutoBotCSharp
                         calltime += 0.5;
                         if (newCall)
                         {
+                            if (started) { App.reInitMicClient(); }
                             setupBot();
-                            App.reInitMicClient();
                             Callpos = STARTYMCSTARTFACE;
                             Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;

@@ -31,7 +31,6 @@ namespace AutoBotCSharp
         {
             var mainwindow = Current.MainWindow as MainWindow;
             return mainwindow;
-          
         }
 
         /*
@@ -40,7 +39,7 @@ namespace AutoBotCSharp
          */ 
         public static Agent getAgent()
         {
-            Agent temp = new Agent();
+            Agent temp = null; 
             try
             {
                 Current.Dispatcher.Invoke(() =>
@@ -50,8 +49,7 @@ namespace AutoBotCSharp
             }
             catch (Exception)
             {
-                Console.WriteLine("THIS IS NOT THE USER YOU WERE LOOKING FOR");
-                temp = new Agent();
+                Console.WriteLine("gracefully not handling this error very well");
             }
             return temp;
         }
@@ -110,7 +108,7 @@ namespace AutoBotCSharp
             //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
-                Console.WriteLine("\nEETSA ME, MARIO!\n");
+                Console.WriteLine("\n EETSA ME, MARIO! \n");
                 longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "ce43e8a4d7a844b1be7950b260d6b8bd", "0d2797650c8648d18474399744512f17");
                 longDictationClient.StartMicAndRecognition();
             }
