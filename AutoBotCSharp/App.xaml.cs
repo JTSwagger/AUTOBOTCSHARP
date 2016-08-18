@@ -81,14 +81,26 @@ namespace AutoBotCSharp
                     Console.WriteLine("shortphrase started");
                     break;
                 case 1:
-                    longDictationClient.StartMicAndRecognition();
+                    changeMic(true);
                     Console.WriteLine("longdictation started");
                     break;
             }
         }
-        public static void startReco()
+        public static void changeMic(bool status)
         {
-            longDictationClient.StartMicAndRecognition();
+            if (doMic)
+            {
+                switch (status)
+                {
+                    case true:
+                        longDictationClient.StartMicAndRecognition();
+                        break;
+                    case false:
+                        longDictationClient.EndMicAndRecognition();
+                        break;
+                }
+
+            }
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {

@@ -89,7 +89,7 @@ namespace AutoBotCSharp
             user.Callpos = Agent.INBETWEEN;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
             bool x = await App.RollTheClipAndWait(clip);
-            App.longDictationClient.StartMicAndRecognition();
+            App.changeMic(true);
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -527,7 +527,7 @@ namespace AutoBotCSharp
         }
         private void btnKillLongDictation_Click(object sender, RoutedEventArgs e)
         {
-            App.longDictationClient.EndMicAndRecognition();
+            App.changeMic(false);
             Console.WriteLine("LD ended");
         }
         private void btnReaction_Click(object sender, RoutedEventArgs e)
@@ -617,10 +617,6 @@ namespace AutoBotCSharp
 
             return IntPtr.Zero;
         }
-        private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
-        {
-            App.startReco();
-        }
 
         private void frmReactions_Navigated(object sender, NavigationEventArgs e)
         {
@@ -708,7 +704,7 @@ namespace AutoBotCSharp
             MicrophoneRecognitionClient longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            longDictationClient.StartMicAndRecognition();
+            App.changeMic(true);
         }
 
         private void btnVerifyDOB_Click(object sender, RoutedEventArgs e)

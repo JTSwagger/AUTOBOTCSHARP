@@ -93,13 +93,13 @@ namespace AutoBotCSharp
                     }
                     if (dead)
                     {
-                        App.longDictationClient.EndMicAndRecognition();
+                        App.changeMic(false);
                         autoDispo(calltime);
                     }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
-                        App.longDictationClient.EndMicAndRecognition();
+                        App.changeMic(false);
                     } else if (Dialer_Status == "INCALL")
                     {
                         calltime += 0.5;
@@ -115,8 +115,8 @@ namespace AutoBotCSharp
                         {
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                App.longDictationClient.EndMicAndRecognition();
-                                App.longDictationClient.StartMicAndRecognition();
+                                App.changeMic(true);
+                                App.changeMic(false);
                             });
                         }
 
