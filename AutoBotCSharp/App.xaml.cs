@@ -23,6 +23,8 @@ namespace AutoBotCSharp
         //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
+        public static string apikey1;
+        public static string apikey2;
 
         public static MainWindow getWindow()
         {
@@ -50,7 +52,14 @@ namespace AutoBotCSharp
         /*
          * Testing Stuff No Touchy
          */
+        public void getKeys()
+        {
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents";
+            string[] keys = System.IO.File.ReadAllLines(folder + @"\keys.txt");
 
+            apikey1 = keys[0];
+            apikey2 = keys[1];
+        }
         public static void testSpeechReco(int mode)
         {
             Console.WriteLine("testing now");

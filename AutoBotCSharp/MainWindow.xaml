@@ -180,7 +180,7 @@
             <TabItem x:Name="tbDriverInfo1" Margin="164,0,-191,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
                     <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="True" TextChanged="speechTxtBox_TextChanged"/>
-                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="282,183,134,25" Click="btnStartSpeechRecoLong_Click"/>
+                    <Button x:Name="btnStartSpeechRecoLong" Content="Do Long Dictation Recognition" Margin="282,183,134,25" Click="btnStartSpeechRecoLong_Click" IsEnabled="False"/>
 
                 </Grid>
 
