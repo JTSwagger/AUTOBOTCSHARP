@@ -41,13 +41,17 @@ namespace AutoBotCSharp
             {
                 proc.Kill();
             }
+            App.getKeys();
+            if (App.doMic)
+            {
+                App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", App.apikey1, App.apikey2);
+
+                App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+                App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
+
+                App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            }
            
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", App.apikey1, App.apikey2);
-
-            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
-
-            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
         }
 
         public void setNameText(string name)

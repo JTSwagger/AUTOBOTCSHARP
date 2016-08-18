@@ -25,6 +25,7 @@ namespace AutoBotCSharp
 
         public static string apikey1;
         public static string apikey2;
+        public static bool doMic;
 
         public static MainWindow getWindow()
         {
@@ -52,7 +53,7 @@ namespace AutoBotCSharp
         /*
          * Testing Stuff No Touchy
          */
-        public void getKeys()
+        public static void getKeys()
         {
             try
             {
@@ -61,10 +62,12 @@ namespace AutoBotCSharp
 
                 apikey1 = keys[0];
                 apikey2 = keys[1];
+                doMic = true;
             }
             catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("Couldn't get API keys. Sorry about that.");
+                doMic = false;
             }
             
         }
