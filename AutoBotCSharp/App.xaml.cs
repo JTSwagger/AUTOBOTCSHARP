@@ -24,8 +24,8 @@ namespace AutoBotCSharp
         private static bool waveOutIsStopped = true;
         //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
-       
-       
+
+        public static double totalTimer = 0.0;
 
         public static MainWindow getWindow()
         {
@@ -84,7 +84,15 @@ namespace AutoBotCSharp
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             GC.KeepAlive(longDictationClient);
-            //Console.WriteLine(getAgent().Question);
+            if (totalTimer == 115)
+            {
+                reInitMicClient();
+                totalTimer = 0;
+                if (getAgent().Dialer_Status == "INCALL")
+                {
+                    longDictationClient.StartMicAndRecognition();
+                }
+            }
             string response = e.PartialResult;
             Current.Dispatcher.Invoke((async () =>
             {
@@ -287,6 +295,9 @@ namespace AutoBotCSharp
                 {
                     case Agent.STARTYMCSTARTFACE:
                         user.Callpos = Agent.INTRO; 
+                        break;
+                    case Agent.INTRO:
+                        user.Callpos = Agent.INTRO;
                         break;
                     case "INS_PROVIDER":
                         user.Callpos = Agent.PROVIDER;

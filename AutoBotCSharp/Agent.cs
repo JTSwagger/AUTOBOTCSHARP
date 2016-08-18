@@ -122,10 +122,11 @@ namespace AutoBotCSharp
                     } else if (Dialer_Status == "INCALL")
                     {
                         calltime += 0.5;
+                        App.totalTimer += 0.5;
                         if (newCall)
                         {
-                            if (started) { App.reInitMicClient(); }
                             setupBot();
+                            App.longDictationClient.EndMicAndRecognition();
                             Callpos = STARTYMCSTARTFACE;
                             Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;
@@ -821,7 +822,10 @@ namespace AutoBotCSharp
             cds.HideCommandPromptWindow = true;
             driver = new ChromeDriver(cds);
             driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
-            EnterData("frmFirstName", "James");
+            EnterData("frmFirstName", "Spencer");
+            selectData("frmDOB_Month", "Dec");
+            selectData("frmDOB_Day", "31");
+            selectData("frmDOB_Year", "1992");
         }
         //--------------------------------------------------------------------------------------------------
 
@@ -1790,8 +1794,8 @@ namespace AutoBotCSharp
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
-            App.RollTheClip(App.findNameClips(firstName)[0]);
             App.longDictationClient.StartMicAndRecognition();
+            AskQuestion();
         }
         //---------------------------------------------------------------
 
