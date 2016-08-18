@@ -54,11 +54,19 @@ namespace AutoBotCSharp
          */
         public void getKeys()
         {
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents";
-            string[] keys = System.IO.File.ReadAllLines(folder + @"\keys.txt");
+            try
+            {
+                string folder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents";
+                string[] keys = System.IO.File.ReadAllLines(folder + @"\keys.txt");
 
-            apikey1 = keys[0];
-            apikey2 = keys[1];
+                apikey1 = keys[0];
+                apikey2 = keys[1];
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                MessageBox.Show("Couldn't get API keys. Sorry about that.");
+            }
+            
         }
         public static void testSpeechReco(int mode)
         {
