@@ -112,11 +112,15 @@ namespace AutoBotCSharp
 
         public static void REMIX()
         {
-            Console.WriteLine("\n EETSA ME, MARIO! \n");
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "10821a4acf1a433cae31510dfb353e1", "5070c52d6d974f0b90fd3edbd4182aec");
-            App.longDictationClient.StartMicAndRecognition();
-            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            longDictationClient.Dispose();
+            Current.Dispatcher.Invoke((() =>
+            {
+                Console.WriteLine("\n EETSA ME, MARIO! \n");
+            }));
+            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "10821a4acf1a433cae31510dfb353e1", "5070c52d6d974f0b90fd3edbd4182aec");
+            longDictationClient.StartMicAndRecognition();
+            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
+            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
         }
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
@@ -125,8 +129,11 @@ namespace AutoBotCSharp
             //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
-               
-                Current.Dispatcher.Invoke(async () => { REMIX(); });
+                Current.Dispatcher.Invoke((async () =>
+                {
+                    await Task.Run((Action)REMIX);
+                }));
+                
             }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
@@ -146,9 +153,8 @@ namespace AutoBotCSharp
                 }));
             }
 
-            Current.Dispatcher.Invoke(() =>
+            Current.Dispatcher.Invoke((() =>
             { 
-                
                 if(getAgent().custObjected == false)
                 {
                     doBackgroundQuestionSwitchingStuff();
@@ -157,9 +163,8 @@ namespace AutoBotCSharp
                         getAgent().AskQuestion();
                         getAgent().hasAsked = true;
                     }
-                    
                 }
-            });
+            }));
             longDictationClient.StartMicAndRecognition();
         }
 
@@ -225,7 +230,7 @@ namespace AutoBotCSharp
                 case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
                 case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
                 case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
-
+                case Agent.TCPA: ag.Question = "nothing!"; break;
             }
         }
         public async void doIntroduction()
