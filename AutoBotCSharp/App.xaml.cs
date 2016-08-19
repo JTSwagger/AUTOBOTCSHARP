@@ -117,7 +117,7 @@ namespace AutoBotCSharp
             {
                 Console.WriteLine("\n EETSA ME, MARIO! \n");
             }));
-            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "10821a4acf1a433cae31510dfb353e1", "5070c52d6d974f0b90fd3edbd4182aec");
+            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "da5cba8bccad48bb831873b688037964", "76961534d0ac4c088364771cccbc5081");
             longDictationClient.StartMicAndRecognition();
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
