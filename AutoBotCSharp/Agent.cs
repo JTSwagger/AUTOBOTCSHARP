@@ -113,11 +113,11 @@ namespace AutoBotCSharp
                         }
                         if (calltime >= 115)
                         {
-                            Application.Current.Dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke((() =>
                             {
                                 App.longDictationClient.EndMicAndRecognition();
                                 App.longDictationClient.StartMicAndRecognition();
-                            });
+                            }));
                         }
 
                     }
