@@ -30,7 +30,6 @@ namespace AutoBotCSharp
         private Random randy;
         public Agent user;
         
-
         public MainWindow()
         {
             user = new Agent();
