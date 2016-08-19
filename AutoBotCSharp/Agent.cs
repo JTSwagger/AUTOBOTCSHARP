@@ -1332,16 +1332,10 @@ namespace AutoBotCSharp
                     if (temp.checkTCPAResponse(response))
                     {
                         temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
-                        //App.getAgent().driver.FindElementById("btnSubmit").Click();
-                        temp.HangUpandDispo("Auto Lead");
-                        temp.driver.FindElementById("btnSubmit").Click();
                     }
                     else
                     {
                         temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                        temp.HangUpandDispo("LOW");
                     }
                     break;
             }

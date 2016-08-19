@@ -36,7 +36,7 @@ namespace AutoBotCSharp
          */ 
         public static Agent getAgent()
         {
-            Agent temp;
+            Agent temp = null;
             try
             {
                temp = getWindow().user;
@@ -158,6 +158,7 @@ namespace AutoBotCSharp
                 // hidden below is a massive switch statement...
                 switch (user.Question)
                 {
+                    case Agent.INTRO: user.Callpos = Agent.INS_PROVIDER; break; 
                     case "INS_PROVIDER": user.Callpos = Agent.INS_PROVIDER; break;
                     case "INS_EXP": user.Callpos = Agent.INS_EXP; break;
                     case "YMM1": user.Callpos = Agent.YMM1; break;

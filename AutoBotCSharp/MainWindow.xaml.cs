@@ -41,8 +41,8 @@ namespace AutoBotCSharp
             {
                 proc.Kill();
             }
-            string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
-            string apiKey2 = "0d2797650c8648d18474399744512f17";
+            string apiKey1 = "da5cba8bccad48bb831873b688037964";
+            string apiKey2 = "76961534d0ac4c088364771cccbc5081";
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
 
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
@@ -80,12 +80,12 @@ namespace AutoBotCSharp
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
-        private async void btnIntro_Click(object sender, RoutedEventArgs e)
+        private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "INS_PROVIDER";
             user.Callpos = Agent.INBETWEEN;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-            bool x = await App.RollTheClipAndWait(clip);
+            App.RollTheClip(clip);
             App.longDictationClient.StartMicAndRecognition();
         }
         private void button_Click(object sender, RoutedEventArgs e)
@@ -241,12 +241,12 @@ namespace AutoBotCSharp
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
             App.RollTheClip(clip);
         }
-        private async void btnTCPA_Click(object sender, RoutedEventArgs e)
+        private void btnTCPA_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "TCPA";
             user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3";
-            bool x = await App.RollTheClipAndWait(clip);
+            App.RollTheClip(clip);
         }
         // Reactions button group
         private void btnWhatIGot_Click(object sender, RoutedEventArgs e)
