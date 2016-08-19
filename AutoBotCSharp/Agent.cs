@@ -1103,7 +1103,7 @@ namespace AutoBotCSharp
                     {
                         if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
                         {
-                            temp.Question = INTRO;
+                            // great
                         }
                         else if (response.Contains("no"))
                         {

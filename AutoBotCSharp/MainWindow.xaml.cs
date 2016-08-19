@@ -33,8 +33,8 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
-            string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
-            string apiKey2 = "0d2797650c8648d18474399744512f17";
+            string apiKey1 = "10821a4acf1a433cae31510dfb353e10";
+            string apiKey2 = "5070c52d6d974f0b90fd3edbd4182aec";
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
