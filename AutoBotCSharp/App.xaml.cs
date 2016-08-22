@@ -23,9 +23,6 @@ namespace AutoBotCSharp
         //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
-        public static string apikey1;
-        public static string apikey2;
-        public static bool doMic;
 
         public static MainWindow getWindow()
         {
@@ -53,24 +50,7 @@ namespace AutoBotCSharp
         /*
          * Testing Stuff No Touchy
          */
-        public static void getKeys()
-        {
-            try
-            {
-                string folder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Documents";
-                string[] keys = System.IO.File.ReadAllLines(folder + @"\keys.txt");
 
-                apikey1 = keys[0];
-                apikey2 = keys[1];
-                doMic = true;
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                MessageBox.Show("Couldn't get API keys. Sorry about that.");
-                doMic = false;
-            }
-            
-        }
         public static void testSpeechReco(int mode)
         {
             Console.WriteLine("testing now");
@@ -81,26 +61,14 @@ namespace AutoBotCSharp
                     Console.WriteLine("shortphrase started");
                     break;
                 case 1:
-                    changeMic(true);
+                    longDictationClient.StartMicAndRecognition();
                     Console.WriteLine("longdictation started");
                     break;
             }
         }
-        public static void changeMic(bool status)
+        public static void startReco()
         {
-            if (doMic)
-            {
-                switch (status)
-                {
-                    case true:
-                        longDictationClient.StartMicAndRecognition();
-                        break;
-                    case false:
-                        longDictationClient.EndMicAndRecognition();
-                        break;
-                }
-
-            }
+            longDictationClient.StartMicAndRecognition();
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {
@@ -114,11 +82,12 @@ namespace AutoBotCSharp
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
             string response = e.PartialResult;
-            Current.Dispatcher.Invoke((async () =>
+            Application.Current.Dispatcher.Invoke((async () =>
             {
                 bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
-                x = await Agent.checkForObjection(response);
+                if (!(x = await Agent.checkForObjection(response)))
+                { Agent.checkforData(response); }
             }));
             
         }
@@ -131,7 +100,7 @@ namespace AutoBotCSharp
             }
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
-                Current.Dispatcher.Invoke((() =>
+                Application.Current.Dispatcher.Invoke((() =>
                 {
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);                    
                 }));  
@@ -179,34 +148,36 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            Agent user = getAgent();
+            Agent user = App.getAgent();
             Console.WriteLine("PLAYBACK STOPPED");
             Console.WriteLine(user.Callpos);
             Console.WriteLine(user.Question);
             waveOutIsStopped = true;
             if(user.Callpos == "INBETWEEN")
             {
-            //    // hidden below is a massive switch statement...
-            //    switch (user.Question)
-            //    {
-            //        case "INS_PROVIDER": user.Callpos = Agent.INS_PROVIDER; break;
-            //        case "INS_EXP": user.Callpos = Agent.INS_EXP; break;
-            //        case "YMM1": user.Callpos = Agent.YMM1; break;
-            //        case "YMM2": user.Callpos = Agent.YMM2; break;
-            //        case "YMM3": user.Callpos = Agent.YMM3; break;
-            //        case "YMM4": user.Callpos = Agent.YMM4; break;
-            //        case "DOB": user.Callpos = Agent.DOB; break;
-            //        case "MARITAL_STATUS": user.Callpos = Agent.MARITAL_STATUS; break;
-            //        case "SPOUSE_NAME": user.Callpos = Agent.SPOUSE_NAME; break;
-            //        case "SPOUSE_DOB": user.Callpos = Agent.SPOUSE_DOB; break;
-            //        case "OWN OR RENT": user.Callpos = Agent.OWN_OR_RENT; break;
-            //        case "RESIDENCE TYPE": user.Callpos = Agent.RES_TYPE; break;
-            //        case "CREDIT": user.Callpos = Agent.CREDIT; break;
-            //        case "ADDRESS": user.Callpos = Agent.ADDRESS; break;
-            //        case "EMAIL": user.Callpos = Agent.EMAIL; break;
-            //        case "PHONE TYPE": user.Callpos = Agent.PHONE_TYPE; break;
-            //        case "LAST NAME": user.Callpos = Agent.LAST_NAME; break;
-            //        case "TCPA": user.Callpos = Agent.TCPA; break;
+                // hidden below is a massive switch statement...
+                switch (user.Question)
+                {
+                    case Agent.INTRO: user.Callpos = Agent.INS_PROVIDER; break; 
+                    case "INS_PROVIDER": user.Callpos = Agent.INS_PROVIDER; break;
+                    case "INS_EXP": user.Callpos = Agent.INS_EXP; break;
+                    case "YMM1": user.Callpos = Agent.YMM1; break;
+                    case "YMM2": user.Callpos = Agent.YMM2; break;
+                    case "YMM3": user.Callpos = Agent.YMM3; break;
+                    case "YMM4": user.Callpos = Agent.YMM4; break;
+                    case "DOB": user.Callpos = Agent.DOB; break;
+                    case "MARITAL_STATUS": user.Callpos = Agent.MARITAL_STATUS; break;
+                    case "SPOUSE_NAME": user.Callpos = Agent.SPOUSE_NAME; break;
+                    case "SPOUSE_DOB": user.Callpos = Agent.SPOUSE_DOB; break;
+                    case "OWN OR RENT": user.Callpos = Agent.OWN_OR_RENT; break;
+                    case "RESIDENCE TYPE": user.Callpos = Agent.RES_TYPE; break;
+                    case "CREDIT": user.Callpos = Agent.CREDIT; break;
+                    case "ADDRESS": user.Callpos = Agent.ADDRESS; break;
+                    case "EMAIL": user.Callpos = Agent.EMAIL; break;
+                    case "PHONE TYPE": user.Callpos = Agent.PHONE_TYPE; break;
+                    case "LAST NAME": user.Callpos = Agent.LAST_NAME; break;
+                    case "TCPA": user.Callpos = Agent.TCPA; break;
+                }
             }
         }
         public static bool RollTheClip(string Clip)

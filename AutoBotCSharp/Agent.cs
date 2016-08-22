@@ -93,13 +93,13 @@ namespace AutoBotCSharp
                     }
                     if (dead)
                     {
-                        App.changeMic(false);
+                        App.longDictationClient.EndMicAndRecognition();
                         autoDispo(calltime);
                     }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
-                        App.changeMic(false);
+                        App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL")
                     {
                         calltime += 0.5;
@@ -113,11 +113,11 @@ namespace AutoBotCSharp
                         }
                         if (calltime >= 115)
                         {
-                            Application.Current.Dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke((() =>
                             {
-                                App.changeMic(true);
-                                App.changeMic(false);
-                            });
+                                App.longDictationClient.EndMicAndRecognition();
+                                App.longDictationClient.StartMicAndRecognition();
+                            }));
                         }
 
                     }
@@ -1328,28 +1328,34 @@ namespace AutoBotCSharp
                     clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
                     App.RollTheClip(clip);
                     break;
-                //case Agent.TCPA:
-                //    if (temp.checkTCPAResponse(response))
-                //    {
-                //        temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
-                //        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
-                //        //App.getAgent().driver.FindElementById("btnSubmit").Click();
-                //        temp.HangUpandDispo("Auto Lead");
-                //        temp.driver.FindElementById("btnSubmit").Click();
-                //    }
-                //    else
-                //    {
-                //        temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
-                //        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                //        temp.HangUpandDispo("LOW");
-                //    }
-                //    break;
+                case Agent.TCPA:
+                    if (temp.checkTCPAResponse(response))
+                    {
+                        temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
+                    }
+                    else
+                    {
+                        temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
+                    }
+                    break;
             }
             if (!mrMeseeks)
             {
                 Console.WriteLine("\nMR MESEEKS FUCKING HATES YOU\n");
             }
             return mrMeseeks;
+        }
+        public bool checkTCPAResponse(string response)
+        {
+            if (response.Contains("yes") || response.Contains("sure") || response.Contains("alright"))
+            {
+                return true;
+            }
+            else if (response.Contains("no"))
+            {
+                return false;
+            }
+            return false;
         }
         //------------------------------------------------------------------
         public string checkPhoneType(string response)
