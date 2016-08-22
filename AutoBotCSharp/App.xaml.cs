@@ -18,6 +18,9 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
+        public Dictionary<string, bool> RESULTS;
+
+
         public Preferences prefs;
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
@@ -121,7 +124,7 @@ namespace AutoBotCSharp
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
-            GC.KeepAlive(longDictationClient);
+
             //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
@@ -138,10 +141,14 @@ namespace AutoBotCSharp
                 longDictationClient.EndMicAndRecognition();
                 longDictationClient.StartMicAndRecognition();
             }
+            
             foreach (RecognizedPhrase result in e.PhraseResponse.Results)
             {
+                if(result.DisplayText != "")
+                { }
+                Console.WriteLine(waveOutIsStopped);
                 Current.Dispatcher.Invoke((() =>
-                {
+                { 
                     getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
                 }));
             }
@@ -151,11 +158,14 @@ namespace AutoBotCSharp
                 
                 if(getAgent().custObjected == false)
                 {
-                    doBackgroundQuestionSwitchingStuff();
-                    if (!getAgent().hasAsked)
+                    if (waveOutIsStopped)
                     {
-                        getAgent().AskQuestion();
-                        getAgent().hasAsked = true;
+                        doBackgroundQuestionSwitchingStuff();
+                        if (!getAgent().hasAsked)
+                        {
+                            getAgent().AskQuestion();
+                            getAgent().hasAsked = true;
+                        }
                     }
                     
                 }
@@ -168,64 +178,67 @@ namespace AutoBotCSharp
             GC.KeepAlive(longDictationClient);
             Agent ag = getAgent();
             // call position advancement
-            switch (ag.Question)
+            if (waveOutIsStopped)
             {
-                case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
-                case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
-                case Agent.PROVIDER: ag.Question = Agent.INS_EXP; break;
-                case Agent.INS_EXP: ag.Question = Agent.INST_START; break;
-                case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; break;
-                case Agent.NUM_VEHICLES:
-                    if (ag.cust.numVehicles > 1)
-                    {
-                        ag.Question = Agent.YMM1;
-                    }
-                    else if (ag.cust.numVehicles == 1)
-                    {
-                        ag.Question = Agent.YMM_ONLY_ONE;
-                    }
-                   
-                    break;
-                case Agent.YMM_ONLY_ONE: ag.Question = Agent.DOB; break;
-                case Agent.YMM1: ag.Question = Agent.YMM2; break;
-                case Agent.YMM2:
-                    if (ag.cust.numVehicles > 2)
-                    {
-                        ag.Question = Agent.YMM3;
-                    }
-                    else { ag.Question = Agent.DOB; }
-                   
-                    break;
-                case Agent.YMM3:
-                    if (ag.cust.numVehicles > 3)
-                    {
-                        ag.Question = Agent.YMM4;
-                    }
-                    else { ag.Question = Agent.DOB;}
-                    break;
-                case Agent.YMM4: ag.Question = Agent.DOB; break;
-                case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
-                case Agent.MARITAL_STATUS:
-                    if (ag.cust.maritalStatus == "Married")
-                    {
-                        ag.Question = Agent.SPOUSE_NAME;
-                    }
-                    else
-                    {
-                        ag.Question = Agent.OWN_OR_RENT;
-                    }
-                   
-                    break;
-                case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; break;
-                case Agent.SPOUSE_DOB: ag.Question = Agent.OWN_OR_RENT; break;
-                case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; break;
-                case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; break;
-                case Agent.ADDRESS: ag.Question = Agent.EMAIL; break;
-                case Agent.EMAIL: ag.Question = Agent.CREDIT; break;
-                case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
-                case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
-                case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
+                switch (ag.Question)
+                {
+                    case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
+                    case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
+                    case Agent.PROVIDER: ag.Question = Agent.INS_EXP; break;
+                    case Agent.INS_EXP: ag.Question = Agent.INST_START; break;
+                    case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; break;
+                    case Agent.NUM_VEHICLES:
+                        if (ag.cust.numVehicles > 1)
+                        {
+                            ag.Question = Agent.YMM1;
+                        }
+                        else if (ag.cust.numVehicles == 1)
+                        {
+                            ag.Question = Agent.YMM_ONLY_ONE;
+                        }
 
+                        break;
+                    case Agent.YMM_ONLY_ONE: ag.Question = Agent.DOB; break;
+                    case Agent.YMM1: ag.Question = Agent.YMM2; break;
+                    case Agent.YMM2:
+                        if (ag.cust.numVehicles > 2)
+                        {
+                            ag.Question = Agent.YMM3;
+                        }
+                        else { ag.Question = Agent.DOB; }
+
+                        break;
+                    case Agent.YMM3:
+                        if (ag.cust.numVehicles > 3)
+                        {
+                            ag.Question = Agent.YMM4;
+                        }
+                        else { ag.Question = Agent.DOB; }
+                        break;
+                    case Agent.YMM4: ag.Question = Agent.DOB; break;
+                    case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
+                    case Agent.MARITAL_STATUS:
+                        if (ag.cust.maritalStatus == "Married")
+                        {
+                            ag.Question = Agent.SPOUSE_NAME;
+                        }
+                        else
+                        {
+                            ag.Question = Agent.OWN_OR_RENT;
+                        }
+
+                        break;
+                    case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; break;
+                    case Agent.SPOUSE_DOB: ag.Question = Agent.OWN_OR_RENT; break;
+                    case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; break;
+                    case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; break;
+                    case Agent.ADDRESS: ag.Question = Agent.EMAIL; break;
+                    case Agent.EMAIL: ag.Question = Agent.CREDIT; break;
+                    case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
+                    case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
+                    case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
+
+                }
             }
         }
         public async void doIntroduction()
@@ -284,11 +297,13 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
+            longDictationClient.StartMicAndRecognition();
             Agent user = getAgent();
             //Console.WriteLine("PLAYBACK STOPPED");
             //Console.WriteLine(user.Callpos);
             //Console.WriteLine(user.Question);
             waveOutIsStopped = true;
+            Console.WriteLine(waveOutIsStopped);
             if(user.custObjected == true)
             {
                 user.custObjected = false;
@@ -379,6 +394,7 @@ namespace AutoBotCSharp
             Console.WriteLine("CLIP");
             try
             {
+                waveOutIsStopped = false;
                 StopTheClip();
                 waveOut = new WaveOut();
                 waveOut.PlaybackStopped += onPlaybackStopped;

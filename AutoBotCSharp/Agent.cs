@@ -128,7 +128,7 @@ namespace AutoBotCSharp
                         if (newCall)
                         {
                             setupBot();
-                            App.longDictationClient.EndMicAndRecognition();
+                            App.longDictationClient.StartMicAndRecognition();
                             Callpos = STARTYMCSTARTFACE;
                             Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;
@@ -944,8 +944,7 @@ namespace AutoBotCSharp
 
         
         public string GETYMM(string response, int vehicleNum)
-        {
-
+        { 
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -953,7 +952,6 @@ namespace AutoBotCSharp
             string model = "FALSE";
             string searcher = "";
             OpenQA.Selenium.IWebElement models;
-
             switch (vehicleNum)
             {
                 case 1:
@@ -969,7 +967,6 @@ namespace AutoBotCSharp
                     Modelcontrol = "vehicle4-model";
                     break;
             }
-
             if (response.Contains("1981")) { year = "1981"; }
             else if (response.Contains("1982") || response.Contains("82")) { year = "1982"; }
             else if (response.Contains("1983") || response.Contains("83")) { year = "1983"; }
@@ -1621,6 +1618,8 @@ namespace AutoBotCSharp
 
             try
             {
+                App.longDictationClient.EndMicAndRecognition();
+                App.getAgent().Question = STARTYMCSTARTFACE;
                 WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
                 WebResponse r = h.GetResponse();
                 Thread.Sleep(250);
@@ -1820,6 +1819,7 @@ namespace AutoBotCSharp
         {
             try
             {
+                App.longDictationClient.EndMicAndRecognition();
                 switch (Question)
                 {
                     case STARTYMCSTARTFACE:
