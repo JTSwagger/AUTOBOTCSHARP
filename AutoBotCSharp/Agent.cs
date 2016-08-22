@@ -1340,7 +1340,6 @@ namespace AutoBotCSharp
                     if (temp.checkTCPAResponse(response))
                     {
                         temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
-         
                     }
                     else
                     {
@@ -1694,7 +1693,7 @@ namespace AutoBotCSharp
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        public void setupBot()
+        public async void setupBot()
         {
             Question = STARTYMCSTARTFACE;
             string firstName = "";
@@ -1728,9 +1727,10 @@ namespace AutoBotCSharp
                     Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().setNameBtns(false);
-                        cust.isNameEnabled = false; 
+                        cust.isNameEnabled = false;
                     }));
-                } else
+                }
+                else
                 {
                     Application.Current.Dispatcher.Invoke((() =>
                     {
@@ -1745,7 +1745,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            Task.Run((Action)getDob);
+            await Task.Run((Action)getDob);
 
             AskQuestion();
 
@@ -1785,7 +1785,7 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            Task.Run((Action)getDob);
+            Task t = Task.Run((Action)getDob);
 
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
@@ -1905,7 +1905,7 @@ namespace AutoBotCSharp
                         App.longDictationClient.StartMicAndRecognition();
                         break;
                 }
-                Callpos = Agent.INBETWEEN;
+                Callpos = INBETWEEN;
                 hasAsked = true;
                 return true;
             }
