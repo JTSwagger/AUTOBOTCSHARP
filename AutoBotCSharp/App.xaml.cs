@@ -18,13 +18,13 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
-        public Dictionary<string, bool> RESULTS;
+        public static Dictionary<string, bool> RESULTS = new Dictionary<string, bool>();
 
-
+        public static bool failedEntry = false;
         public Preferences prefs;
         private static Random randy = new Random();
         private static WaveOut waveOut = new WaveOut();
-        private static bool waveOutIsStopped = true;
+        public  static bool waveOutIsStopped = true;
         //public static MicrophoneRecognitionClient shortPhraseClient;
         public static MicrophoneRecognitionClient longDictationClient;
 
@@ -59,43 +59,42 @@ namespace AutoBotCSharp
 
        public static void reInitMicClient()
         {
-            
-            string apiKey1 = "ce43e8a4d7a844b1be7950b260d6b8bd";
-            string apiKey2 = "0d2797650c8648d18474399744512f17";
+
+            string apiKey1 = "10821a4acf1a433cae31510dfb353e10";
+            string apiKey2 = "5070c52d6d974f0b90fd3edbd4182aec";
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
+            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
+            longDictationClient.OnConversationError += onConversationErrorHandler;
+            
             Console.WriteLine("Change the reco, don't let the reco change you."); 
+            longDictationClient.StartMicAndRecognition();
         }
 
         public static void startReco()
         {
             longDictationClient.StartMicAndRecognition();
         }
+        public static void onConversationErrorHandler(object sender, SpeechErrorEventArgs e)
+        {
+            Console.WriteLine(e.SpeechErrorText);
+       
+
+        }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {
-            GC.KeepAlive(longDictationClient);
+        
             Agent temp = getAgent();
-            //Console.WriteLine(e.Recording);
+            Console.WriteLine("MIC IS RECORDING: " + e.Recording);
             temp.isListening = e.Recording;
-            if(!e.Recording)
-            {
-                longDictationClient.StartMicAndRecognition();
-            }
+
         }
+
 
         public static void onPartialResponseReceivedHandler(object sender, PartialSpeechResponseEventArgs e)
         {
-            GC.KeepAlive(longDictationClient);
-            if (totalTimer == 115)
-            {
-                reInitMicClient();
-                totalTimer = 0;
-                if (getAgent().Dialer_Status == "INCALL")
-                {
-                    longDictationClient.StartMicAndRecognition();
-                }
-            }
+
             string response = e.PartialResult;
             Current.Dispatcher.Invoke((async () =>
             {
@@ -117,9 +116,12 @@ namespace AutoBotCSharp
         {
             Console.WriteLine("\n EETSA ME, MARIO! \n");
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "10821a4acf1a433cae31510dfb353e1", "5070c52d6d974f0b90fd3edbd4182aec");
-            App.longDictationClient.StartMicAndRecognition();
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            if (App.getAgent().inCall)
+            {
+                App.longDictationClient.StartMicAndRecognition();
+            }
         }
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
@@ -128,54 +130,67 @@ namespace AutoBotCSharp
             //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
-               
+                Console.WriteLine("REACHED 2 MIN.");
                 Current.Dispatcher.Invoke(async () => { REMIX(); });
             }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
-                longDictationClient.EndMicAndRecognition();
-                longDictationClient.StartMicAndRecognition();
+                if (App.getAgent().inCall)
+                {
+                    Console.WriteLine("DICTATION END SILENCE");
+                    longDictationClient.EndMicAndRecognition();
+                    longDictationClient.StartMicAndRecognition();
+                }
             }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.InitialSilenceTimeout)
             {
-                longDictationClient.EndMicAndRecognition();
-                longDictationClient.StartMicAndRecognition();
-            }
-            
-            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
-            {
-                if(result.DisplayText != "")
-                { }
-                Console.WriteLine(waveOutIsStopped);
-                Current.Dispatcher.Invoke((() =>
-                { 
-                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
-                }));
+                if (App.getAgent().inCall)
+                {
+                    Console.WriteLine("INITIAL SILENCE");
+                    longDictationClient.EndMicAndRecognition();
+                    longDictationClient.StartMicAndRecognition();
+                }
+
             }
 
-            Current.Dispatcher.Invoke(() =>
-            { 
-                
-                if(getAgent().custObjected == false)
+            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
+            {
+                if (result.DisplayText != "")
                 {
-                    if (waveOutIsStopped)
+                    Console.WriteLine(waveOutIsStopped);
+                    Current.Dispatcher.Invoke((() =>
                     {
-                        doBackgroundQuestionSwitchingStuff();
-                        if (!getAgent().hasAsked)
+                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
+                    if (result.DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
+                    }));
+
+
+                    Current.Dispatcher.Invoke(() =>
+                    {
+
+                        if (getAgent().custObjected == false)
                         {
-                            getAgent().AskQuestion();
-                            getAgent().hasAsked = true;
+                            if (waveOutIsStopped)
+                            {
+                                
+                                    doBackgroundQuestionSwitchingStuff();
+                                    if (!getAgent().hasAsked)
+                                    {
+                                        getAgent().AskQuestion();
+                                        getAgent().hasAsked = true;
+                                    }
+                                
+                                
+                            }
                         }
-                    }
-                    
+                    });
+
                 }
-            });
-            longDictationClient.StartMicAndRecognition();
+            }      
         }
 
         public static void doBackgroundQuestionSwitchingStuff()
         {
-            GC.KeepAlive(longDictationClient);
             Agent ag = getAgent();
             // call position advancement
             if (waveOutIsStopped)
@@ -183,10 +198,17 @@ namespace AutoBotCSharp
                 switch (ag.Question)
                 {
                     case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
-                    case Agent.INTRO: ag.Question = Agent.INS_EXP; break;
-                    case Agent.PROVIDER: ag.Question = Agent.INS_EXP; break;
-                    case Agent.INS_EXP: ag.Question = Agent.INST_START; break;
-                    case Agent.INST_START: ag.Question = Agent.NUM_VEHICLES; break;
+                    case Agent.INTRO:
+                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked=true; } break; 
+                    case Agent.PROVIDER:
+                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
+                    case Agent.INS_EXP:
+                        if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "") { ag.Question = Agent.INST_START; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
+                    case Agent.INST_START:
+                        if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "") { ag.Question = Agent.NUM_VEHICLES; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
                     case Agent.NUM_VEHICLES:
                         if (ag.cust.numVehicles > 1)
                         {
@@ -198,25 +220,41 @@ namespace AutoBotCSharp
                         }
 
                         break;
-                    case Agent.YMM_ONLY_ONE: ag.Question = Agent.DOB; break;
-                    case Agent.YMM1: ag.Question = Agent.YMM2; break;
+                    case Agent.YMM_ONLY_ONE:
+                        if (ag.driver.FindElementById("vehicle-model").Displayed ) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
+                    case Agent.YMM1:
+                        if (ag.driver.FindElementById("vehicle-model").Displayed) { ag.Question = Agent.YMM2; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
                     case Agent.YMM2:
                         if (ag.cust.numVehicles > 2)
                         {
-                            ag.Question = Agent.YMM3;
+                            if (ag.driver.FindElementById("vehicle2-model").Displayed)  { ag.Question = Agent.YMM3; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                          
                         }
-                        else { ag.Question = Agent.DOB; }
+                        else
+                        {
+                            if (ag.driver.FindElementById("vehicle2-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                            break;
+                        }
 
                         break;
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
                         {
-                            ag.Question = Agent.YMM4;
+                            if (ag.driver.FindElementById("vehicle3-model").Displayed){ ag.Question = Agent.YMM4; ag.hasAsked = false; } else { ag.hasAsked = true; }
                         }
-                        else { ag.Question = Agent.DOB; }
+                        else
+                        {
+                            if (ag.driver.FindElementById("vehicle3-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }                          
+                        }
                         break;
-                    case Agent.YMM4: ag.Question = Agent.DOB; break;
+                    case Agent.YMM4:
+                        if (ag.driver.FindElementById("vehicle4-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        break;
+
                     case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
+
                     case Agent.MARITAL_STATUS:
                         if (ag.cust.maritalStatus == "Married")
                         {
@@ -309,6 +347,7 @@ namespace AutoBotCSharp
                 user.custObjected = false;
                 //Console.WriteLine(user.Question);
                 user.AskQuestion();
+                waveOut.Dispose();
                 return;
             }
             if(user.Callpos == "INBETWEEN")
@@ -394,7 +433,7 @@ namespace AutoBotCSharp
             Console.WriteLine("CLIP");
             try
             {
-                waveOutIsStopped = false;
+
                 StopTheClip();
                 waveOut = new WaveOut();
                 waveOut.PlaybackStopped += onPlaybackStopped;
@@ -405,8 +444,9 @@ namespace AutoBotCSharp
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.Message);
-                //Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
@@ -435,8 +475,8 @@ namespace AutoBotCSharp
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex.Message);
-                //Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.InnerException);
                 return false;
             }
         }
@@ -444,6 +484,7 @@ namespace AutoBotCSharp
         {
             waveOut.Stop();
             waveOut.Dispose();
+            waveOutIsStopped = false;
         }
         private static int okClipIndex = 0;
         public static void playOkClip()

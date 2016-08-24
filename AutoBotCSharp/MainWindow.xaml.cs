@@ -33,11 +33,13 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
-            string apiKey1 = "da5cba8bccad48bb831873b688037964";
-            string apiKey2 = "76961534d0ac4c088364771cccbc5081";
+            string apiKey1 = "10821a4acf1a433cae31510dfb353e10";
+            string apiKey2 = "5070c52d6d974f0b90fd3edbd4182aec";
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            App.longDictationClient.OnMicrophoneStatus += App. onMicrophoneStatusHandler;
+
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
             randy = new Random();

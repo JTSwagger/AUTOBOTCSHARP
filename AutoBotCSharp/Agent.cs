@@ -18,6 +18,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public bool inCall = false;
         public bool custObjected = false;
         public bool isListening = false;
         public bool hasAsked = false;
@@ -89,33 +90,27 @@ namespace AutoBotCSharp
 
             while (LoggedIn)
             {
-                
+
                 StartWebRequest();
                 string stats = reader.ReadToEnd();
+                reader.Close();
                 string[] tempstr = stats.Split(',');
-                bool dead = false;
                 try
                 {
                     Dialer_Status = tempstr[0];
                     Agent_Name = tempstr[5];
                     try
                     {
-                        foreach (string stat in tempstr)
+                        if (stats.Contains("DEAD"))
                         {
-                            if (stat.Contains("DEAD"))
-                            {
-                                dead = true;
-                                break;
-                            }
+                            Console.WriteLine(stats);
+                            autoDispo(calltime);
+                            inCall = false;
                         }
+
                     } catch (Exception)
                     {
                         Console.WriteLine("moo");
-                    }
-                    if (dead)
-                    {
-                        App.longDictationClient.EndMicAndRecognition();
-                        autoDispo(calltime);
                     }
                     if (Dialer_Status == "READY")
                     {
@@ -123,22 +118,24 @@ namespace AutoBotCSharp
                         App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL")
                     {
+                        
                         calltime += 0.5;
                         App.totalTimer += 0.5;
                         if (newCall)
                         {
+                            inCall = true;
                             setupBot();
-                            App.longDictationClient.StartMicAndRecognition();
                             Callpos = STARTYMCSTARTFACE;
                             Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;
                             calltime = 0;
                             newCall = false;
                         }
-                        if(calltime >= 115)
+                        if (calltime >= 115)
                         {
                             App.longDictationClient.EndMicAndRecognition();
                             App.longDictationClient.StartMicAndRecognition();
+                            calltime = 0;
                         }
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
@@ -154,7 +151,7 @@ namespace AutoBotCSharp
                     }
                 }
                 setGlobals();
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
         }
         //------------------------------------------------------------------------------------------------------
@@ -292,7 +289,7 @@ namespace AutoBotCSharp
             return false;
         }
 
-      
+
 
         //===============================================================================
         public async void async_selectData(string elementId, string data)
@@ -304,7 +301,7 @@ namespace AutoBotCSharp
                 try
                 {
                     var select = new SelectElement(driver.FindElementById(elementId));
-                    await Task.Run(() => select.SelectByText(data)); 
+                    await Task.Run(() => select.SelectByText(data));
                 }
                 catch (OpenQA.Selenium.ElementNotVisibleException)
                 {
@@ -799,6 +796,22 @@ namespace AutoBotCSharp
             else
             {
                 expMonth = (DateTime.Now.Month + 1).ToString();
+                switch (expMonth)
+                {
+                    case "1": expMonth = "Jan"; break;
+                    case "2": expMonth = "Feb"; break;
+                    case "3": expMonth = "Mar"; break;
+                    case "4": expMonth = "Apr"; break;
+                    case "5": expMonth = "May"; break;
+                    case "6": expMonth = "Jun"; break;
+                    case "7": expMonth = "Jul"; break;
+                    case "8": expMonth = "Aug"; break;
+                    case "9": expMonth = "Sep"; break;
+                    case "10": expMonth = "Oct"; break;
+                    case "11": expMonth = "Nov"; break;
+                    case "12": expMonth = "Dec"; break;
+
+                }
                 expyear = DateTime.Now.Year.ToString();
             }
 
@@ -834,7 +847,7 @@ namespace AutoBotCSharp
         public string HowLong(string response)
         {
             string month = cust.expMonth;
-            
+
             if (response.Contains("year"))
             {
                 if (response.Contains("two") || response.Contains("2"))
@@ -942,9 +955,9 @@ namespace AutoBotCSharp
         }
         //==================================================================================================
 
-        
+
         public string GETYMM(string response, int vehicleNum)
-        { 
+        {
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -1096,13 +1109,11 @@ namespace AutoBotCSharp
             switch (temp.Question)
             {
                 case Agent.STARTYMCSTARTFACE:
-                    //Console.WriteLine("i am iron man");
                     response = response.ToLower();
                     if (temp.cust.isNameEnabled)
                     {
                         if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
                         {
-                            // great
                         }
                         else if (response.Contains("no"))
                         {
@@ -1117,84 +1128,94 @@ namespace AutoBotCSharp
                     break;
                 case Agent.INTRO: // fall through
                 case Agent.PROVIDER:
-                    //Console.WriteLine("checking for provider stuff");
+                    Console.WriteLine(Agent.PROVIDER);
+
                     Data = CheckIProvider(response);
-                    if(Data != "FALSE")
+                    if (Data != "FALSE")
                     {
-                        if (temp.selectData("frmInsuranceCarrier",Data))
+                        if (temp.selectData("frmInsuranceCarrier", Data))
                         {
+                            Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));
                             temp.Callpos = Agent.INBETWEEN;
-                            
                             Console.WriteLine("put stuff in, current question is: " + temp.Question);
+                            App.RESULTS.Add(Agent.PROVIDER, true);
                         }
-                    }else
+
+                    } else
                     {
                         mrMeseeks = false;
+                        App.RESULTS.Add(Agent.PROVIDER, false);
+                    }
+
+                    if (temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
+                    {
+                        App.failedEntry = false;
+                    }
+                    else
+                    {
+                        App.failedEntry = true;
+
                     }
                     break;
                 case Agent.INS_EXP:
-                    //Console.WriteLine("we really made it, fam");
+
                     Data = checkExp(response);
                     string[] theDates = Data.Split(' ');
                     if (theDates.Length > 0)
                     {
-                        if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year",theDates[1]))
+                        if (temp.selectData("frmPolicyExpires_Month", theDates[0]) && temp.selectData("frmPolicyExpires_Year", theDates[1]))
                         {
                             temp.cust.expMonth = theDates[0];
                             temp.cust.expYear = theDates[1];
-                            temp.Callpos = Agent.INBETWEEN;
                         }
                     }
                     else
                     {
                         mrMeseeks = false;
                     }
-                    
+
                     break;
                 case Agent.INST_START:
                     //Console.WriteLine("omg wtf bbq");
                     Data = temp.HowLong(response);
-                    
                     if (Data != "FALSE")
                     {
                         theDates = Data.Split(' ');
                         temp.selectData("frmPolicyStart_Month", theDates[0]);
                         temp.selectData("frmPolicyStart_Year", theDates[1]);
                         temp.Callpos = Agent.INBETWEEN;
-                        //Console.WriteLine("\n BEYBLADE \n");
-                        
+                        //Console.WriteLine("\n BEYBLADE \n");                      
                     } else if (Data == "FALSE")
                     {
                         int year;
                         int.TryParse(temp.cust.expYear, out year);
                         temp.selectData("frmPolicyStart_Month", temp.cust.expMonth);
                         temp.selectData("frmPolicyStart_Year", (year - 1).ToString());
-                        
                         temp.Callpos = Agent.INBETWEEN;
                     }
                     else
                     {
                         mrMeseeks = false;
                     }
-                    
                     break;
                 case Agent.NUM_VEHICLES:
                     int data = temp.getNumVehicles(response);
-                    temp.Callpos = Agent.INBETWEEN ;
+                    temp.Callpos = Agent.INBETWEEN;
                     temp.cust.numVehicles = data;
                     break;
                 case Agent.YMM_ONLY_ONE:
+
                 case Agent.YMM1:
-                    Data =  temp.GETYMM(response, 1);
+                    Data = temp.GETYMM(response, 1);
                     if (!Data.Contains("FALSE"))
-                    { 
+                    {
                         BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args) 
+                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                         {
                             temp.selectData("vehicle-model", Data);
                             temp.Callpos = Agent.INBETWEEN;
                         });
-                        bw.RunWorkerAsync();                                    
+                        bw.RunWorkerAsync();
                     }
                     else
                     {
@@ -1253,12 +1274,13 @@ namespace AutoBotCSharp
                     }
                     break;
                 case Agent.DOB:
-                    if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right"))
+                    if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right") || response.Contains("correct"))
                     {
                         App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
+
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
                     if (maritalStatus.Length > 0)
@@ -1289,6 +1311,7 @@ namespace AutoBotCSharp
                     {
                         mrMeseeks = false;
                     }
+                    temp.Callpos = Agent.INBETWEEN;
                     break;
                 case Agent.RES_TYPE:
                     var resType = App.getAgent().checkResType(response);
@@ -1302,6 +1325,7 @@ namespace AutoBotCSharp
                     }
                     temp.Callpos = Agent.INBETWEEN;
                     break;
+
                 case Agent.CREDIT:
                     var credit = App.getAgent().checkCredit(response);
                     if (credit.Length > 0)
@@ -1450,7 +1474,7 @@ namespace AutoBotCSharp
             {
                 return "Single";
             }
-            if (response.Contains("married"))
+            if (response.Contains("married") || response.Contains("marry") || response.Contains("merry"))
             {
                 return "Married";
             }
@@ -1476,6 +1500,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void autoDispo(double calltime)
         {
+            Console.WriteLine("calltime: " + calltime);
             if (calltime < 10)
             {
                 HangUpandDispo("Not Available");
@@ -1490,6 +1515,10 @@ namespace AutoBotCSharp
                 {
                     HangUpandDispo("Not Interested");
                 }
+                else
+                {
+                    HangUpandDispo("Not Available");
+                }
             }
             else
             {
@@ -1502,12 +1531,21 @@ namespace AutoBotCSharp
         {
             string resp = response;
             string clip;
-            if (resp.Contains("don't want it"))
+            if (resp.Contains("don't want it") || resp.Contains("no thank you"))
             {
                 clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                 App.RollTheClip(clip);
                 return true;
             }
+            else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
+                App.RollTheClip(clip);
+                App.getAgent().notInterestedFutureBool = true;
+                return true;
+
+            }
+
             else if (resp.Contains("not interested") || resp.Contains("no interest"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
@@ -1515,7 +1553,7 @@ namespace AutoBotCSharp
                 App.getAgent().notInterestedFutureBool = true;
                 return true;
             }
-            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your"))
+            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
                 bool x = await App.RollTheClipAndWait(clip);
@@ -1530,13 +1568,17 @@ namespace AutoBotCSharp
 
                 return true;
             }
+            else if (resp.Contains("what did you say") || resp.Contains("what was that") || resp.Contains("could you repeat that") || resp.Contains("come again"))
+            {
+                return true;
+            }
             else if (resp.Contains("who are you") || resp.Contains("who is this"))
             {
                 clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
                 App.RollTheClip(clip);
                 return true;
             }
-            else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN"))
+            else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN") || resp.Contains("what else in"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
                 App.RollTheClip(clip);
@@ -1554,6 +1596,13 @@ namespace AutoBotCSharp
                 App.RollTheClip(clip);
                 return true;
             }
+            else if (resp.Contains("happy with") || resp.Contains("i'm good") || resp.Contains("all set"))
+            {
+                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
+                App.RollTheClip(clip);
+                return true;
+            }
+
             else if (resp.Contains("wrong number"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
@@ -1562,7 +1611,7 @@ namespace AutoBotCSharp
                 App.getAgent().HangUpandDispo("Wrong Number");
                 return true;
             }
-            else if (resp.Contains("don't have a car") || resp.Contains("don't own a vehicle") || resp.Contains("no car"))
+            else if (resp.Contains("don't have a car") || resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                 bool x = await App.RollTheClipAndWait(clip);
@@ -1614,16 +1663,20 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-
+            Console.WriteLine("got called");
             try
             {
-                App.longDictationClient.EndMicAndRecognition();
+                App.getAgent().inCall = false;
+                App.getAgent().custObjected = false;
+                calltime = 0;
+                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => App.StopTheClip())); }
+                if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
                 App.getAgent().Question = STARTYMCSTARTFACE;
                 WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
                 WebResponse r = h.GetResponse();
-                Thread.Sleep(250);
+                Thread.Sleep(400);
                 r.Close();
-                Thread.Sleep(250);
+                Thread.Sleep(400);
                 switch (dispo)
                 {
                     case "Not Available":
@@ -1662,12 +1715,13 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                 }
-                Thread.Sleep(250);
+                Thread.Sleep(400);
                 r.Close();
             }
-            catch
+            catch(Exception ex)
             {
                 Console.WriteLine("ERROR");
+                Console.Write(ex);
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1695,25 +1749,40 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public async void setupBot()
         {
+            int x = 0;
             Question = STARTYMCSTARTFACE;
             string firstName = "";
             while (driver.WindowHandles.Count < 2)
             {
                 Console.WriteLine("shoop");
             }
-            Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
-            driver.SwitchTo().Window(driver.WindowHandles.Last());
-            Console.WriteLine("driver title: " + driver.Title);
             try
             {
-                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
-                cust.firstName = firstName;
+            Console.WriteLine("count of driver.windowhandles: " + driver.WindowHandles.Count);
+            driver.SwitchTo().Window(driver.WindowHandles.Last());
+            Console.WriteLine("driver title: " + driver.Title); 
+            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            cust.firstName = firstName;
             }
             catch (Exception)
             {
-                Thread.Sleep(100);
-                firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
-                cust.firstName = firstName;
+                x += 1;
+                if (x < 3)
+                {
+                    try
+                    {
+                        if (driver.PageSource.Contains("resource")) { HangUpandDispo("Not Available");return; }
+                        else
+                        {
+                            Thread.Sleep(50);
+                            firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+                            cust.firstName = firstName;
+                        }
+                    }
+                    catch { }
+
+                }
+               else { HangUpandDispo("Not Available");}
             }
             try
             {
@@ -1745,10 +1814,8 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
             }
-            await Task.Run((Action)getDob);
-
             AskQuestion();
-
+            await Task.Run((Action)getDob);
             App.longDictationClient.StartMicAndRecognition();
             started = true;
         }
@@ -1784,14 +1851,17 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.InnerException);
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.Source);
+
             }
-            Task t = Task.Run((Action)getDob);
+
+          
 
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
             App.longDictationClient.StartMicAndRecognition();
             AskQuestion();
+            Task t = Task.Run((Action)getDob);
         }
         //---------------------------------------------------------------
 
@@ -1837,7 +1907,10 @@ namespace AutoBotCSharp
                         });
                         break;
                     case INTRO:
-                        App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
+                        if (!App.getAgent().custObjected)
+                            { App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3"); }
+                            else { App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3"); }
+                       
                         break;
                     case PROVIDER:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
@@ -1902,15 +1975,17 @@ namespace AutoBotCSharp
                     case TCPA:
                         App.longDictationClient.EndMicAndRecognition();
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
-                        App.longDictationClient.StartMicAndRecognition();
+                      
                         break;
                 }
                 Callpos = INBETWEEN;
                 hasAsked = true;
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Console.WriteLine(ex);
+                Console.WriteLine(ex.StackTrace);
                 return false;
             }
         }
