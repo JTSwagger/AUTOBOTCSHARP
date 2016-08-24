@@ -616,7 +616,7 @@ namespace AutoBotCSharp
             { return ("State National Insurance"); }
             if (s.Contains("superior"))
             { return ("Superior Insurance"); }
-            if (s.Contains("sure health") || s.Contains("sure"))
+            if (s.Contains("sure health"))
             { return ("Sure Health Plans"); }
             if (s.Contains("abe group") || s.Contains("ah be group"))
             { return ("The Ahbe Group"); }
@@ -1536,6 +1536,11 @@ namespace AutoBotCSharp
                 clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                 App.RollTheClip(clip);
                 return true;
+            }
+            else if(resp.Contains("leave a message") || resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox"))
+            {
+                App.getAgent().HangUpandDispo("Answering Machine");
+  
             }
             else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something"))
             {
