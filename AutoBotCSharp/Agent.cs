@@ -608,7 +608,7 @@ namespace AutoBotCSharp
             { return ("Standard Fire Insurance Company"); }
             if (s.Contains("state and county"))
             { return ("State and County Mutual Fire Insurance"); }
-            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm"))
+            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park"))
             { return ("State Farm General"); }
             if (s.Contains("state fund"))
             { return ("State Fund"); }
@@ -1394,7 +1394,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkPhoneType(string response)
         {
-            if (response.Contains("cell") || response.Contains("mobile"))
+            if (response.Contains("cell") || response.Contains("mobile") || response.Contains("that's awesome"))
             {
                 return "Mobile/Cell";
             }
@@ -1558,7 +1558,7 @@ namespace AutoBotCSharp
                 App.getAgent().notInterestedFutureBool = true;
                 return true;
             }
-            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list"))
+            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list") || resp.Contains("don't call me again") || resp.Contains("don't ever call me again"))
             {
                 clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
                 bool x = await App.RollTheClipAndWait(clip);

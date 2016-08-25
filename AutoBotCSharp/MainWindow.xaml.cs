@@ -33,12 +33,9 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
-            string apiKey1 = "10821a4acf1a433cae31510dfb353e10";
-            string apiKey2 = "5070c52d6d974f0b90fd3edbd4182aec";
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            App.longDictationClient.OnMicrophoneStatus += App. onMicrophoneStatusHandler;
+
+
+
 
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
@@ -60,6 +57,14 @@ namespace AutoBotCSharp
                     proc.Kill();
                 }
             }
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
+            string[] input = System.IO.File.ReadAllLines(path);
+            string apiKey1 = input[0];
+            string apiKey2 = input[1];
+            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
+            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
         }
 
         public void setNameText(string name)

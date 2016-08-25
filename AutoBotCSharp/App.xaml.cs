@@ -60,8 +60,9 @@ namespace AutoBotCSharp
        public static void reInitMicClient()
         {
 
-            string apiKey1 = "10821a4acf1a433cae31510dfb353e10";
-            string apiKey2 = "5070c52d6d974f0b90fd3edbd4182aec";
+            string[] input = System.IO.File.ReadAllLines(System.Environment.SpecialFolder.MyDocuments.ToString() + "/keys.txt");
+            string apiKey1 = input[0];
+            string apiKey2 = input[1];
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
