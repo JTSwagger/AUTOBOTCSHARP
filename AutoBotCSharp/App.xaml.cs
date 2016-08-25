@@ -154,43 +154,41 @@ namespace AutoBotCSharp
 
             }
 
-            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
-            {
-                if (result.DisplayText != "")
+        
+                if (e.PhraseResponse.Results[0].DisplayText != "")
                 {
                     Console.WriteLine(waveOutIsStopped);
                     Current.Dispatcher.Invoke((() =>
                     {
-                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
-                    if (result.DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
+                    getWindow().appendSpeechBoxText("Full: " + e.PhraseResponse.Results[0].DisplayText);
+                    if (e.PhraseResponse.Results[0].DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
                     }));
 
 
-                    Current.Dispatcher.Invoke(() =>
+                Current.Dispatcher.Invoke(() =>
+                {
+
+                    if (getAgent().custObjected == false)
                     {
-
-                        if (getAgent().custObjected == false)
+                        if (waveOutIsStopped)
                         {
-                            if (waveOutIsStopped)
+                     
+                            doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
+                            if (!getAgent().hasAsked)
                             {
-                                
-                                    doBackgroundQuestionSwitchingStuff();
-                                    if (!getAgent().hasAsked)
-                                    {
-                                        getAgent().AskQuestion();
-                                        getAgent().hasAsked = true;
-                                    }
-                                
-                                
+                                getAgent().AskQuestion();
+                                getAgent().hasAsked = true;
                             }
-                        }
-                    });
 
-                }
+
+                        }
+                    }
+                });
+           
             }      
         }
 
-        public static void doBackgroundQuestionSwitchingStuff()
+        public static void doBackgroundQuestionSwitchingStuff(string speech)
         {
             Agent ag = getAgent();
             // call position advancement
@@ -230,16 +228,15 @@ namespace AutoBotCSharp
                     case Agent.YMM2:
                         if (ag.cust.numVehicles > 2)
                         {
-                            if (ag.driver.FindElementById("vehicle2-model").Displayed)  { ag.Question = Agent.YMM3; ag.hasAsked = false; } else { ag.hasAsked = true; }
-                          
+                            if (ag.driver.FindElementById("vehicle2-model").Displayed)  { ag.Question = Agent.YMM3; ag.hasAsked = false; } else { ag.hasAsked = true; }                    
                         }
                         else
                         {
                             if (ag.driver.FindElementById("vehicle2-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
                             break;
                         }
-
                         break;
+
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
                         {
@@ -254,18 +251,20 @@ namespace AutoBotCSharp
                         if (ag.driver.FindElementById("vehicle4-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
                         break;
 
-                    case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
+                    case Agent.DOB:
+                        if (getAgent().Callpos == Agent.DOB) { getAgent().getDob(); }
+                        ag.Question = Agent.MARITAL_STATUS; break;
 
-                    case Agent.MARITAL_STATUS:
-                        if (ag.cust.maritalStatus == "Married")
-                        {
-                            ag.Question = Agent.SPOUSE_NAME;
-                        }
-                        else
-                        {
-                            ag.Question = Agent.OWN_OR_RENT;
-                        }
 
+                    case Agent.MARITAL_STATUS:            
+                            if (ag.cust.maritalStatus == "Married")
+                            {
+                                ag.Question = Agent.SPOUSE_NAME;
+                            }
+                            else
+                            {
+                                ag.Question = Agent.OWN_OR_RENT;
+                            }                                              
                         break;
                     case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; break;
                     case Agent.SPOUSE_DOB: ag.Question = Agent.OWN_OR_RENT; break;
@@ -280,6 +279,14 @@ namespace AutoBotCSharp
                 }
             }
         }
+
+        public string JustNumbers(string phrase)
+        {
+            string justNumbers = new string(phrase.Where(char.IsDigit).ToArray());
+            return (justNumbers);
+        }
+
+
         public async void doIntroduction()
         {
             Agent ag = getAgent();
@@ -295,10 +302,7 @@ namespace AutoBotCSharp
             }
         }
 
-        /*
-         *  End testing stuff. You can touch stuff again.
-         *  Creep.
-         */
+
         public static string[] findNameClips(string name)
         {
             string namesDir = @"C:\SoundBoard\Cheryl\NAMES";
