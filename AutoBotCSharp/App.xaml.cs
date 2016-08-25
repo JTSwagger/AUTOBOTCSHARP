@@ -63,6 +63,7 @@ namespace AutoBotCSharp
             string[] input = System.IO.File.ReadAllLines(System.Environment.SpecialFolder.MyDocuments.ToString() + "/keys.txt");
             string apiKey1 = input[0];
             string apiKey2 = input[1];
+
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
@@ -116,7 +117,10 @@ namespace AutoBotCSharp
        public static void REMIX()
         {
             Console.WriteLine("\n EETSA ME, MARIO! \n");
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", "10821a4acf1a433cae31510dfb353e1", "5070c52d6d974f0b90fd3edbd4182aec");
+            string[] input = System.IO.File.ReadAllLines(System.Environment.SpecialFolder.MyDocuments.ToString() + "/keys.txt");
+            string apiKey1 = input[0];
+            string apiKey2 = input[1];
+            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US",  apiKey1,apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
             if (App.getAgent().inCall)
@@ -252,7 +256,7 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.DOB:
-                        if (getAgent().Callpos == Agent.DOB) { getAgent().getDob(); }
+             
                         ag.Question = Agent.MARITAL_STATUS; break;
 
 
@@ -275,6 +279,7 @@ namespace AutoBotCSharp
                     case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
                     case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
                     case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
+                    case Agent.TCPA: ag.Question = "";break;
 
                 }
             }
