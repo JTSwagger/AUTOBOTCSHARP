@@ -18,6 +18,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public static  bool currentlyRebuttaling = false;
         public bool inCall = false;
         public bool custObjected = false;
         public bool isListening = false;
@@ -608,7 +609,7 @@ namespace AutoBotCSharp
             { return ("Standard Fire Insurance Company"); }
             if (s.Contains("state and county"))
             { return ("State and County Mutual Fire Insurance"); }
-            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm"))
+            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park"))
             { return ("State Farm General"); }
             if (s.Contains("state fund"))
             { return ("State Fund"); }
@@ -616,7 +617,7 @@ namespace AutoBotCSharp
             { return ("State National Insurance"); }
             if (s.Contains("superior"))
             { return ("Superior Insurance"); }
-            if (s.Contains("sure health") || s.Contains("sure"))
+            if (s.Contains("sure health"))
             { return ("Sure Health Plans"); }
             if (s.Contains("abe group") || s.Contains("ah be group"))
             { return ("The Ahbe Group"); }
@@ -999,22 +1000,24 @@ namespace AutoBotCSharp
             else if (response.Contains("1997") || response.Contains("97")) { year = "1997"; }
             else if (response.Contains("1998") || response.Contains("98")) { year = "1998"; }
             else if (response.Contains("1999") || response.Contains("99")) { year = "1999"; }
-            else if (response.Contains("2000")) { year = "2000"; }
-            else if (response.Contains("2001")) { year = "2001"; }
-            else if (response.Contains("2002")) { year = "2002"; }
-            else if (response.Contains("2003")) { year = "2003"; }
-            else if (response.Contains("2004")) { year = "2004"; }
-            else if (response.Contains("2005")) { year = "2005"; }
-            else if (response.Contains("2006")) { year = "2006"; }
-            else if (response.Contains("2007")) { year = "2007"; }
-            else if (response.Contains("2008")) { year = "2008"; }
-            else if (response.Contains("2009")) { year = "2009"; }
-            else if (response.Contains("2010")) { year = "2010"; }
-            else if (response.Contains("2011")) { year = "2011"; }
-            else if (response.Contains("2012")) { year = "2012"; }
-            else if (response.Contains("2013")) { year = "2013"; }
-            else if (response.Contains("2014")) { year = "2014"; }
-            else if (response.Contains("2015")) { year = "2015"; }
+            else if (response.Contains("2000") || response.Contains("00")) { year = "2000"; }
+            else if (response.Contains("2001") || response.Contains("01")) { year = "2001"; }
+            else if (response.Contains("2002") || response.Contains("02")) { year = "2002"; }
+            else if (response.Contains("2003") || response.Contains("03")) { year = "2003"; }
+            else if (response.Contains("2004") || response.Contains("04")) { year = "2004"; }
+            else if (response.Contains("2005") || response.Contains("05")) { year = "2005"; }
+            else if (response.Contains("2006") || response.Contains("06")) { year = "2006"; }
+            else if (response.Contains("2007") || response.Contains("07")) { year = "2007"; }
+            else if (response.Contains("2008") || response.Contains("08")) { year = "2008"; }
+            else if (response.Contains("2009") || response.Contains("09")) { year = "2009"; }
+            else if (response.Contains("2010") || response.Contains("10")) { year = "2010"; }
+            else if (response.Contains("2011") || response.Contains("11")) { year = "2011"; }
+            else if (response.Contains("2012") || response.Contains("12")) { year = "2012"; }
+            else if (response.Contains("2013") || response.Contains("13")) { year = "2013"; }
+            else if (response.Contains("2014") || response.Contains("14")) { year = "2014"; }
+            else if (response.Contains("2015") || response.Contains("15")) { year = "2015"; }
+            else if (response.Contains("2016") || response.Contains("16")) { year = "2016"; }
+            else if (response.Contains("2017") || response.Contains("17")) { year = "2016"; }
             else { year = "FALSE"; }
 
             if (response.Contains("acura")) { make = "ACURA"; }
@@ -1394,7 +1397,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkPhoneType(string response)
         {
-            if (response.Contains("cell") || response.Contains("mobile"))
+            if (response.Contains("cell") || response.Contains("mobile") || response.Contains("that's awesome"))
             {
                 return "Mobile/Cell";
             }
@@ -1457,11 +1460,11 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkOwnership(string response)
         {
-            if (response.Contains("own"))
+            if (response.Contains("own") || response.Contains("hone") || response.Contains("home"))
             {
                 return "Own";
             }
-            else if (response.Contains("rent"))
+            else if (response.Contains("rent") || response.Contains("went") || response.Contains("rant"))
             {
                 return "Rent";
             }
@@ -1531,95 +1534,120 @@ namespace AutoBotCSharp
         {
             string resp = response;
             string clip;
-            if (resp.Contains("don't want it") || resp.Contains("no thank you"))
+            if (!currentlyRebuttaling)
             {
-                clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
-            else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
-                App.RollTheClip(clip);
-                App.getAgent().notInterestedFutureBool = true;
-                return true;
-
-            }
-
-            else if (resp.Contains("not interested") || resp.Contains("no interest"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
-                App.RollTheClip(clip);
-                App.getAgent().notInterestedFutureBool = true;
-                return true;
-            }
-            else if (resp.Contains("take me off your list") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
-                bool x = await App.RollTheClipAndWait(clip);
-                try
+                if (resp.Contains("don't want it") || resp.Contains("no thank you"))
                 {
-                    App.getAgent().HangUpandDispo("Do Not Call");
+                    clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+                  
                 }
-                catch (Exception)
+                else if (resp.Contains("leave a message") || resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full"))
                 {
-                    //Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
+                    App.getAgent().HangUpandDispo("Answering Machine");
+
+                }
+                else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
+                    App.RollTheClip(clip);
+                    App.getAgent().notInterestedFutureBool = true;
+                    currentlyRebuttaling = true;
+                    return true;
+
                 }
 
-                return true;
-            }
-            else if (resp.Contains("what did you say") || resp.Contains("what was that") || resp.Contains("could you repeat that") || resp.Contains("come again"))
-            {
-                return true;
-            }
-            else if (resp.Contains("who are you") || resp.Contains("who is this"))
-            {
-                clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
-            else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN") || resp.Contains("what else in"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
-            else if (resp.Contains("already have") || resp.Contains("already got"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
-            else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
-            else if (resp.Contains("happy with") || resp.Contains("i'm good") || resp.Contains("all set"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
-                App.RollTheClip(clip);
-                return true;
-            }
 
-            else if (resp.Contains("wrong number"))
+                else if (resp.Contains("not interested") || resp.Contains("no interest"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
+                    App.RollTheClip(clip);
+                    App.getAgent().notInterestedFutureBool = true;
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("take me off your") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list") || resp.Contains("don't call me again") || resp.Contains("don't ever call me again"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
+                    bool x = await App.RollTheClipAndWait(clip);
+                    try
+                    {
+                        App.getAgent().HangUpandDispo("Do Not Call");
+                    }
+                    catch (Exception)
+                    {
+                        //Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
+                    }
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("what did you say") || resp.Contains("what was that") || resp.Contains("could you repeat that") || resp.Contains("come again"))
+                {
+                    return true;
+                }
+                else if (resp.Contains("who are you") || resp.Contains("who is this"))
+                {
+                    clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+
+                }
+                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN") || resp.Contains("what else in"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("already have") || resp.Contains("already got"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out") || resp.Contains("not getting that out"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("happy with") || resp.Contains("i'm good") || resp.Contains("all set"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
+                    App.RollTheClip(clip);
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+
+                else if (resp.Contains("wrong number"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
+                    bool x = await App.RollTheClipAndWait(clip);
+                    x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                    App.getAgent().HangUpandDispo("Wrong Number");
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                else if (resp.Contains("don't have a car") || resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
+                    bool x = await App.RollTheClipAndWait(clip);
+                    x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                    App.getAgent().HangUpandDispo("No Car");
+                    currentlyRebuttaling = true;
+                    return true;
+                }
+                return false;
+            }
+            else
             {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
-                bool x = await App.RollTheClipAndWait(clip);
-                x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                App.getAgent().HangUpandDispo("Wrong Number");
                 return true;
             }
-            else if (resp.Contains("don't have a car") || resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
-            {
-                clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
-                bool x = await App.RollTheClipAndWait(clip);
-                x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                App.getAgent().HangUpandDispo("No Car");
-                return true;
-            }
-            return false;
         }
     
         //-----------------------------------------------------------------------------------------------------------
