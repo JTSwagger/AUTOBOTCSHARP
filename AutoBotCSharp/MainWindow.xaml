@@ -184,7 +184,7 @@
                 </Grid>
 
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-105,0,105,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
+            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-105,0,105,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>

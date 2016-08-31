@@ -18,6 +18,9 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public bool isTalking = false;
+        public bool testing = false;
+        public double SilenceTimer = 0;
         public static  bool currentlyRebuttaling = false;
         public bool inCall = false;
         public bool custObjected = false;
@@ -85,7 +88,31 @@ namespace AutoBotCSharp
         //--------------------------------------------------------------------------------------------------------
         private double calltime = 0;
 
-        //-------------------------------------------------------------------------------------------------------------
+        //-------------------------------------------------
+        public void CheckForContact(double time)
+        {
+            Console.WriteLine("was called successfully");
+            if (!isTalking)
+            {
+                switch ((int)time)
+                {
+                    case 3:
+                        Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
+                        SilenceTimer = 4;
+                        break;
+                    case 7:
+                        Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 2.mp3")));
+                        SilenceTimer = 8;
+                        break;
+
+                    case 10:
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => HangUpandDispo("Not Available")));
+                        break;
+                }
+            }
+        }
+           //---------------------------------------------
         public void doAgentStatusRequest()
         {
 
@@ -117,11 +144,14 @@ namespace AutoBotCSharp
                     {
                         newCall = true;
                         App.longDictationClient.EndMicAndRecognition();
-                    } else if (Dialer_Status == "INCALL")
+                    } else if (Dialer_Status == "INCALL" || testing == true)
                     {
-                        
-                        calltime += 0.5;
-                        App.totalTimer += 0.5;
+                        if (!isTalking) { SilenceTimer += .2; }
+                       
+                        Console.Write("Silence is " + SilenceTimer + " seconds");
+                        if (SilenceTimer >= 3) { CheckForContact(SilenceTimer); }
+                       calltime += 0.2;
+                        App.totalTimer += 0.2;
                         if (newCall)
                         {
                             inCall = true;
@@ -153,6 +183,14 @@ namespace AutoBotCSharp
                 }
                 setGlobals();
                 Thread.Sleep(200);
+            }
+            while(testing == true)
+            {
+                SilenceTimer += .2;
+                Console.Write("Silence is " + SilenceTimer + " seconds");
+                if (SilenceTimer >= 3) { CheckForContact(SilenceTimer); }
+                Thread.Sleep(200);
+
             }
         }
         //------------------------------------------------------------------------------------------------------
@@ -191,7 +229,7 @@ namespace AutoBotCSharp
 
         public void waitForNext()
         {
-            Console.WriteLine("All hail the Dark Lord Satan!");
+ 
             // seriously, I'm not sure why this method is in here at all.
             // It was empty.
             // Then I added this reminder to bring praise upon the glorious Dark Lord Satan.
@@ -1374,10 +1412,7 @@ namespace AutoBotCSharp
                     }
                     break;
             }
-            if (!mrMeseeks)
-            {
-                Console.WriteLine("\n MR MESEEKS FUCKING HATES YOU \n");
-            }
+     
             return mrMeseeks;
 
         }
@@ -1534,9 +1569,8 @@ namespace AutoBotCSharp
         {
             string resp = response;
             string clip;
-            if (!currentlyRebuttaling)
-            {
-                if (resp.Contains("don't want it") || resp.Contains("no thank you"))
+            if (App.getAgent().custObjected == true) { return true; }
+                if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you")) 
                 {
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                     App.RollTheClip(clip);
@@ -1629,6 +1663,7 @@ namespace AutoBotCSharp
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+          
                     App.getAgent().HangUpandDispo("Wrong Number");
                     currentlyRebuttaling = true;
                     return true;
@@ -1643,11 +1678,7 @@ namespace AutoBotCSharp
                     return true;
                 }
                 return false;
-            }
-            else
-            {
-                return true;
-            }
+        
         }
     
         //-----------------------------------------------------------------------------------------------------------
@@ -1694,6 +1725,7 @@ namespace AutoBotCSharp
             Console.WriteLine("got called");
             try
             {
+                App.getAgent().SilenceTimer = 0;
                 App.getAgent().inCall = false;
                 App.getAgent().custObjected = false;
                 calltime = 0;
@@ -1917,6 +1949,8 @@ namespace AutoBotCSharp
         {
             try
             {
+                isTalking = true;
+                SilenceTimer = 0;
                 App.longDictationClient.EndMicAndRecognition();
                 switch (Question)
                 {

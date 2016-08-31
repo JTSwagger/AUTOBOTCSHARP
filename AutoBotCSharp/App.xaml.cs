@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using NAudio.Wave;
+using NAudio.Wave; 
 using Microsoft.ProjectOxford.SpeechRecognition;
 using Microsoft.ProjectOxford;
 using OpenQA.Selenium.Chrome;
@@ -97,8 +97,10 @@ namespace AutoBotCSharp
         {
 
             string response = e.PartialResult;
+
             Current.Dispatcher.Invoke((async () =>
             {
+                App.getAgent().SilenceTimer = 0;
                 bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
@@ -281,6 +283,8 @@ namespace AutoBotCSharp
                     case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
                     case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
                     case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
+                    case Agent.TCPA: ag.Question = "";break;
+
 
                 }
             }
@@ -341,9 +345,11 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
+            
             longDictationClient.StartMicAndRecognition();
             Agent user = getAgent();
-            //Console.WriteLine("PLAYBACK STOPPED");
+           user.isTalking = false;
+            Console.WriteLine("PLAYBACK STOPPED. CHERYL TALKING: " + user.isTalking );
             //Console.WriteLine(user.Callpos);
             //Console.WriteLine(user.Question);
             waveOutIsStopped = true;
@@ -436,7 +442,9 @@ namespace AutoBotCSharp
             //{
             //    return false;
             //}
-            Console.WriteLine("CLIP");
+           
+            getAgent().isTalking = true;
+            Console.WriteLine("CLIP: " + Clip + " CHERYL IS TALKING: " + getAgent().isTalking);
             try
             {
 
@@ -490,7 +498,7 @@ namespace AutoBotCSharp
         {
             waveOut.Stop();
             waveOut.Dispose();
-            waveOutIsStopped = false;
+            waveOutIsStopped = true;
         }
         private static int okClipIndex = 0;
         public static void playOkClip()

@@ -720,6 +720,8 @@ namespace AutoBotCSharp
         private void doTestingStuff_Click(object sender, RoutedEventArgs e)
         {
             user.setupTesting();
+            user.testing = true;
+            Task task = Task.Run((Action)user.doAgentStatusRequest);
         }
 
         private void tabControlBottom_SelectionChanged(object sender, SelectionChangedEventArgs e)
