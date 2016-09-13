@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using NAudio.Wave; 
@@ -10,6 +11,7 @@ using Microsoft.ProjectOxford.SpeechRecognition;
 using Microsoft.ProjectOxford;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System.IO;
 
 namespace AutoBotCSharp
 {
@@ -97,10 +99,11 @@ namespace AutoBotCSharp
         {
 
             string response = e.PartialResult;
-
+            App.getAgent().SilenceTimer = 0;
             Current.Dispatcher.Invoke((async () =>
             {
                 App.getAgent().SilenceTimer = 0;
+                Console.WriteLine(App.getAgent().SilenceTimer);
                 bool x;
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
@@ -131,6 +134,7 @@ namespace AutoBotCSharp
                 App.longDictationClient.StartMicAndRecognition();
             }
         }
+
 
         public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
         {
@@ -180,13 +184,15 @@ namespace AutoBotCSharp
                         {
                             if (waveOutIsStopped)
                             {
-                                
-                                    doBackgroundQuestionSwitchingStuff();
+                               
+                           
+                                    doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
                                     if (!getAgent().hasAsked)
                                     {
                                         getAgent().AskQuestion();
                                         getAgent().hasAsked = true;
                                     }
+                                
                                 
                                 
                             }
@@ -197,7 +203,7 @@ namespace AutoBotCSharp
             }      
         }
 
-        public static void doBackgroundQuestionSwitchingStuff()
+        public static void doBackgroundQuestionSwitchingStuff(string response)
         {
             Agent ag = getAgent();
             // call position advancement
@@ -207,9 +213,9 @@ namespace AutoBotCSharp
                 {
                     case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
                     case Agent.INTRO:
-                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked=true; } break; 
+                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3"); ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked=true; } break; 
                     case Agent.PROVIDER:
-                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3"); ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked = true; }
                         break;
                     case Agent.INS_EXP:
                         if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "") { ag.Question = Agent.INST_START; ag.hasAsked = false; } else { ag.hasAsked = true; }
@@ -226,7 +232,6 @@ namespace AutoBotCSharp
                         {
                             ag.Question = Agent.YMM_ONLY_ONE;
                         }
-
                         break;
                     case Agent.YMM_ONLY_ONE:
                         if (ag.driver.FindElementById("vehicle-model").Displayed ) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
@@ -261,7 +266,57 @@ namespace AutoBotCSharp
                         if (ag.driver.FindElementById("vehicle4-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
                         break;
 
-                    case Agent.DOB: ag.Question = Agent.MARITAL_STATUS; break;
+                    case Agent.DOB:
+
+                        string[] dobby = App.getAgent().dobInfo;
+                        if (dobby[0] != "" && dobby[1] != "")
+                        {
+                            
+                            if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right") || response.Contains("correct"))
+                            {
+                                App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
+                                ag.Question = Agent.MARITAL_STATUS;
+                              
+                            }
+                            else if(response.Contains("no") || response.Contains("wrong") || response.Contains("incorrect") )
+                            {
+                                RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                                getAgent().AskingBDay = true;
+                                dobby[0] = "";
+                                dobby[1] = "";
+                            }
+                           
+                        }
+                        else
+                        {
+                            if (!App.getAgent().CheckForMonth(response))
+                            {
+                                ag.BDAYHOLDER = App.getAgent().returnNumeric(response);                               
+                                ag.Question = Agent.BDAYMONTH;
+                               
+                            }
+
+                            else
+                            {
+                                string[] DayYear = response.Split(' ');
+                                Console.WriteLine(DayYear[0]);
+                                DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
+                                DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
+                                Console.WriteLine("DAY: " + DayYear[0]);
+                                getAgent().selectData("frmDOB_Day", DayYear[0]);
+                                Console.WriteLine("YEAR: " + DayYear[1]);
+                                getAgent().selectData("frmDOB_Year", DayYear[1]);
+                                ag.Question = Agent.MARITAL_STATUS;
+                            }
+
+
+                        }
+                        break;
+
+                    case Agent.BDAYMONTH:
+                        if (App.getAgent().ParseDOB(response,0)) { ag.Question = Agent.MARITAL_STATUS; }
+                        
+                        break;
 
                     case Agent.MARITAL_STATUS:
                         if (ag.cust.maritalStatus == "Married")
@@ -274,21 +329,146 @@ namespace AutoBotCSharp
                         }
 
                         break;
-                    case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; break;
-                    case Agent.SPOUSE_DOB: ag.Question = Agent.OWN_OR_RENT; break;
+                    case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; 
+                        getAgent().EnterData("frmSpouseFirstName", response);
+                        break;
+                    case Agent.SPOUSE_DOB: 
+                        if (!App.getAgent().CheckForMonth(response))
+                        {
+                            ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
+                            ag.Question = Agent.SPOUSEBDAYMONTH;
+
+                        }
+
+                        else
+                        {
+                            string[] DayYear = response.Split(',');
+                            Console.WriteLine(DayYear[0]);
+                            DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
+                            DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
+                            Console.WriteLine("DAY: " + DayYear[0]);
+                            getAgent().selectData("frmSpouseDOB_Day", DayYear[0]);
+                            Console.WriteLine("YEAR: " + DayYear[1]);
+                            getAgent().selectData("frmSpouseDOB_Year", DayYear[1]);
+                        }
+                        break;
+                    case Agent.SPOUSEBDAYMONTH:
+                        if (App.getAgent().ParseDOB(response,1)) { ag.Question = Agent.OWN_OR_RENT; }
+
+                        break;
                     case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; break;
                     case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; break;
-                    case Agent.ADDRESS: ag.Question = Agent.EMAIL; break;
-                    case Agent.EMAIL: ag.Question = Agent.CREDIT; break;
+                    case Agent.ADDRESS:
+                        //   if (getAgent().ParseAddress(response))
+                        // {
+                        //   getAgent().Callpos = Agent.INBETWEEN;
+                        // ag.Question = Agent.EMAIL;
+                        //}
+                        //break;
+                        App.getAgent().driver.FindElementById("btnValidate").Click();
+                        getAgent().Callpos = Agent.INBETWEEN;
+                        ag.Question = Agent.EMAIL;
+                        break;
+                    case Agent.EMAIL:
+                        if(getAgent().ParseEmail(response))
+                        {
+
+                        }
+
+
+                        ag.Question = Agent.CREDIT; break;
                     case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
                     case Agent.PHONE_TYPE: ag.Question = Agent.LAST_NAME; break;
-                    case Agent.LAST_NAME: ag.Question = Agent.TCPA; break;
-                    case Agent.TCPA: ag.Question = "";break;
+                    case Agent.LAST_NAME: ag.Question = Agent.SECONDARIES; break;
+                    case Agent.SECONDARIES:
+                        if (response.Contains("no")) { ag.Question = Agent.TCPA; }
+                        else { ag.Question = Agent.WHICHSECONDARIES;  }
+                        break;
+                    case Agent.WHICHSECONDARIES:
+                        if (response.ToLower().Contains("home")) { getAgent().CheckBox("frmCrossSellHome"); getAgent().doHome = true; Console.WriteLine("HOME INSURANCE INTEREST DETECTED!"); }
+
+                        else if (response.ToLower().Contains("rent")) { getAgent().CheckBox("frmCrossSellHome"); getAgent().doRenters = true; Console.WriteLine("RENTAL INSURANCE INTEREST DETECTED!"); }
+
+                        if (response.ToLower().Contains("life")) { getAgent().CheckBox("frmCrossSellLife"); getAgent().doLife = true; Console.WriteLine("LIFE INSURANCE INTEREST DETECTED!"); }
+
+                        if (response.ToLower().Contains("health")) { getAgent().CheckBox("frmCrossSellHealth"); getAgent().doHealth = true; Console.WriteLine("HEALTH INSURANCE INTEREST DETECTED!"); }
+
+                        else if (response.ToLower().Contains("medicare")) { getAgent().CheckBox("frmCrossSellHealth"); getAgent().doMedicare = true; Console.WriteLine("MEDICARE INSURANCE INTEREST DETECTED!"); }
+                        getAgent().Callpos = Agent.INBETWEEN;
+                        if (getAgent().doHome || getAgent().doRenters) { ag.Question = Agent.YEARBUILT;}
+                        else { ag.Question = Agent.TCPA;break; }
+                        break;
+                    case Agent.YEARBUILT:
+                        string yearBuilt = getAgent().returnNumeric(response);
+                        if(yearBuilt != "")
+                        {
+                            getAgent().selectData("frmYearBuilt", yearBuilt);
+                            if (getAgent().doRenters) { getAgent().Question = Agent.PPC; }
+                            else { getAgent().Question = Agent.SQFT; }
+
+
+                        }
+                        break;
+                    case Agent.SQFT:
+                        string SQFEET = getAgent().returnNumeric(response);
+                        if (SQFEET != "")
+                        {
+                            getAgent().EnterData("frmSqFt", SQFEET);
+                            getAgent().Question = Agent.TCPA; 
+
+                        }
+                        break;
+                    case Agent.PPC:
+                        string PPC = getAgent().GETPPC(response);
+                        if (PPC != "")
+                        {                          
+                            getAgent().selectData("frmPersonalPropertyCoverage", PPC);
+                            getAgent().Question = Agent.TCPA;
+
+                        }
+                        break;
+
+                    case Agent.TCPA:
+                        if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.ToLower().TrimEnd('.', '?', '!').Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure"))
+                        {
+                           
+                            getAgent().Callpos = Agent.INBETWEEN;                           
+                            App.getAgent().selectData("frmTcpaConsumerConsented",)
+                            App.getAgent().driver.FindElementById("btnSubmit").Click();
+                            if (App.getAgent().driver.PageSource.Contains("submitted successfully"))
+                            {
+                               
+                                App.getAgent().endcall = true;
+                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
+                            }
+                            else
+                            {
+                                RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Justin 02.mp3");
+                                getAgent().Callpos = "FIX";
+
+
+                            }
+                        }
+                        else
+                        {
+                            getAgent().selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
+                            getAgent().Callpos = Agent.INBETWEEN;
+                            App.getWindow().cmbDispo.SelectedIndex = 7;
+                            App.getAgent().driver.FindElementById("btnSubmit").Click();
+                        }
+
+                        ag.Question = "";break;
+                 
 
 
                 }
+
             }
+            if (App.getAgent().Callpos == Agent.FIXING) {getAgent().FixLead(); }
         }
+
+       
+  
         public async void doIntroduction()
         {
             Agent ag = getAgent();
@@ -345,21 +525,22 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            
-            longDictationClient.StartMicAndRecognition();
+            if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
+            if (getAgent().inCall){ longDictationClient.StartMicAndRecognition();}
             Agent user = getAgent();
-           user.isTalking = false;
+            Console.WriteLine("CHERYL JUST REBUTTALED " + getAgent().currentlyRebuttaling);   
+            user.isTalking = false;
             Console.WriteLine("PLAYBACK STOPPED. CHERYL TALKING: " + user.isTalking );
             //Console.WriteLine(user.Callpos);
             //Console.WriteLine(user.Question);
             waveOutIsStopped = true;
-            Console.WriteLine(waveOutIsStopped);
-            if(user.custObjected == true)
+            if (getAgent().currentlyRebuttaling == true)
             {
                 user.custObjected = false;
-                //Console.WriteLine(user.Question);
+                user.currentlyRebuttaling = false;
+                Console.WriteLine(user.Question);
+                if (user.Question == "INTRO") { user.Question = Agent.PROVIDER; }
                 user.AskQuestion();
-                waveOut.Dispose();
                 return;
             }
             if(user.Callpos == "INBETWEEN")
@@ -398,7 +579,11 @@ namespace AutoBotCSharp
                         user.Callpos = Agent.YMM4;
                         break;
                     case "DOB":
-                        user.Callpos = Agent.DOB;
+
+                      user.Callpos = Agent.DOB;
+                        break;
+                    case Agent.BDAYMONTH:
+                        user.Callpos = Agent.BDAYMONTH;
                         break;
                     case "MARITAL_STATUS":
                         user.Callpos = Agent.MARITAL_STATUS;
@@ -408,6 +593,9 @@ namespace AutoBotCSharp
                         break;
                     case "SPOUSE_DOB":
                         user.Callpos = Agent.SPOUSE_DOB;
+                        break;
+                    case Agent.SPOUSEBDAYMONTH:
+                        user.Callpos = Agent.SPOUSEBDAYMONTH;
                         break;
                     case "OWN OR RENT":
                         user.Callpos = Agent.OWN_OR_RENT;
@@ -430,10 +618,23 @@ namespace AutoBotCSharp
                     case "LAST NAME":
                         user.Callpos = Agent.LAST_NAME;
                         break;
+                    case "SECONDARIES":
+                        user.Callpos = Agent.SECONDARIES;
+                        break;
+                    case Agent.WHICHSECONDARIES:
+                        if (getAgent().doHome || getAgent().doRenters) { user.Callpos = Agent.YEARBUILT; }
+                        else { user.Callpos = Agent.TCPA; break; }
+                        break;
+
                     case "TCPA":
                         user.Callpos = Agent.TCPA;
                         break;
                 }
+            }
+            else if(getAgent().Callpos == "FIX")
+            {
+                App.getAgent().FixLead();
+
             }
         }
         public static bool RollTheClip(string Clip)
@@ -442,28 +643,30 @@ namespace AutoBotCSharp
             //{
             //    return false;
             //}
-           
-            getAgent().isTalking = true;
-            Console.WriteLine("CLIP: " + Clip + " CHERYL IS TALKING: " + getAgent().isTalking);
-            try
-            {
 
-                StopTheClip();
-                waveOut = new WaveOut();
-                waveOut.PlaybackStopped += onPlaybackStopped;
-                Mp3FileReader Reader = new Mp3FileReader(Clip);
-                waveOut.Init(Reader);
-                waveOut.Play();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.InnerException);
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+                Console.WriteLine("CLIP: " + Clip + " CHERYL IS TALKING: " + getAgent().isTalking);
+                try
+                {
+                    getAgent().isTalking = true;
+                    getAgent().SilenceTimer = 0;
+                    StopTheClip();
+                    waveOut = new WaveOut();
+                    waveOut.PlaybackStopped += onPlaybackStopped;
+                    Mp3FileReader Reader = new Mp3FileReader(Clip);
+                    waveOut.Init(Reader);
+                    waveOut.Play();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.InnerException);
+                    Console.WriteLine(ex.StackTrace);
+                    return false;
+                }
         }
+
+        
 
         public static async Task<bool> RollTheClipAndWait(string Clip)
         {
@@ -518,6 +721,7 @@ namespace AutoBotCSharp
             {
                 okClipIndex += 1;
             }
+
             RollTheClip(clip);
         }
 
@@ -559,6 +763,8 @@ namespace AutoBotCSharp
             else
             {
                 RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                getAgent().AskingBDay = true;
+
                 return;
             }
             if (dobby[2] != "")

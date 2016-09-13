@@ -30,7 +30,7 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
                     <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnTheirName_Click" />
-                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="222,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
+                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold" Height="20" VerticalAlignment="Top">
@@ -71,17 +71,18 @@
             <TabItem x:Name="tbDriverInfo" Header="DRIVER INFO" Margin="0,0,-57,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="140*"/>
-                        <ColumnDefinition Width="37*"/>
+                        <ColumnDefinition Width="138*"/>
+                        <ColumnDefinition Width="36*"/>
                         <ColumnDefinition Width="29*"/>
-                        <ColumnDefinition Width="50*"/>
-                        <ColumnDefinition Width="30*"/>
-                        <ColumnDefinition Width="304*"/>
+                        <ColumnDefinition Width="49*"/>
+                        <ColumnDefinition Width="29*"/>
+                        <ColumnDefinition Width="213*"/>
+                        <ColumnDefinition Width="86*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnDOB" Content="DOB" HorizontalAlignment="Left" Margin="7,11,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnDOB_Click"/>
                     <Button x:Name="btnMaritalStatus" Content="MARITAL STATUS" HorizontalAlignment="Left" Margin="136,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.ColumnSpan="5" FontWeight="Bold" Click="btnMaritalStatus_Click"/>
                     <Button x:Name="btnSpouseName" Content="SPOUSE NAME" HorizontalAlignment="Left" Margin="6,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="4" Grid.ColumnSpan="2" Click="btnSpouseName_Click"/>
-                    <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="104,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="5" Click="btnSpouseDOB_Click"/>
+                    <Button x:Name="btnSpouseDOB" Content="SPOUSE DOB" HorizontalAlignment="Left" Margin="104,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="5" Click="btnSpouseDOB_Click" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbPersonalInfo" Header="PERS INFO" Margin="0,0,-63,0" HorizontalAlignment="Right" Width="92" FontWeight="Bold" Height="20" VerticalAlignment="Bottom">
@@ -115,7 +116,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2"/>
+        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2" Navigated="frmReactions_Navigated_1"/>
         <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="27,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnOk_Click"/>
         <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnReaction_Click"/>
         <Button x:Name="btnWhatIGot" Content="WHAT I GOT" HorizontalAlignment="Left" Margin="197,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnWhatIGot_Click"/>
@@ -184,7 +185,7 @@
                 </Grid>
 
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-105,0,105,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold">
+            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-101,0,101,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
@@ -203,7 +204,8 @@
                     <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus" Grid.ColumnSpan="2"/>
                     <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click" Grid.ColumnSpan="2"/>
                     <Label x:Name="lblTestingDelim" Content="Here be Dragons" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="137" Grid.ColumnSpan="2"/>
-                    <Button x:Name="doTestingStuff" Grid.ColumnSpan="4" Content="Do Testing Stuff" Margin="144,116,0,0" VerticalAlignment="Top" Click="doTestingStuff_Click" Grid.Column="1"/>
+                    <Button x:Name="doTestingStuff" Grid.ColumnSpan="4" Content="Do Testing Stuff" Margin="144,118,0,0" VerticalAlignment="Top" Click="doTestingStuff_Click" Grid.Column="1"/>
+                    <Button x:Name="btnLeadCheck" Content="Check lead" Grid.Column="6" HorizontalAlignment="Left" Margin="10,118,0,0" VerticalAlignment="Top" Width="75" Click="btnLeadCheck_Click_1"/>
                 </Grid>
             </TabItem>
 
@@ -219,6 +221,7 @@
             <ComboBoxItem Content="Auto Lead"/>
             <ComboBoxItem Content="LOW"/>
             <ComboBoxItem Content="Resource Not Found"/>
+            <ComboBoxItem Content="ComboBoxItem" HorizontalAlignment="Left" Width="277"/>
         </ComboBox>
         <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,395,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
         <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="53" Grid.Row="1" Click="btnDispo_Click"/>

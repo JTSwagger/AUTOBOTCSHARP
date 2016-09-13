@@ -33,6 +33,7 @@ namespace AutoBotCSharp
 
         public MainWindow()
         {
+            App.getWindow().Closed += closeall;
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
             string[] keys = System.IO.File.ReadAllLines(path);
             string apiKey1 = keys[0];
@@ -46,6 +47,7 @@ namespace AutoBotCSharp
             user = new Agent();
             randy = new Random();
             InitializeComponent();
+
             string procName = Process.GetCurrentProcess().ProcessName;
             foreach (Process proc in Process.GetProcessesByName("chromedriver"))
             {
@@ -93,12 +95,12 @@ namespace AutoBotCSharp
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
         }
-        private async void btnIntro_Click(object sender, RoutedEventArgs e)
+        private  void btnIntro_Click(object sender, RoutedEventArgs e)
         {
             user.Callpos = Agent.INBETWEEN;
             user.Question = Agent.INTRO;
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
-            bool x = await App.RollTheClipAndWait(clip);
+            App.RollTheClip(clip);
             user.Question = Agent.INTRO;
             App.longDictationClient.StartMicAndRecognition();
         }
@@ -260,7 +262,7 @@ namespace AutoBotCSharp
             user.Question = "TCPA";
             user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3";
-            bool x = await App.RollTheClipAndWait(clip);
+            App.RollTheClip(clip);
         }
         // Reactions button group
         private void btnWhatIGot_Click(object sender, RoutedEventArgs e)
@@ -717,16 +719,37 @@ namespace AutoBotCSharp
 
         }
 
-        private void doTestingStuff_Click(object sender, RoutedEventArgs e)
+        private void btnLeadCheck_click(object sender, RoutedEventArgs e)
         {
-            user.setupTesting();
-            user.testing = true;
-            Task task = Task.Run((Action)user.doAgentStatusRequest);
+
+
         }
 
         private void tabControlBottom_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void frmReactions_Navigated_1(object sender, NavigationEventArgs e)
+        {
+
+        }
+        protected  void closeall(Object sender, EventArgs args)
+        {
+
+            Environment.Exit(Environment.ExitCode);
+        }
+
+        private void btnLeadCheck_Click_1(object sender, RoutedEventArgs e)
+        {
+            App.getAgent().FixLead();
+        }
+
+        
+
+        private void doTestingStuff_Click(object sender, RoutedEventArgs e)
+        {
+            user.setupTesting();
         }
     }
     

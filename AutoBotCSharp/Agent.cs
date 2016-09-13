@@ -18,10 +18,19 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+       
+        public bool endcall = false;
+        public string BDAYHOLDER = "";
+        public bool AskingBDay = false;
+        public bool doHome = false;
+        public bool doLife = false;
+        public bool doHealth = false;
+        public bool doMedicare = false;
+        public bool doRenters = false;
         public bool isTalking = false;
         public bool testing = false;
         public double SilenceTimer = 0;
-        public static  bool currentlyRebuttaling = false;
+        public bool currentlyRebuttaling = false;
         public bool inCall = false;
         public bool custObjected = false;
         public bool isListening = false;
@@ -30,7 +39,7 @@ namespace AutoBotCSharp
         public bool LoggedIn = false;
         public string Campaign;
         public int CallsToday;
-
+        public string Data = "FALSE";
         public string AgentNum;
         public string Agent_Name;
         public string Dialer_Status;
@@ -53,6 +62,8 @@ namespace AutoBotCSharp
         public const string YMM3 = "YMM3";
         public const string YMM4 = "YMM4";
         public const string DOB = "DOB";
+        public const string BDAYMONTH = "BDAYMONTH";
+        public const string SPOUSEBDAYMONTH = "SPOUSEBDAYMONTH";
         public const string MARITAL_STATUS = "MARITAL STATUS";
         public const string SPOUSE_NAME = "SPOUSE_NAME";
         public const string SPOUSE_DOB = "SPOUSE_DOB";
@@ -63,7 +74,15 @@ namespace AutoBotCSharp
         public const string EMAIL = "EMAIL";
         public const string PHONE_TYPE = "PHONE TYPE";
         public const string LAST_NAME = "LAST NAME";
+        public const string SECONDARIES = "SECONDARIES";
         public const string TCPA = "TCPA";
+        public const string WHICHSECONDARIES = "WHICH SECONDARIES";
+        public const string YEARBUILT = "YEAR BUILT";
+        public const string PPC = "PERSONAL PROPERTY COVERAGE";
+        public const string SQFT = "SQUARE FOOTAGE";
+        public const string FIXING = "FIXING LEAD";
+
+
         public ChromeDriver driver;
 
         public static Agent temp = App.getAgent();
@@ -78,17 +97,16 @@ namespace AutoBotCSharp
         }
         public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single" };
 
-
         public string[] dobInfo;
         private bool notInterestedFutureBool = false;
 
-        WebRequest webRequest;
+        WebRequest webRequest; 
         WebResponse resp;
         StreamReader reader;
         //--------------------------------------------------------------------------------------------------------
         private double calltime = 0;
 
-        //-------------------------------------------------
+      
         public void CheckForContact(double time)
         {
             Console.WriteLine("was called successfully");
@@ -96,16 +114,16 @@ namespace AutoBotCSharp
             {
                 switch ((int)time)
                 {
-                    case 3:
+                    case 5:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
-                        SilenceTimer = 4;
+                        SilenceTimer = 6;
                         break;
-                    case 7:
+                    case 9 :
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 2.mp3")));
-                        SilenceTimer = 8;
+                        SilenceTimer = 10;
                         break;
 
-                    case 10:
+                    case 12:
                         SilenceTimer = 0;
                         Application.Current.Dispatcher.Invoke((() => HangUpandDispo("Not Available")));
                         break;
@@ -113,15 +131,35 @@ namespace AutoBotCSharp
             }
         }
            //---------------------------------------------
+
+            public string CheckLead()
+        {
+            int i = 0;
+           IReadOnlyCollection<OpenQA.Selenium.IWebElement> field = driver.FindElementsByClassName("error");
+            foreach (OpenQA.Selenium.IWebElement item in field)
+            {
+
+                Console.WriteLine("MISSED"+ i + ": " + item.GetAttribute("id"));
+                if (item.GetAttribute("id") != "") { return item.GetAttribute("id"); }
+                
+            }
+
+            return "";
+            
+
+        }
+        //-----------------------------------------------------------------------
         public void doAgentStatusRequest()
         {
 
-            while (LoggedIn)
+            while (LoggedIn || testing==true)
             {
-
+               
+                 
                 StartWebRequest();
                 string stats = reader.ReadToEnd();
                 reader.Close();
+       
                 string[] tempstr = stats.Split(',');
                 try
                 {
@@ -136,22 +174,23 @@ namespace AutoBotCSharp
                             inCall = false;
                         }
 
-                    } catch (Exception)
+                    } catch (Exception ex)
                     {
-                        Console.WriteLine("moo");
+                        Console.WriteLine(ex);
+                        Console.WriteLine(ex.StackTrace);
+                        Console.WriteLine("Problem getting stats");
                     }
                     if (Dialer_Status == "READY")
                     {
                         newCall = true;
                         App.longDictationClient.EndMicAndRecognition();
                     } else if (Dialer_Status == "INCALL" || testing == true)
+
                     {
-                        if (!isTalking) { SilenceTimer += .2; }
-                       
-                        Console.Write("Silence is " + SilenceTimer + " seconds");
-                        if (SilenceTimer >= 3) { CheckForContact(SilenceTimer); }
+                        if (isTalking == false ) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }                                 
+                        if (SilenceTimer >= 5) { CheckForContact(SilenceTimer); }
                        calltime += 0.2;
-                        App.totalTimer += 0.2;
+                       App.totalTimer += 0.2;
                         if (newCall)
                         {
                             inCall = true;
@@ -160,14 +199,9 @@ namespace AutoBotCSharp
                             Question = STARTYMCSTARTFACE;
                             notInterestedFutureBool = false;
                             calltime = 0;
+                            SilenceTimer = 0;
                             newCall = false;
-                        }
-                        if (calltime >= 115)
-                        {
-                            App.longDictationClient.EndMicAndRecognition();
-                            App.longDictationClient.StartMicAndRecognition();
-                            calltime = 0;
-                        }
+                        }                       
                     }
                     //Console.WriteLine("Dialer Status: " + Dialer_Status);
                     //Console.WriteLine("Agent Name: " + Agent_Name);
@@ -182,17 +216,13 @@ namespace AutoBotCSharp
                     }
                 }
                 setGlobals();
-                Thread.Sleep(200);
+              
+                    Thread.Sleep(200);
             }
-            while(testing == true)
-            {
-                SilenceTimer += .2;
-                Console.Write("Silence is " + SilenceTimer + " seconds");
-                if (SilenceTimer >= 3) { CheckForContact(SilenceTimer); }
-                Thread.Sleep(200);
 
-            }
         }
+
+
         //------------------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
@@ -227,14 +257,6 @@ namespace AutoBotCSharp
         }
         //----------------------------------------------------------------------------------------------------
 
-        public void waitForNext()
-        {
- 
-            // seriously, I'm not sure why this method is in here at all.
-            // It was empty.
-            // Then I added this reminder to bring praise upon the glorious Dark Lord Satan.
-            // This codebase is weird.
-        }
         public bool EnterData(string elementId, string data)
         {
             bool retry = true;
@@ -328,6 +350,52 @@ namespace AutoBotCSharp
             return false;
         }
 
+        public bool CheckBox(string elementId)
+        {
+            bool retry = true;
+            int staleRefCount = 0;
+
+            while (retry)
+            {
+                try
+                {
+                    if (!driver.FindElement(OpenQA.Selenium.By.Id(elementId)).Selected)
+                    {
+                        driver.FindElementById(elementId).Click();
+                        Console.WriteLine("CHECKED BOX");
+                        return true;
+                    }
+                }
+                catch (OpenQA.Selenium.ElementNotVisibleException)
+                {
+                    unhideElement(elementId);
+                    Console.WriteLine("Element has been unhidden, retrying...");
+                }
+                catch (OpenQA.Selenium.NoSuchElementException)
+                {
+                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
+                    retry = false;
+                }
+                catch (OpenQA.Selenium.StaleElementReferenceException)
+                {
+                    if (staleRefCount == 2)
+                    {
+                        Console.WriteLine("Two stale references, ending");
+                        retry = false;
+                    }
+                    Thread.Sleep(1000);
+                    staleRefCount += 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Generic Exception");
+                    Console.WriteLine("Inner exception: " + ex.InnerException);
+                    Console.WriteLine("Message: " + ex.Message);
+                    retry = false;
+                }
+            }
+            return false;
+        }
 
 
         //===============================================================================
@@ -390,7 +458,7 @@ namespace AutoBotCSharp
         {
 
             if (s.Contains("none") || s.Contains("no insurance") || s.Contains("don't have") || s.Contains("don't have insurance") || s.Contains("not insured") || s.Contains("not with anybody"))
-            { return ("No current insurance"); }
+            { App.getAgent().HangUpandDispo("No insurance"); return "FALSE"; }
             if (s.Contains("twenty first") || s.Contains("21st") || s.Contains("twenty first century") || s.Contains("21st century") || s.Contains("twenty first century insurance") || s.Contains("21st century insurance") || s.Contains("first century"))
             { return ("21st Century Insurance"); }
             if (s.Contains("AAA") || s.Contains("triple A") || s.Contains("triple a") || s.Contains("aaa"))
@@ -592,7 +660,7 @@ namespace AutoBotCSharp
             if (s.Contains("national union fire of pennsylvania") || s.Contains("national union fire insurance of pennsylvania"))
             { return ("National Union Fire Insurance of PA"); }
             if (s.Contains("nationwide"))
-            { return ("Nationwood Insurance Company"); }
+            { return ("Nationwide Insurance Company"); }
             if (s.Contains("new england financial"))
             { return ("New England Financial"); }
             if (s.Contains("new york life"))
@@ -670,7 +738,6 @@ namespace AutoBotCSharp
             if (s.Contains("titan"))
             { return ("Titan"); }
             if (s.Contains("trans") || s.Contains("transamerica") || s.Contains("trans america"))
-
             { return ("TransAmerica"); }
             if (s.Contains("travelers"))
             { return ("Travelers Insurance Company"); }
@@ -712,7 +779,92 @@ namespace AutoBotCSharp
             { return ("Woolands Financial Group"); }
             if (s.Contains("zurich"))
             { return ("Zurich North America"); }
-            else { return ("FALSE"); }
+            return "FALSE";
+        }
+
+        public int getAge()
+        {
+
+            int Month; int Day; int Year;
+            int.TryParse(driver.FindElementById("frmDOB_Month").GetAttribute("value"),  out Month);
+            int.TryParse(driver.FindElementById("frmDOB_Day").GetAttribute("value"), out Day);
+            int.TryParse(driver.FindElementById("frmDOB_Year").GetAttribute("value"), out Year);
+            Console.WriteLine(Month.ToString()+ Day.ToString()+ Year.ToString());
+            DateTime now = DateTime.Now;
+            DateTime birthDate = new DateTime(Year, Month, Day);
+            int age = now.Year - birthDate.Year;
+            if (now.Month < birthDate.Month || (now.Month == birthDate.Month && now.Day < birthDate.Day)) { age--; }
+            Console.WriteLine(age);
+            return age;
+
+
+        }
+
+        //------------------------------------------------------------------------------------------
+        public string checkForSecondaries()
+        {
+            string secondaries = "";
+            string HomeInsurance = "";
+            string LifeInsurance = "";           //These will define what secondaries to offer
+            string HealthInsurance = "";
+            try
+            {
+                int age = getAge();
+                if(driver.FindElementById("frmResidenceType").GetAttribute("value") == "Own") { HomeInsurance = "Home"; }else if(driver.FindElementById("frmResidenceType").GetAttribute("value") == "Rent")  { HomeInsurance = "Rent"; }else { HomeInsurance = ""; }
+                if(age <=80 && age >= 25) { LifeInsurance = "Life"; }
+                if(age >= 64) { HealthInsurance = "Medicare"; }else { HealthInsurance = "Health"; }
+                secondaries = (HomeInsurance + " " + LifeInsurance + " " + HealthInsurance);
+                return (secondaries);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return ("ERROR");
+            }
+        }
+        //-----------------------------------------------------------------------------------------
+        public string getSecondaryClip()
+        {
+            string clip = @"C:\SoundBoard\Cheryl\REACTIONS\More More More Cheryl\More More More Cheryl\";
+            switch (checkForSecondaries())
+            {
+                case "Home  Medicare":
+                    clip += "Home and Medicare.mp3";
+                    break;
+                case "Home  Health":
+                    clip += "Home and Health.mp3";
+                    break;
+                case "Home Life Health":
+                    clip += "Home Life and Health.mp3";
+                    break;
+                case "Home Life Medicare":
+                    clip += "Home Life Medicare.mp3";
+                    break;
+                case "Rent  Medicare":
+                    clip += "Rental and Medicare.mp3";
+                    break;
+                case "Rent  Health":
+                    clip += "Renters Health.mp3";
+                        break;
+                case "Rent Life Health":
+                    clip += "Renters Health and Life.mp3";
+                    break;
+                case "Rent Life Medicare":
+                    clip += "Rental Life Medicare.mp3";
+                    break;
+                case " Life Health":
+                    clip += "Life and Health.mp3";
+                    break;
+                case " Life Medicare":
+                    clip += "Life and Medicare.mp3";
+                    break;
+                case "  Medicare":
+                    clip += "Medicare.mp3";
+                    break;
+
+            }
+            Console.WriteLine("SECONDARIES " + clip);
+            return clip;
         }
         //---------------------------------------------------------------------------------------------------
         public static string checkExp(string s)
@@ -877,9 +1029,7 @@ namespace AutoBotCSharp
             driver = new ChromeDriver(cds);
             driver.Navigate().GoToUrl("https://forms.lead.co/auto/?key=e2869270-7c7a-11e1-b0c4-0800200c9a66");
             EnterData("frmFirstName", "Spencer");
-            selectData("frmDOB_Month", "Dec");
-            selectData("frmDOB_Day", "31");
-            selectData("frmDOB_Year", "1992");
+   
         }
         //--------------------------------------------------------------------------------------------------
 
@@ -981,7 +1131,9 @@ namespace AutoBotCSharp
         }
         //===================================================================================================
         public int getNumVehicles(string response)
+          
         {
+            
             if (response.Contains("1") || response.Contains("one"))
             { return 1; }
             else if (response.Contains("2") || response.Contains("two"))
@@ -990,6 +1142,9 @@ namespace AutoBotCSharp
             { return 3; }
             else if (response.Contains("4") || response.Contains("four"))
             { return 4; }
+            else if (response.Contains("5") || response.Contains("five"))
+            { return 5; }
+
             else { return 1; }
         }
         //==================================================================================================
@@ -1038,7 +1193,7 @@ namespace AutoBotCSharp
             else if (response.Contains("1997") || response.Contains("97")) { year = "1997"; }
             else if (response.Contains("1998") || response.Contains("98")) { year = "1998"; }
             else if (response.Contains("1999") || response.Contains("99")) { year = "1999"; }
-            else if (response.Contains("2000") || response.Contains("00")) { year = "2000"; }
+            else if (response.Contains("2000") ) { year = "2000"; }
             else if (response.Contains("2001") || response.Contains("01")) { year = "2001"; }
             else if (response.Contains("2002") || response.Contains("02")) { year = "2002"; }
             else if (response.Contains("2003") || response.Contains("03")) { year = "2003"; }
@@ -1134,10 +1289,146 @@ namespace AutoBotCSharp
                 foreach (OpenQA.Selenium.IWebElement option in theModels)
                 {
                     searcher = option.Text.Split(' ')[0];
-                    if (response.Contains(searcher.ToLower())) { Console.WriteLine("FOUND MODEL!" + option.Text); model = option.Text; return (model); }
+                    if (response.Contains(searcher.ToLower()))
+                    {
+                        Console.WriteLine("FOUND MODEL!" + option.Text);                    
+                        model = option.Text;
+                        switch(vehicleNum)
+                        {
+                            case 1:
+                                temp.selectData("vehicle-model", model);
+                                break;
+                            case 2:
+                                temp.selectData("vehicle2-model", model);
+                                break;
+                            case 3:
+                                temp.selectData("vehicle3-model", model);
+                                break;
+                            case 4:
+                                temp.selectData("vehicle4-model", model);
+                                break;
+                        }
+                        
+                        return (model);
+                    }
                 }
             }
             return (year + " " + make + " " + model);
+        }
+
+
+        public string checkIfSecondaries(string phrase)
+        {
+
+            if (phrase.Contains("yes") || phrase.Contains("sure")) { return "YES"; }
+            else   { return "NONE"; }
+        }
+        public bool ParseDOB(string response,int spouse)
+        {
+            string month = "";
+            string respo = response.ToLower();
+            string DayYear = BDAYHOLDER;
+            Console.WriteLine(BDAYHOLDER);
+            string day = "";
+            string year = "";
+            if (respo.Contains("jan") || respo.Contains("feb") || respo.Contains("mar") || respo.Contains("apr") || respo.Contains("may")
+                || respo.Contains("jun") || respo.Contains("jul") || respo.Contains("aug") || respo.Contains("sep"))
+            {
+                month = DayYear.Substring(0, 1);
+                DayYear = DayYear.Substring(1);
+                Console.WriteLine("MONTH WAS 1-9");
+            }
+
+            else
+            {
+                month = DayYear.Substring(0, 2);
+                DayYear = DayYear.Substring(2);
+                    Console.WriteLine("MONTH WAS 10-12");
+                                
+            }
+            switch(DayYear.Length)
+            {
+                case 3:
+                case 5:
+                    day = DayYear.Substring(0, 1);
+                    year = DayYear.Substring(1);
+                    break;
+                case 4:
+                case 6:
+                    day = DayYear.Substring(0, 2);
+                    year = "19" + DayYear.Substring(2);
+                    break;
+
+            }
+            Console.WriteLine("DAY: " + day);
+            Console.WriteLine("YEAR: " + year);
+            Console.WriteLine(spouse);
+            if(day != "" && year != "") {
+                if (spouse == 0)
+                {
+
+                    selectData("frmDOB_Day", day);
+                    selectData("frmDOB_Month", MonthFromNumeral(month));
+                    selectData("frmDOB_Year", year);
+                    return true;
+                }
+                else
+                {
+                    selectData("frmSpouseDOB_Day", day);
+                    selectData("frmSpouseDOB_Month", MonthFromNumeral(month));
+                    selectData("frmSpouseDOB_Year", year);
+                    return true;
+
+                }
+            }
+            else { return false; }
+        }
+         public bool ParseEmail(string response)
+        {
+            string boogabooga = response.TrimEnd('.', '?', '!');
+            string[] temp = boogabooga.Split(' ');
+            
+            string email = "";
+            for(int i = temp.Length-1;i>0;i--)
+            {
+                if(temp[i] == "at") { temp[i] = "@";break; }         
+            }
+            for(int j = 0; j < temp.Length; j++) { email += temp[j]; }
+            Console.WriteLine(email);
+            WebRequest req = WebRequest.Create("http://apilayer.net/api/check?access_key=c6176c5026425635d9eb177b9989de66&email=" + email + "&smtp=1&format=1");
+            req.ContentType = "application/json";
+            req.Method = "POST";
+            WebResponse resp = req.GetResponse();
+            StreamReader r = new StreamReader(resp.GetResponseStream());
+            String results = r.ReadToEnd();
+            r.Close();
+            Console.WriteLine(results);
+            if (results.Contains("smtp_check\":true,")) { EnterData("frmEmailAddress", email); return true; }
+            else { return false; }
+
+            
+          
+
+        }
+        public string MonthFromNumeral(string monthNum)
+        {
+            switch(monthNum)
+            {
+                case "1":return "Jan";
+                case "2": return "Feb";
+                case "3": return "Mar"; 
+                case "4": return "Apr"; 
+                case "5": return "May"; 
+                case "6": return "Jun"; 
+                case "7": return "Jul"; 
+                case "8": return "Aug"; 
+                case "9": return "Sep"; 
+                case "10": return "Oct"; 
+                case "11": return "Nov"; 
+                case "12": return "Dec";
+                default:
+                    return "Dec";
+            }
         }
         public static bool checkforData(string response)
         {
@@ -1158,6 +1449,7 @@ namespace AutoBotCSharp
                         }
                         else if (response.Contains("no"))
                         {
+
                             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                             temp.HangUpandDispo("Not Available");
                         }
@@ -1176,8 +1468,9 @@ namespace AutoBotCSharp
                     {
                         if (temp.selectData("frmInsuranceCarrier", Data))
                         {
+                            
                             Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));
-                            temp.Callpos = Agent.INBETWEEN;
+                            if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                             Console.WriteLine("put stuff in, current question is: " + temp.Question);
                             App.RESULTS.Add(Agent.PROVIDER, true);
                         }
@@ -1190,6 +1483,7 @@ namespace AutoBotCSharp
 
                     if (temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
                     {
+
                         App.failedEntry = false;
                     }
                     else
@@ -1208,6 +1502,7 @@ namespace AutoBotCSharp
                         {
                             temp.cust.expMonth = theDates[0];
                             temp.cust.expYear = theDates[1];
+                            if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                         }
                     }
                     else
@@ -1232,7 +1527,7 @@ namespace AutoBotCSharp
                         int.TryParse(temp.cust.expYear, out year);
                         temp.selectData("frmPolicyStart_Month", temp.cust.expMonth);
                         temp.selectData("frmPolicyStart_Year", (year - 1).ToString());
-                        temp.Callpos = Agent.INBETWEEN;
+                        if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     }
                     else
                     {
@@ -1241,91 +1536,50 @@ namespace AutoBotCSharp
                     break;
                 case Agent.NUM_VEHICLES:
                     int data = temp.getNumVehicles(response);
-                    temp.Callpos = Agent.INBETWEEN;
-                    temp.cust.numVehicles = data;
+                    if (data > 0 ) { if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; } temp.cust.numVehicles = data; }             
                     break;
                 case Agent.YMM_ONLY_ONE:
 
                 case Agent.YMM1:
-                    Data = temp.GETYMM(response, 1);
-                    if (!Data.Contains("FALSE"))
+                    BackgroundWorker bg = new BackgroundWorker();
+                    bg.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                     {
-                        BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
-                        {
-                            temp.selectData("vehicle-model", Data);
-                            temp.Callpos = Agent.INBETWEEN;
-                        });
-                        bw.RunWorkerAsync();
-                    }
-                    else
-                    {
-                        mrMeseeks = false;
-                    }
+                        temp.Data = temp.GETYMM(response, 1);
+                    });
+                    bg.RunWorkerAsync();                   
                     break;
                 case Agent.YMM2:
-                    Data = temp.GETYMM(response, 2);
-                    if (!Data.Contains("FALSE"))
+                    BackgroundWorker bw = new BackgroundWorker();
+                    bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                     {
-                        BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
-                        {
-                            temp.selectData("vehicle2-model", Data);
-                            temp.Callpos = Agent.INBETWEEN;
-                        });
-                        bw.RunWorkerAsync();
-                    }
-                    else
-                    {
-                        mrMeseeks = false;
-                    }
+                        temp.Data = temp.GETYMM(response, 2);
+                    });
+                    bw.RunWorkerAsync();
                     break;
                 case Agent.YMM3:
-                    Data = temp.GETYMM(response, 3);
-                    if (!Data.Contains("FALSE"))
+                    BackgroundWorker bz = new BackgroundWorker();
+                    bz.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                     {
-                        BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
-                        {
-                            temp.selectData("vehicle3-model", Data);
-                            temp.Callpos = Agent.INBETWEEN;
-                        });
-                        bw.RunWorkerAsync();
-                    }
-                    else
-                    {
-                        mrMeseeks = false;
-                    }
+                        temp.Data = temp.GETYMM(response, 3);
+                    });
+                    bz.RunWorkerAsync();
                     break;
                 case Agent.YMM4:
-                    Data = temp.GETYMM(response, 4);
-                    if (!Data.Contains("FALSE"))
+                    BackgroundWorker bx = new BackgroundWorker();
+                    bx.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
                     {
-                        BackgroundWorker bw = new BackgroundWorker();
-                        bw.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
-                        {
-                            temp.selectData("vehicle4-model", Data);
-                            temp.Callpos = Agent.INBETWEEN;
-                        });
-                        bw.RunWorkerAsync();
-                    }
-                    else
-                    {
-                        mrMeseeks = false;
-                    }
+                        temp.Data = temp.GETYMM(response, 4);
+                    });
+                    bx.RunWorkerAsync();
                     break;
                 case Agent.DOB:
-                    if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right") || response.Contains("correct"))
-                    {
-                        App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
-                    }
-                    temp.Callpos = Agent.INBETWEEN;
-                    break;
+
 
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
                     if (maritalStatus.Length > 0)
                     {
+
                         temp.selectData("frmMaritalStatus", maritalStatus);
 
                     }
@@ -1333,14 +1587,14 @@ namespace AutoBotCSharp
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     temp.cust.maritalStatus = maritalStatus;
                     break;
                 case Agent.SPOUSE_NAME:
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
                 case Agent.SPOUSE_DOB:
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
                 case Agent.OWN_OR_RENT:
                     var ownership = App.getAgent().checkOwnership(response);
@@ -1352,7 +1606,7 @@ namespace AutoBotCSharp
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
                 case Agent.RES_TYPE:
                     var resType = App.getAgent().checkResType(response);
@@ -1364,7 +1618,7 @@ namespace AutoBotCSharp
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
 
                 case Agent.CREDIT:
@@ -1377,58 +1631,236 @@ namespace AutoBotCSharp
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
-                case Agent.ADDRESS:
-                    temp.driver.FindElementById("btnValidate").Click();
-                    temp.Callpos = Agent.INBETWEEN;
-                    break;
-                case Agent.EMAIL:
-                    temp.Callpos = Agent.INBETWEEN;
-                    break;
+ 
+            
                 case Agent.PHONE_TYPE:
                     var phoneType = App.getAgent().checkPhoneType(response);
                     if (phoneType.Length > 0)
                     {
                         temp.selectData("frmPhoneType1", phoneType);
                     }
+
                     else
                     {
                         mrMeseeks = false;
                     }
-                    temp.Callpos = Agent.INBETWEEN;
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
                 case Agent.LAST_NAME:
-                    temp.Callpos = Agent.INBETWEEN;
+                    App.getAgent().driver.FindElementById("frmLastName").Clear();
+                    temp.EnterData("frmLastName", response);
+                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
+                    break;
+                case Agent.SECONDARIES:
+                    if(temp.checkIfSecondaries(response) != "NONE") { if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; } }
+                              
+                    break;
+                case Agent.YEARBUILT:
+                    if(temp.returnNumeric(response) != ""){ }
+                    break;
+                case Agent.SQFT:
+                    if (temp.returnNumeric(response) != "") { }
+                    break;                
+                case Agent.PPC:
+                    if (temp.returnNumeric(response) != "") { }
                     break;
                 case Agent.TCPA:
-                    if (temp.checkTCPAResponse(response))
-                    {
-                        temp.selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
-                    }
-                    else
-                    {
-                        temp.selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
-                    }
+                    
                     break;
             }
      
             return mrMeseeks;
 
         }
-
-        public bool checkTCPAResponse(string response)
+        public void FixLead()
         {
-            if (response.Contains("yes") || response.Contains("sure") || response.Contains("alright"))
-            {
-                return true;
-            }
-            else if (response.Contains("no"))
-            {
-                return false;
-            }
-            return false;
+           string bad = App.getAgent().CheckLead();
+            Console.WriteLine("FIXING::::" + bad);
+                    switch(bad)
+                    {
+                          
+                        case "frmLastName":
+                            Console.WriteLine("recognized");
+                             App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3");
+                             App.getAgent().Question = Agent.LAST_NAME;
+                            
+                              break;
+                        case "frmPhoneType1":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\PHONETYPE.mp3");
+                            App.getAgent().Question = Agent.PHONE_TYPE;
+                             
+               
+                    break;
+                        case "frmEmailAddress":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\EMAIL.mp3");
+                            break;
+                        case "frmAddress":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3");
+                            break;
+                        case "frmCity":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3");
+                            break;
+                        case "frmState":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3");
+                            break;
+                        case "frmPostalCode":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3");
+                            break;
+                        case "frmDwellingType":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\HOMETYPE.mp3");
+                            break;
+                        case "frmInsuranceCarrier":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
+                            break;
+                        case "frmPolicyExpires_Month":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
+                            break;
+                        case "frmPolicyExpires_Year":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\EXPIRATION.mp3");
+                            break;
+                        case "frmPolicyStart_Month":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3");
+                            break;
+                        case "frmPolicyStart_Year":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3");
+                            break;
+                        case "vehicle-year":
+
+                        case "vehicle-make":
+
+                        case "vehicle-model":
+
+                        case "vehicle-submodel":
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3");
+                            break;
+                        case "frmDOB_Month":
+
+                        case "frmDOB_Day":
+
+                        case "frmDOB_Year":
+
+                        case "frmGender":
+
+                        case "frmTcpaConsumerConsented":
+                     
+                            break;
+                    
+
+                    }
+            hasAsked = true;
+            App.getAgent().Callpos = Agent.FIXING;
+
+
         }
+
+        public bool ParseAddress(string response)
+        {
+            int i = 0;
+            string[] addy = response.Split(' ');
+            string AddressLine1 = "";
+            for(  i = 0; i<addy.Length-1;i++)
+            {       
+                AddressLine1 += addy[i];
+                if (addy[i].ToLower() == "street" || addy[i].ToLower() == "st" || addy[i].ToLower() == "road" || addy[i].ToLower() == "avenue" || addy[i].ToLower() == "boulevard" || addy[i].ToLower() == "terrace" || addy[i].ToLower() == "circle" || addy[i].ToLower() == "lane" || addy[i].ToLower() == "court") { break; }
+            }
+            string zip = addy[addy.Length-1];
+            driver.FindElementById("frmAddress").Clear();
+            driver.FindElementById("frmPostalCode").Clear();
+            EnterData("frmAddress", AddressLine1);
+            EnterData("frmPostalCode", zip);
+            driver.FindElementById("btnValidate").Click();
+            Thread.Sleep(250);
+            try
+            {
+                Thread.Sleep(250);
+                if (driver.FindElementByXPath("//*[@id=\"address_info\"]/tbody/tr[4]/td[2]/span[2]").GetAttribute("class") == "validation_result checkmark")
+                {
+                    Console.WriteLine("address is good");
+                    return true;
+                }
+                else {
+                    Console.WriteLine("address is bad");
+                    hasAsked = true;
+                    App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\can you repeat that.mp3");
+                    return false;
+
+                }
+            }
+            
+            catch (OpenQA.Selenium.NoSuchElementException)
+            {
+                Console.WriteLine("address is bad");
+                hasAsked = true;
+                App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\can you repeat that.mp3"); 
+                return false;
+                
+            }
+        
+   
+
+        }
+        
+       public bool CheckForMonth(string response)
+        {
+            if (response.Contains("Jan")) { App.getAgent().selectData("frmDOB_Month","Jan"); return true; }
+            if (response.Contains("Feb")) { App.getAgent().selectData("frmDOB_Month", "Feb"); return true; }
+            if (response.Contains("Mar")) { App.getAgent().selectData("frmDOB_Month", "Mar"); return true; }
+            if (response.Contains("Apr")) { App.getAgent().selectData("frmDOB_Month", "Apr"); return true; }
+            if (response.Contains("May")) { App.getAgent().selectData("frmDOB_Month", "May"); return true; }
+            if (response.Contains("Jun")) { App.getAgent().selectData("frmDOB_Month", "Jun"); return true; }
+            if (response.Contains("July")) { App.getAgent().selectData("frmDOB_Month", "Jul"); return true; }
+            if (response.Contains("Aug")) { App.getAgent().selectData("frmDOB_Month", "Aug"); return true; }
+            if (response.Contains("Sep")) { App.getAgent().selectData("frmDOB_Month", "Sep"); return true; }
+            if (response.Contains("Oct")) { App.getAgent().selectData("frmDOB_Month", "Oct"); return true; }
+            if (response.Contains("Nov")) { App.getAgent().selectData("frmDOB_Month", "Nov"); return true; }
+            if (response.Contains("Dec")) { App.getAgent().selectData("frmDOB_Month", "Dec"); return true; }
+            else { return false;}
+
+        }
+
+        public String returnNumeric(string response)
+        {
+            string resultString;
+            resultString = System.Text.RegularExpressions.Regex.Match(response, @"\d+").Value;
+            Console.WriteLine(resultString);
+            return resultString;
+        }
+        public string GETPPC(string response)
+        {
+            if (response.Contains("15,000")) { return ("$15,000"); }
+            else if (response.Contains("10,000")) { return ("$10,000"); }
+            else if (response.Contains("15,000")) { return ("$15,000"); }
+            else if (response.Contains("20,000")) { return ("$20,000"); }
+            else if (response.Contains("15,000")) { return ("$15,000"); }
+            else if (response.Contains("20,000")) { return ("$20,000"); }
+            else if (response.Contains("25,000")) { return ("$25,000"); }
+            else if (response.Contains("15,000")) { return ("$15,000"); }
+            else if (response.Contains("20,000")) { return ("$20,000"); }
+            else if (response.Contains("25,000")) { return ("$25,000"); }
+            else if (response.Contains("30,000")) { return ("$30,000"); }
+            else if (response.Contains("35,000")) { return ("$35,000"); }
+            else if (response.Contains("40,000")) { return ("$40,000"); }
+            else if (response.Contains("45,000")) { return ("$45,000"); }
+            else if (response.Contains("50,000")) { return ("$50,000"); }
+            else if (response.Contains("55,000")) { return ("$55,000"); }
+            else if (response.Contains("60,000")) { return ("$60,000"); }
+            else if (response.Contains("65,000")) { return ("$65,000"); }
+            else if (response.Contains("70,000")) { return ("$70,000"); }
+            else if (response.Contains("75,000")) { return ("$75,000"); }
+            else if (response.Contains("80,000")) { return ("$80,000"); }
+            else if (response.Contains("85,000")) { return ("$85,000"); }
+            else if (response.Contains("90,000")) { return ("$90,000"); }
+            else if (response.Contains("95,000")) { return ("$95,000"); }
+            else if (response.Contains("100,000")) { return ("$100,000"); }
+            else { return "$5,000"; }
+
+        }
+
+
+
+
         //------------------------------------------------------------------
         public string checkPhoneType(string response)
         {
@@ -1565,18 +1997,21 @@ namespace AutoBotCSharp
 
         }
         //------------------------------------------------------------------------------------------------------------------------
-        public static async Task<bool> checkForObjection(string response)
+        public static async Task <bool> checkForObjection(string response)
         {
             string resp = response;
             string clip;
-            if (App.getAgent().custObjected == true) { return true; }
-                if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you")) 
+            if (!App.getAgent().currentlyRebuttaling)
+            {
+              
+                if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
-                  
+
                 }
                 else if (resp.Contains("leave a message") || resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full"))
                 {
@@ -1587,8 +2022,9 @@ namespace AutoBotCSharp
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
                     App.RollTheClip(clip);
+                    App.getAgent().custObjected = true;
                     App.getAgent().notInterestedFutureBool = true;
-                    currentlyRebuttaling = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
 
                 }
@@ -1598,8 +2034,9 @@ namespace AutoBotCSharp
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
                     App.RollTheClip(clip);
+                    App.getAgent().custObjected = true;
                     App.getAgent().notInterestedFutureBool = true;
-                    currentlyRebuttaling = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("take me off your") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list") || resp.Contains("don't call me again") || resp.Contains("don't ever call me again"))
@@ -1614,7 +2051,7 @@ namespace AutoBotCSharp
                     {
                         //Console.WriteLine("couldn't do it. I just. Couldn't. Do it.");
                     }
-                    currentlyRebuttaling = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("what did you say") || resp.Contains("what was that") || resp.Contains("could you repeat that") || resp.Contains("come again"))
@@ -1625,7 +2062,8 @@ namespace AutoBotCSharp
                 {
                     clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
 
                 }
@@ -1633,28 +2071,32 @@ namespace AutoBotCSharp
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("already have") || resp.Contains("already got"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out") || resp.Contains("not getting that out"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("happy with") || resp.Contains("i'm good") || resp.Contains("all set"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
                     App.RollTheClip(clip);
-                    currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
 
@@ -1663,9 +2105,9 @@ namespace AutoBotCSharp
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-          
+
                     App.getAgent().HangUpandDispo("Wrong Number");
-                    currentlyRebuttaling = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
                 else if (resp.Contains("don't have a car") || resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
@@ -1674,10 +2116,17 @@ namespace AutoBotCSharp
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                     App.getAgent().HangUpandDispo("No Car");
-                    currentlyRebuttaling = true;
+                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
-                return false;
+                else
+                {
+                    return false;
+                }
+                
+            }
+            return true;
+               
         
         }
     
@@ -1725,9 +2174,14 @@ namespace AutoBotCSharp
             Console.WriteLine("got called");
             try
             {
+                App.getAgent().AskingBDay = false;
+                App.getAgent().isListening = false;
+                App.getAgent().isTalking = false;
                 App.getAgent().SilenceTimer = 0;
+                App.getAgent().calltime = 0;              
                 App.getAgent().inCall = false;
                 App.getAgent().custObjected = false;
+                App.getAgent().currentlyRebuttaling = false;
                 calltime = 0;
                 if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => App.StopTheClip())); }
                 if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
@@ -1781,7 +2235,7 @@ namespace AutoBotCSharp
             catch(Exception ex)
             {
                 Console.WriteLine("ERROR");
-                Console.Write(ex);
+                Console.WriteLine(ex);
             }
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1951,7 +2405,7 @@ namespace AutoBotCSharp
             {
                 isTalking = true;
                 SilenceTimer = 0;
-                App.longDictationClient.EndMicAndRecognition();
+
                 switch (Question)
                 {
                     case STARTYMCSTARTFACE:
@@ -1996,13 +2450,16 @@ namespace AutoBotCSharp
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\2nd Vehicle.mp3");
                         break;
                     case YMM3:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\3rd Vehicle.mp3");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\Third Vehicle.mp3");
                         break;
                     case YMM4:
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\4th Vehicle.mp3");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\Fourth Vehicle.mp3");
                         break;
                     case DOB:
                         App.playDobClips();
+                        break;
+                    case BDAYMONTH:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\REBUTTALS\Can You Just Verify the month.mp3");
                         break;
                     case MARITAL_STATUS:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Marital Status.mp3");
@@ -2012,6 +2469,9 @@ namespace AutoBotCSharp
                         break;
                     case SPOUSE_DOB:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Spouses Date of Birth.mp3");
+                        break;
+                    case SPOUSEBDAYMONTH:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\REBUTTALS\Can You Just Verify the month.mp3");
                         break;
                     case OWN_OR_RENT:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Do You Own Or Rent the Home.mp3");
@@ -2034,10 +2494,23 @@ namespace AutoBotCSharp
                     case LAST_NAME:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3");
                         break;
-                    case TCPA:
-                        App.longDictationClient.EndMicAndRecognition();
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
-                      
+                    case SECONDARIES:
+                        App.RollTheClip(getSecondaryClip());
+                        break;
+                    case TCPA:                 
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");                  
+                        break;
+                    case Agent.WHICHSECONDARIES:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Which secondaries.mp3");
+                        break;
+                    case YEARBUILT:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\YearBuilt.mp3");
+                        break;               
+                    case SQFT:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Square footage.mp3");
+                        break;
+                    case PPC:
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\PPCoverage.mp3");
                         break;
                 }
                 Callpos = INBETWEEN;
