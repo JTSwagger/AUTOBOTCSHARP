@@ -138,17 +138,31 @@ namespace AutoBotCSharp
            IReadOnlyCollection<OpenQA.Selenium.IWebElement> field = driver.FindElementsByClassName("error");
             foreach (OpenQA.Selenium.IWebElement item in field)
             {
-
                 Console.WriteLine("MISSED"+ i + ": " + item.GetAttribute("id"));
                 if (item.GetAttribute("id") != "") { return item.GetAttribute("id"); }
                 
             }
-
-            return "";
-            
-
+            return "";           
         }
         //-----------------------------------------------------------------------
+        public bool INPUTDEFAULT()
+        {
+            switch(temp.Question)
+            {
+                case Agent.INTRO:
+                case Agent.PROVIDER:
+                    selectData("frmInsuranceCarrier", "Progressive Auto Pro");
+                    temp.Question = Agent.INS_EXP;
+                    temp.Callpos = "INBETWEEN";
+                    SilenceTimer = 0;
+                    Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                    
+                    break;
+
+            }
+            return true;
+        }
+        //--------------------------------------------------------------------------
         public void doAgentStatusRequest()
         {
 
@@ -158,8 +172,9 @@ namespace AutoBotCSharp
                  
                 StartWebRequest();
                 string stats = reader.ReadToEnd();
+                Console.WriteLine(stats);
                 reader.Close();
-       
+                    
                 string[] tempstr = stats.Split(',');
                 try
                 {
@@ -184,10 +199,12 @@ namespace AutoBotCSharp
                     {
                         newCall = true;
                         App.longDictationClient.EndMicAndRecognition();
+                      
                     } else if (Dialer_Status == "INCALL" || testing == true)
 
                     {
-                        if (isTalking == false ) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }                                 
+                        if (isTalking == false ) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }    
+                        if (SilenceTimer >= 2) { INPUTDEFAULT(); }                             
                         if (SilenceTimer >= 5) { CheckForContact(SilenceTimer); }
                        calltime += 0.2;
                        App.totalTimer += 0.2;
@@ -221,9 +238,6 @@ namespace AutoBotCSharp
             }
 
         }
-
-
-        //------------------------------------------------------------------------------------------------------
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
@@ -475,7 +489,7 @@ namespace AutoBotCSharp
             { return ("AIU"); }
             if (s.Contains("allied") || s.Contains("ally"))
             { return ("Allied"); }
-            if (s.Contains("allstate") || s.Contains("all state") || s.Contains("ball state") || s.Contains("mall state"))
+            if (s.Contains("allstate") || s.Contains("all state") || s.Contains("ball state") || s.Contains("mall state") || s.Contains("I'll say it"))
             { return ("Allstate Insurance"); }
             if (s.Contains("american"))
             { return ("American Insurance"); }
@@ -715,7 +729,7 @@ namespace AutoBotCSharp
             { return ("Standard Fire Insurance Company"); }
             if (s.Contains("state and county"))
             { return ("State and County Mutual Fire Insurance"); }
-            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park"))
+            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park") || s.Contains("say farm"))
             { return ("State Farm General"); }
             if (s.Contains("state fund"))
             { return ("State Fund"); }
@@ -2028,8 +2042,6 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-
-
                 else if (resp.Contains("not interested") || resp.Contains("no interest"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
@@ -2067,7 +2079,7 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("what's LCN") || resp.Contains("what is LCN") || resp.Contains("what else in"))
+                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
                     App.RollTheClip(clip);
@@ -2249,6 +2261,15 @@ namespace AutoBotCSharp
             };
 
             dobInfo = dob;
+            while(testing == true)
+            {
+                if (isTalking == false) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }
+                if (SilenceTimer >= 2) { INPUTDEFAULT(); }
+                if (SilenceTimer >= 5) { CheckForContact(SilenceTimer); }
+                calltime += 0.2;
+                App.totalTimer += 0.2;
+                Thread.Sleep(200);
+            }
         }
         public void killDriver()
         {
@@ -2376,6 +2397,7 @@ namespace AutoBotCSharp
             App.longDictationClient.StartMicAndRecognition();
             AskQuestion();
             Task t = Task.Run((Action)getDob);
+
         }
         //---------------------------------------------------------------
 
@@ -2403,9 +2425,10 @@ namespace AutoBotCSharp
         {
             try
             {
+
                 isTalking = true;
                 SilenceTimer = 0;
-
+             
                 switch (Question)
                 {
                     case STARTYMCSTARTFACE:

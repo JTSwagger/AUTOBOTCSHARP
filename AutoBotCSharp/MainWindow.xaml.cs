@@ -47,7 +47,7 @@ namespace AutoBotCSharp
             user = new Agent();
             randy = new Random();
             InitializeComponent();
-
+            
             string procName = Process.GetCurrentProcess().ProcessName;
             foreach (Process proc in Process.GetProcessesByName("chromedriver"))
             {
@@ -749,7 +749,14 @@ namespace AutoBotCSharp
 
         private void doTestingStuff_Click(object sender, RoutedEventArgs e)
         {
+            App.getAgent().testing = true;
             user.setupTesting();
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3");
+
         }
     }
     

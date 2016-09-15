@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoBotCSharp"
         mc:Ignorable="d"
-        Title="SkyNet" Height="607.941" Width="611.849">
-    <Grid Margin="-24,2,0,-6" Height="581" VerticalAlignment="Top">
+        Title="SkyNet" Height="889.479" Width="611.849">
+    <Grid Margin="-24,2,0,7">
         <Grid.RowDefinitions>
             <RowDefinition Height="19*"/>
             <RowDefinition Height="64*"/>
@@ -33,7 +33,7 @@
                     <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold" Height="20" VerticalAlignment="Top">
+            <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold">
                 <Grid Background="#FFE5E5E5" Margin="0,1,0,-1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
@@ -96,7 +96,7 @@
                     </Grid.ColumnDefinitions>
                     <Button x:Name="cmboOwnRent" Content="OWN/RENT" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="72" Height="50" Click="cmboOwnRent_Click"/>
                     <Button x:Name="btnHomeType" Content="HOME TYPE" HorizontalAlignment="Left" Margin="82,10,0,0" VerticalAlignment="Top" Width="83" Height="50" FontWeight="Bold" Click="btnHomeType_Click"/>
-                    <Button x:Name="btnAddress" Content="ADDRESS" HorizontalAlignment="Left" Margin="172,10,0,0" VerticalAlignment="Top" Width="84" Height="50" Grid.ColumnSpan="3" Click="btnAddress_Click"/>
+                    <Button x:Name="btnAddress" Content="ADDRESS" HorizontalAlignment="Left" Margin="172,10,0,0" VerticalAlignment="Top" Width="80" Height="50" Grid.ColumnSpan="3" Click="btnAddress_Click"/>
                     <Button x:Name="btnEmail" Content="EMAIL" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="80" Height="50" Grid.Column="3" Grid.ColumnSpan="2" Click="btnEmail_Click"/>
                     <Button x:Name="btnCredit" Content="CREDIT" HorizontalAlignment="Left" Margin="62,10,0,0" VerticalAlignment="Top" Width="79" Height="50" Grid.Column="4" Click="btnCredit_Click"/>
                     <Button x:Name="btnPhoneType" Content="PHONE TYPE" HorizontalAlignment="Left" Margin="146,10,0,0" VerticalAlignment="Top" Width="79" Height="50" Grid.Column="4" Click="btnPhoneType_Click"/>
@@ -116,29 +116,29 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="129" Margin="3,107,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Grid.RowSpan="2" Navigated="frmReactions_Navigated_1"/>
+        <Frame x:Name="frmReactions" Content="       &#x9;&#x9;&#x9;&#x9;&#x9;REACTIONS" Height="112" Margin="3,112,22,0" VerticalAlignment="Top" Grid.Column="2" FontWeight="Bold" Navigated="frmReactions_Navigated_1" Grid.RowSpan="2"/>
         <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="27,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnOk_Click"/>
         <Button x:Name="btnReaction" Content="REACTION" HorizontalAlignment="Left" Margin="112,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Background="#FFFFE800" Grid.RowSpan="2" Click="btnReaction_Click"/>
         <Button x:Name="btnWhatIGot" Content="WHAT I GOT" HorizontalAlignment="Left" Margin="197,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnWhatIGot_Click"/>
         <Button x:Name="btnYes" Content="YES" HorizontalAlignment="Left" Margin="282,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnYes_Click"/>
         <Button x:Name="btnRepeatThat" Content="REPEAT THAT" HorizontalAlignment="Left" Margin="367,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnRepeatThat_Click"/>
         <Button x:Name="btnLookingFor" Content="LOOKING FOR" HorizontalAlignment="Left" Margin="452,127,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.RowSpan="2" Click="btnLookingFor_Click" />
-        <Button x:Name="btnGreatQ" Content="GREAT Q" HorizontalAlignment="Left" Margin="27,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnGreatQ_Click"/>
-        <Button x:Name="btnThatsOk" Content="THAT'S OK" HorizontalAlignment="Left" Margin="112,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnThatsOk_Click"/>
-        <Button x:Name="btnLaugh" Content="LAUGH" HorizontalAlignment="Left" Margin="197,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnLaugh_Click"/>
-        <Button x:Name="btnNo" Content="NO" HorizontalAlignment="Left" Margin="282,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnNo_Click"/>
-        <Button x:Name="btnSpellThat" Content="SPELL THAT" HorizontalAlignment="Left" Margin="367,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnSpellThat_Click"/>
-        <Button x:Name="btnHi" Content="HI..?" HorizontalAlignment="Left" Margin="452,29,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnHi_Click"/>
-        <Button x:Name="btnCompUnd" Content="I COMP UND." HorizontalAlignment="Left" Margin="27,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnCompUnd_Click"/>
-        <Button x:Name="btnHelloQues" Content="HELLO?" HorizontalAlignment="Left" Margin="112,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnHelloQues_Click"/>
-        <Button x:Name="btnTY" Content="TY" HorizontalAlignment="Left" Margin="197,64,0,0" VerticalAlignment="Top" Width="38" Height="30" Grid.Column="2" Grid.Row="1" Click="btnTY_Click"/>
-        <Button x:Name="btnSorry" Content="SORRY" HorizontalAlignment="Left" Margin="282,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnSorry_Click"/>
-        <Button x:Name="btnSadSorry" Content="SAD SORRY" HorizontalAlignment="Left" Margin="367,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Grid.Row="1" Click="btnSadSorry_Click"/>
-        <Button x:Name="butnThisIsCheryl" Content="THIS CHERYL" HorizontalAlignment="Left" Margin="452,64,0,0" VerticalAlignment="Top" Width="80" Height="30" Click="butnThisIsCheryl_Click" Grid.Column="2" Grid.Row="1"/>
-        <Button x:Name="btnYW" Content="YW" HorizontalAlignment="Left" Margin="238,64,0,0" VerticalAlignment="Top" Width="39" Height="30" Grid.Column="2" Grid.Row="1" Click="btnYW_Click"/>
-        <TabControl x:Name="tabControlBottom" Height="256" Margin="0,108,10,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" SelectionChanged="tabControlBottom_SelectionChanged">
-            <TabItem x:Name="tbQuestions" Header="QUESTIONS/OBJECTIONS" Margin="0,0,-47,0" HorizontalAlignment="Left" Width="218" Height="20" VerticalAlignment="Top" FontSize="14">
-                <Grid Background="#FFE5E5E5" Margin="0,0,7,0">
+        <Button x:Name="btnGreatQ" Content="GREAT Q" HorizontalAlignment="Left" Margin="27,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnGreatQ_Click"/>
+        <Button x:Name="btnThatsOk" Content="THAT'S OK" HorizontalAlignment="Left" Margin="112,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnThatsOk_Click"/>
+        <Button x:Name="btnLaugh" Content="LAUGH" HorizontalAlignment="Left" Margin="197,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnLaugh_Click"/>
+        <Button x:Name="btnNo" Content="NO" HorizontalAlignment="Left" Margin="282,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnNo_Click"/>
+        <Button x:Name="btnSpellThat" Content="SPELL THAT" HorizontalAlignment="Left" Margin="367,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnSpellThat_Click"/>
+        <Button x:Name="btnHi" Content="HI..?" HorizontalAlignment="Left" Margin="452,159,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnHi_Click"/>
+        <Button x:Name="btnCompUnd" Content="I COMP UND." HorizontalAlignment="Left" Margin="27,0,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnCompUnd_Click" Grid.Row="1"/>
+        <Button x:Name="btnHelloQues" Content="HELLO?" HorizontalAlignment="Left" Margin="112,0,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnHelloQues_Click" Grid.Row="1"/>
+        <Button x:Name="btnTY" Content="TY" HorizontalAlignment="Left" Margin="197,0,0,0" VerticalAlignment="Top" Width="38" Height="30" Grid.Column="2" Click="btnTY_Click" Grid.Row="1"/>
+        <Button x:Name="btnSorry" Content="SORRY" HorizontalAlignment="Left" Margin="282,0,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnSorry_Click" Grid.Row="1"/>
+        <Button x:Name="btnSadSorry" Content="SAD SORRY" HorizontalAlignment="Left" Margin="367,0,0,0" VerticalAlignment="Top" Width="80" Height="30" Grid.Column="2" Click="btnSadSorry_Click" Grid.Row="1"/>
+        <Button x:Name="butnThisIsCheryl" Content="THIS CHERYL" HorizontalAlignment="Left" Margin="452,0,0,0" VerticalAlignment="Top" Width="80" Height="30" Click="butnThisIsCheryl_Click" Grid.Column="2" Grid.Row="1"/>
+        <Button x:Name="btnYW" Content="YW" HorizontalAlignment="Left" Margin="238,0,0,0" VerticalAlignment="Top" Width="39" Height="30" Grid.Column="2" Click="btnYW_Click" Grid.Row="1"/>
+        <TabControl x:Name="tabControlBottom" Height="438" Margin="1,38,9,0" VerticalAlignment="Top" Grid.Column="2" Grid.Row="1" SelectionChanged="tabControlBottom_SelectionChanged">
+            <TabItem x:Name="tbQuestions" Header="QUESTIONS/OBJECTIONS" Margin="0" HorizontalAlignment="Left" Width="218" FontSize="14">
+                <Grid Background="#FFE5E5E5" Margin="0,-1,7,1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="65*"/>
                         <ColumnDefinition Width="49*"/>
@@ -169,18 +169,19 @@
                     <Button x:Name="btnProviderExamples" Content="ALLSTATE GEICO&#xD;&#xA;STATE FARM?" HorizontalAlignment="Left" Margin="17,157,0,0" VerticalAlignment="Top" Width="88" Height="30" Grid.Column="3" FontSize="11" Background="#FFE813C1" Click="btnProviderExamples_Click"/>
                     <Button x:Name="btnVerifyMonth" Content="VERIFY MONTH" HorizontalAlignment="Left" Margin="111,157,0,0" VerticalAlignment="Top" Width="88" Height="30" Grid.Column="3" FontSize="11" Background="#FFE813C1" Click="btnVerifyMonth_Click"/>
                     <Button x:Name="btnVerifyDay" Content="VERIFY DAY" HorizontalAlignment="Left" Margin="206,158,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="3" FontSize="11" Background="#FFE813C1" Click="btnVerifyDay_Click"/>
-                    <Button x:Name="btnVerifyYear" Content="VERIFY YEAR" HorizontalAlignment="Left" Margin="84,192,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="2" FontSize="11" Background="#FFE813C1" Click="btnVerifyYear_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnVerifyYear" Content="VERIFY YEAR" HorizontalAlignment="Left" Margin="9,192,0,0" VerticalAlignment="Top" Width="89" Height="30" FontSize="11" Background="#FFE813C1" Click="btnVerifyYear_Click" Grid.ColumnSpan="2"/>
                     <Button x:Name="btnMakeExamples" Content="CHEVY FORD&#xD;&#xA; GMC..?" HorizontalAlignment="Left" Margin="35,158,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.ColumnSpan="2" FontSize="11" Background="#FFE813C1" Click="btnMakeExamples_Click" Grid.Column="1"/>
                     <Button x:Name="btnMonthExamples" Content="JAN, FEB,&#xD;&#xA;MARCH?" HorizontalAlignment="Left" Margin="81,157,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="2" FontSize="11" Background="#FFE813C1" Click="btnMonthExamples_Click" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnMoreSpecific" Content="MORE SPECIFIC" HorizontalAlignment="Left" Margin="207,192,0,6" Width="88" Grid.Column="3" Background="#FFE813C1" Click="btnMoreSpecific_Click" FontSize="11"/>
-                    <Button x:Name="btnVerifyMake" Content="VERIFY MAKE" HorizontalAlignment="Left" Margin="18,192,0,0" VerticalAlignment="Top" Width="88" Height="30" Grid.Column="3" FontSize="11" Background="#FFE813C1" Click="btnVerifyMake_Click"/>
-                    <Button x:Name="btnVerifyModel" Content="VERIFY MODEL" HorizontalAlignment="Left" Margin="112,192,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="3" FontSize="11" Background="#FFE813C1" Click="btnVerifyModel_Click"/>
+                    <Button x:Name="btnMoreSpecific" Content="MORE SPECIFIC" HorizontalAlignment="Left" Margin="18,192,0,186" Width="88" Grid.Column="3" Background="#FFE813C1" Click="btnMoreSpecific_Click" FontSize="11"/>
+                    <Button x:Name="btnVerifyMake" Content="VERIFY MAKE" HorizontalAlignment="Left" Margin="38,192,0,0" VerticalAlignment="Top" Width="88" Height="30" Grid.Column="1" FontSize="11" Background="#FFE813C1" Click="btnVerifyMake_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnVerifyModel" Content="VERIFY MODEL" HorizontalAlignment="Left" Margin="83,192,0,0" VerticalAlignment="Top" Width="89" Height="30" Grid.Column="2" FontSize="11" Background="#FFE813C1" Click="btnVerifyModel_Click" Grid.ColumnSpan="2"/>
                     <Button x:Name="btnBestGuess" Content="BEST GUESS" HorizontalAlignment="Left" Margin="6,156,0,0" VerticalAlignment="Top" Width="89" Height="31" FontSize="11" Background="#FFE813C1" Grid.ColumnSpan="2" Click="btnBestGuess_Click"/>
+                    <Button x:Name="button1" Grid.ColumnSpan="2" Content="BAD CONNECTION" HorizontalAlignment="Left" Margin="69,317,0,0" VerticalAlignment="Top" Width="183" Background="Red" Click="button1_Click" Height="30" Grid.Column="2"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbDriverInfo1" Margin="164,0,-191,0" Header="CUSTOMER SPEECH" Height="20" VerticalAlignment="Top">
                 <Grid>
-                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Text="INSERT CUSTOMER SPEECH HERE" Margin="10,10,3,56" IsEnabled="True" TextChanged="speechTxtBox_TextChanged"/>
+                    <TextBox x:Name="speechTxtBox" TextWrapping="Wrap" Margin="10,10,3,56" IsEnabled="True" TextChanged="speechTxtBox_TextChanged" SelectionOpacity="-2" FontSize="36" FontFamily="Segoe UI Semibold" FontWeight="Bold"/>
 
                 </Grid>
 
@@ -211,7 +212,7 @@
 
 
         </TabControl>
-        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="58,380,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1" SelectionChanged="cmbDispo_SelectionChanged" SelectedIndex="0">
+        <ComboBox x:Name="cmbDispo" HorizontalAlignment="Left" Margin="64,482,0,0" VerticalAlignment="Top" Width="279" Grid.Column="2" Height="22" Grid.Row="1" SelectionChanged="cmbDispo_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem Background="{x:Null}" Content="Not Available"/>
             <ComboBoxItem Content="Wrong Number"/>
             <ComboBoxItem Content="Not Interested"/>
@@ -223,9 +224,10 @@
             <ComboBoxItem Content="Resource Not Found"/>
             <ComboBoxItem Content="ComboBoxItem" HorizontalAlignment="Left" Width="277"/>
         </ComboBox>
-        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="3,395,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
-        <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="342,379,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="53" Grid.Row="1" Click="btnDispo_Click"/>
-        <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="53" Margin="492,379,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1" Click="btnPause_Click"/>
-        <Button x:Name="btnGreatDay" Content="HAVE A GREAT DAY!" HorizontalAlignment="Left" Margin="57,407,0,0" VerticalAlignment="Top" Width="279" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="25" Grid.Row="1" Click="btnGreatDay_Click"/>
+        <Label x:Name="lblDispo" Content="DISPO" HorizontalAlignment="Left" Margin="9,497,0,0" VerticalAlignment="Top" Height="32" Width="50" Grid.Column="2" Grid.Row="1"/>
+        <Button x:Name="btnDispo" Content="HANG UP &amp; DISPOSITION THIS CALL" HorizontalAlignment="Left" Margin="348,481,0,0" VerticalAlignment="Top" Width="145" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="53" Grid.Row="1" Click="btnDispo_Click"/>
+        <Button x:Name="btnPause" Content="PAUSE" HorizontalAlignment="Left" Height="53" Margin="498,481,0,0" VerticalAlignment="Top" Width="96" Grid.Column="2" Grid.Row="1" Click="btnPause_Click"/>
+        <Button x:Name="btnGreatDay" Content="HAVE A GREAT DAY!" HorizontalAlignment="Left" Margin="63,509,0,0" VerticalAlignment="Top" Width="279" RenderTransformOrigin="-0.02,0.467" Grid.Column="2" Height="25" Grid.Row="1" Click="btnGreatDay_Click"/>
+        <Label x:Name="lblQuestion" Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,555,0,0" Grid.Row="1" VerticalAlignment="Top" Width="566" Height="90" FontSize="48" FontWeight="Bold"/>
     </Grid>
 </Window>

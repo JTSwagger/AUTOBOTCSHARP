@@ -83,7 +83,6 @@ namespace AutoBotCSharp
         {
             Console.WriteLine(e.SpeechErrorText);
        
-
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
         {
@@ -143,7 +142,11 @@ namespace AutoBotCSharp
             if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
             {
                 Console.WriteLine("REACHED 2 MIN.");
-                Current.Dispatcher.Invoke(async () => { REMIX(); });
+                Current.Dispatcher.Invoke((() =>
+                {
+                    REMIX();
+                   
+                }));
             }
             if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
             {
@@ -272,13 +275,13 @@ namespace AutoBotCSharp
                         if (dobby[0] != "" && dobby[1] != "")
                         {
                             
-                            if (response.Contains("yes") || response.Contains("yeah") || response.Contains("right") || response.Contains("correct"))
+                            if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct"))
                             {
                                 App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
                                 ag.Question = Agent.MARITAL_STATUS;
                               
                             }
-                            else if(response.Contains("no") || response.Contains("wrong") || response.Contains("incorrect") )
+                            else if(response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect") )
                             {
                                 RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
                                 getAgent().AskingBDay = true;
@@ -432,8 +435,8 @@ namespace AutoBotCSharp
                         if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.ToLower().TrimEnd('.', '?', '!').Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure"))
                         {
                            
-                            getAgent().Callpos = Agent.INBETWEEN;                           
-                            App.getAgent().selectData("frmTcpaConsumerConsented",)
+                            getAgent().Callpos = Agent.INBETWEEN;
+                            App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES");
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             if (App.getAgent().driver.PageSource.Contains("submitted successfully"))
                             {
