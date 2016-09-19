@@ -12,6 +12,7 @@ using Microsoft.ProjectOxford;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace AutoBotCSharp
 {
@@ -175,8 +176,8 @@ namespace AutoBotCSharp
                     Console.WriteLine(waveOutIsStopped);
                     Current.Dispatcher.Invoke((() =>
                     {
-                    getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
-                    if (result.DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
+                        getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
+                        if (result.DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
                     }));
 
 
@@ -187,19 +188,22 @@ namespace AutoBotCSharp
                         {
                             if (waveOutIsStopped)
                             {
-                               
-                           
+
+
+                                {
+                                    
                                     doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
                                     if (!getAgent().hasAsked)
                                     {
                                         getAgent().AskQuestion();
                                         getAgent().hasAsked = true;
                                     }
-                                
-                                
-                                
+
+
+
+                                }
                             }
-                        }
+                        };
                     });
 
                 }
@@ -208,6 +212,10 @@ namespace AutoBotCSharp
 
         public static void doBackgroundQuestionSwitchingStuff(string response)
         {
+            response = response.TrimEnd('.', '?', '!');
+            response = response.Replace("'","");
+            response = response.ToLower();
+            Console.WriteLine(response);
             Agent ag = getAgent();
             // call position advancement
             if (waveOutIsStopped)
@@ -216,15 +224,58 @@ namespace AutoBotCSharp
                 {
                     case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
                     case Agent.INTRO:
-                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3"); ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked=true; } break; 
+                       
                     case Agent.PROVIDER:
-                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "") { App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3"); ag.Question = Agent.INS_EXP; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
+                        {
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                            ag.Question = Agent.INS_EXP; ag.hasAsked = false;
+                            break;
+           
+                        } else
+                        { ag.hasAsked = true; }
                         break;
                     case Agent.INS_EXP:
-                        if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "") { ag.Question = Agent.INST_START; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "") {
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `INS_EXP` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                            ag.Question = Agent.INST_START;
+                            ag.hasAsked = false;
+
+                        } else { ag.hasAsked = true; }
                         break;
                     case Agent.INST_START:
-                        if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "") { ag.Question = Agent.NUM_VEHICLES; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "") {
+                            ag.Question = Agent.NUM_VEHICLES;
+                            ag.hasAsked = false;
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `INS_START` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                        } else { ag.hasAsked = true; }
                         break;
                     case Agent.NUM_VEHICLES:
                         if (ag.cust.numVehicles > 1)
@@ -237,20 +288,71 @@ namespace AutoBotCSharp
                         }
                         break;
                     case Agent.YMM_ONLY_ONE:
-                        if (ag.driver.FindElementById("vehicle-model").Displayed ) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("vehicle-model").Displayed ) {
+                            ag.Question = Agent.DOB;
+                            ag.hasAsked = false;
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_1` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                        } else { ag.hasAsked = true; }
                         break;
                     case Agent.YMM1:
-                        if (ag.driver.FindElementById("vehicle-model").Displayed) { ag.Question = Agent.YMM2; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("vehicle-model").Displayed) { ag.Question = Agent.YMM2; ag.hasAsked = false;
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_1` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                        } else { ag.hasAsked = true; }
                         break;
                     case Agent.YMM2:
                         if (ag.cust.numVehicles > 2)
                         {
-                            if (ag.driver.FindElementById("vehicle2-model").Displayed)  { ag.Question = Agent.YMM3; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                            if (ag.driver.FindElementById("vehicle2-model").Displayed)  {
+                                ag.Question = Agent.YMM3;
+                                ag.hasAsked = false;
+                                MySqlConnection myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+
+                            } else { ag.hasAsked = true; }
                           
                         }
                         else
                         {
-                            if (ag.driver.FindElementById("vehicle2-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                            if (ag.driver.FindElementById("vehicle2-model").Displayed) {
+                                ag.Question = Agent.DOB;
+                                ag.hasAsked = false;
+                                MySqlConnection myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                            } else { ag.hasAsked = true; }
                             break;
                         }
 
@@ -258,15 +360,52 @@ namespace AutoBotCSharp
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
                         {
-                            if (ag.driver.FindElementById("vehicle3-model").Displayed){ ag.Question = Agent.YMM4; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                            if (ag.driver.FindElementById("vehicle3-model").Displayed){ ag.Question = Agent.YMM4;
+                                ag.hasAsked = false;
+                                MySqlConnection myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                            } else { ag.hasAsked = true; }
                         }
                         else
                         {
-                            if (ag.driver.FindElementById("vehicle3-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }                          
+                            if (ag.driver.FindElementById("vehicle3-model").Displayed) { ag.Question = Agent.DOB;
+                                ag.hasAsked = false;
+                                MySqlConnection myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                            } else { ag.hasAsked = true; }                          
                         }
                         break;
                     case Agent.YMM4:
-                        if (ag.driver.FindElementById("vehicle4-model").Displayed) { ag.Question = Agent.DOB; ag.hasAsked = false; } else { ag.hasAsked = true; }
+                        if (ag.driver.FindElementById("vehicle4-model").Displayed) { ag.Question = Agent.DOB;
+                            ag.hasAsked = false;
+
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `YMM_4` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
+                        } else { ag.hasAsked = true; }
                         break;
 
                     case Agent.DOB:
@@ -277,8 +416,8 @@ namespace AutoBotCSharp
                             
                             if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct"))
                             {
-                                App.RollTheClip(@"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3");
-                                ag.Question = Agent.MARITAL_STATUS;
+     
+                               ag.Question = Agent.MARITAL_STATUS;
                               
                             }
                             else if(response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect") )
@@ -322,12 +461,34 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.MARITAL_STATUS:
+                        
                         if (ag.cust.maritalStatus == "Married")
                         {
+
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
                             ag.Question = Agent.SPOUSE_NAME;
                         }
                         else
                         {
+                            MySqlConnection myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            MySqlCommand Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
                             ag.Question = Agent.OWN_OR_RENT;
                         }
 
@@ -432,12 +593,14 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.TCPA:
-                        if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.ToLower().TrimEnd('.', '?', '!').Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure"))
+
+                        if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure"))
                         {
                            
                             getAgent().Callpos = Agent.INBETWEEN;
-                            App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES");
+                            App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
+                            System.Threading.Thread.Sleep(1000);
                             if (App.getAgent().driver.PageSource.Contains("submitted successfully"))
                             {
                                
@@ -448,7 +611,6 @@ namespace AutoBotCSharp
                             {
                                 RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Justin 02.mp3");
                                 getAgent().Callpos = "FIX";
-
 
                             }
                         }
@@ -529,7 +691,7 @@ namespace AutoBotCSharp
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
-            if (getAgent().inCall){ longDictationClient.StartMicAndRecognition();}
+            if (getAgent().inCall || getAgent().testing){ longDictationClient.StartMicAndRecognition();}
             Agent user = getAgent();
             Console.WriteLine("CHERYL JUST REBUTTALED " + getAgent().currentlyRebuttaling);   
             user.isTalking = false;
@@ -691,7 +853,7 @@ namespace AutoBotCSharp
                 {
                     await Task.Delay(25);
                 } while (waveOutIsStopped == false);
-                return true;
+                return false;
             }
             catch (Exception ex)
             {
