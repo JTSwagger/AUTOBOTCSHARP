@@ -19,6 +19,7 @@ using System.Diagnostics;
 using OpenQA.Selenium.Chrome;
 using Microsoft.ProjectOxford.SpeechRecognition;
 using MySql.Data.MySqlClient;
+using System.IO;
 
 
 namespace AutoBotCSharp
@@ -64,6 +65,22 @@ namespace AutoBotCSharp
                 else
                 {
                     proc.Kill();
+                }
+            }
+            string thepath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MALENAMES.txt";
+            using (StreamReader r = new StreamReader(thepath))
+            {
+                // 3
+                // Use while != null pattern for loop
+                string line;
+                while ((line = r.ReadLine()) != null)
+                {
+                    // 4
+                    // Insert logic here.
+                    // ...
+                    // "line" is a line in the file. Add it to our List.
+                    user.maleNames.Add(line);
+                    Console.WriteLine(line);
                 }
             }
         }
@@ -625,7 +642,7 @@ namespace AutoBotCSharp
         }
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
-            App.playHumanism();
+            App.PlayHumanism();
         }
 
         // below is my hotkey handling code
@@ -698,7 +715,7 @@ namespace AutoBotCSharp
                             App.playOkClip();
                             break;
                         case 1:
-                            App.playHumanism();
+                            App.PlayHumanism();
                             break;
                         case 2:
                             App.StopTheClip();
@@ -780,6 +797,22 @@ namespace AutoBotCSharp
             user = new Agent();
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
+            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MALENAMES.txt";
+            using (StreamReader r = new StreamReader(path))
+            {
+                // 3
+                // Use while != null pattern for loop
+                string line;
+                while ((line = r.ReadLine()) != null)
+                {
+                    // 4
+                    // Insert logic here.
+                    // ...
+                    // "line" is a line in the file. Add it to our List.
+                    user.maleNames.Add(line);
+                    Console.WriteLine(line);
+                }
+            }
             user.openTestPage();
         }
 

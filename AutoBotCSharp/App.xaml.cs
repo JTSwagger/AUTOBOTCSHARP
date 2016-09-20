@@ -181,7 +181,7 @@ namespace AutoBotCSharp
                     }));
 
 
-                    Current.Dispatcher.Invoke(() =>
+                    Current.Dispatcher.Invoke(async () =>
                     {
 
                         if (getAgent().custObjected == false)
@@ -191,15 +191,17 @@ namespace AutoBotCSharp
 
 
                                 {
-                                    
-                                    doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
-                                    if (!getAgent().hasAsked)
-                                    {
-                                        getAgent().AskQuestion();
-                                        getAgent().hasAsked = true;
-                                    }
+                                   
+                                         doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
 
+                                        if (!getAgent().hasAsked)
+                                        {
 
+                                            getAgent().hasAsked = true;
+                                             bool ba = await PlayHumanism();
+                                        }
+                                  
+                                   
 
                                 }
                             }
@@ -209,6 +211,31 @@ namespace AutoBotCSharp
                 }
             }      
         }
+
+        public static async Task<bool>  PlayHumanism()
+        {
+            bool b;
+            string clip;
+            switch (getAgent().Question)
+            {
+     
+                case Agent.INS_EXP:
+                    clip = @"C:\SoundBoard\Cheryl\REACTIONS\OTAGC.mp3";
+                    b = await RollTheClipAndWait(clip);
+                    break;
+                case Agent.RES_TYPE:
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\we're almost done.mp3";
+                    b = await RollTheClipAndWait(clip);
+                    getAgent().Question = Agent.INS_EXP;
+                    break;
+
+            }
+                
+            getAgent().AskQuestion();
+            return true;
+        }
+
+
 
         public static void doBackgroundQuestionSwitchingStuff(string response)
         {
@@ -222,12 +249,15 @@ namespace AutoBotCSharp
             {
                 switch (ag.Question)
                 {
-                    case Agent.STARTYMCSTARTFACE: ag.Question = Agent.INTRO; break;
+                    case Agent.STARTYMCSTARTFACE: if (response != "") { ag.Question = Agent.INTRO;  }
+                        break;
                     case Agent.INTRO:
                        
+                      
                     case Agent.PROVIDER:
                         if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
                         {
+                            ag.Question = Agent.INS_EXP;
                             MySqlConnection myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
@@ -238,7 +268,7 @@ namespace AutoBotCSharp
                             MySqlCommand Add = new MySqlCommand("INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
-                            ag.Question = Agent.INS_EXP; ag.hasAsked = false;
+                          ag.hasAsked = false;
                             break;
            
                         } else
@@ -495,6 +525,7 @@ namespace AutoBotCSharp
                         break;
                     case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; 
                         getAgent().EnterData("frmSpouseFirstName", response);
+                        if (getAgent().maleNames.Contains(response)) { getAgent().selectData("frmGender", "Male"); } else { getAgent().EnterData("frmGender", "Female"); }
                         break;
                     case Agent.SPOUSE_DOB: 
                         if (!App.getAgent().CheckForMonth(response))
@@ -603,9 +634,9 @@ namespace AutoBotCSharp
                             System.Threading.Thread.Sleep(1000);
                             if (App.getAgent().driver.PageSource.Contains("submitted successfully"))
                             {
-                               
+                                Console.WriteLine("called endcall successfully");
                                 App.getAgent().endcall = true;
-                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
+                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPU P\ENDCALL.mp3");
                             }
                             else
                             {
@@ -812,6 +843,7 @@ namespace AutoBotCSharp
                 Console.WriteLine("CLIP: " + Clip + " CHERYL IS TALKING: " + getAgent().isTalking);
                 try
                 {
+                    App.waveOutIsStopped = false;
                     getAgent().isTalking = true;
                     getAgent().SilenceTimer = 0;
                     StopTheClip();
@@ -842,10 +874,12 @@ namespace AutoBotCSharp
             Console.WriteLine("CLIP");
             try
             {
+
                 StopTheClip();
                 waveOut = new WaveOut();
                 waveOut.PlaybackStopped += onPlaybackStopped;
                 Mp3FileReader Reader = new Mp3FileReader(Clip);
+               
                 waveOutIsStopped = false;
                 waveOut.Init(Reader);
                 waveOut.Play();
@@ -892,26 +926,7 @@ namespace AutoBotCSharp
 
         private static int humanismIndex = 0;
 
-        public static void playHumanism()
-        {
-            string[] humanismClips = new string[]
-            {
-                @"C:\Soundboard\Cheryl\REACTIONS\Excellent 2.mp3",
-                @"C:\Soundboard\Cheryl\REACTIONS\Great 2.mp3",
-                @"C:\Soundboard\Cheryl\REACTIONS\Wonderful.mp3",
-            };
-            
-            string clip = humanismClips[humanismIndex];
-            if (humanismIndex >= humanismClips.Length - 1)
-            {
-                humanismIndex = 0;
-            }
-            else
-            {
-                humanismIndex += 1;
-            }
-            RollTheClip(clip);
-        }
+       
         public static async void playDobClips()
         {
             string[] dobby = getAgent().dobInfo;

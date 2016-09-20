@@ -19,7 +19,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
-       
+        public List<string> maleNames = new List<string>();
         public bool endcall = false;
         public string BDAYHOLDER = "";
         public bool AskingBDay = false;
@@ -115,11 +115,11 @@ namespace AutoBotCSharp
             {
                 switch ((int)time)
                 {
-                    case 5:
+                    case 4:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
                         SilenceTimer = 6;
                         break;
-                    case 9 :
+                    case  8:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 2.mp3")));
                         SilenceTimer = 10;
                         break;
@@ -219,7 +219,6 @@ namespace AutoBotCSharp
                  
                 App.getAgent().StartWebRequest();
                 string stats = App.getAgent().reader.ReadToEnd();
-                Console.WriteLine(stats);
                 App.getAgent().reader.Close();
                     
                 string[] tempstr = stats.Split(',');
@@ -261,11 +260,11 @@ namespace AutoBotCSharp
 
                     {
                         if (App.getAgent().isTalking == false ) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
-                        if (App.getAgent().SilenceTimer >= 2) { bool x = await App.RollTheClipAndWait(""); }
-                        if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }                             
-                        if (App.getAgent().SilenceTimer >= 5) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
+                        if (App.getAgent().SilenceTimer >= 3) { App.getAgent().INPUTDEFAULT(); }                             
+                        if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                         App.getAgent().calltime += 0.2;
                        App.totalTimer += 0.2;
+                        Thread.Sleep(200);
                         if (App.getAgent().newCall)
                         {
                             App.getAgent().inCall = true;
@@ -1687,7 +1686,7 @@ namespace AutoBotCSharp
                     {
 
                         temp.selectData("frmMaritalStatus", maritalStatus);
-
+                        
                     }
                     else
                     {
@@ -1910,18 +1909,18 @@ namespace AutoBotCSharp
         
        public bool CheckForMonth(string response)
         {
-            if (response.Contains("Jan")) { App.getAgent().selectData("frmDOB_Month","Jan"); return true; }
-            if (response.Contains("Feb")) { App.getAgent().selectData("frmDOB_Month", "Feb"); return true; }
-            if (response.Contains("Mar")) { App.getAgent().selectData("frmDOB_Month", "Mar"); return true; }
-            if (response.Contains("Apr")) { App.getAgent().selectData("frmDOB_Month", "Apr"); return true; }
-            if (response.Contains("May")) { App.getAgent().selectData("frmDOB_Month", "May"); return true; }
-            if (response.Contains("Jun")) { App.getAgent().selectData("frmDOB_Month", "Jun"); return true; }
-            if (response.Contains("July")) { App.getAgent().selectData("frmDOB_Month", "Jul"); return true; }
-            if (response.Contains("Aug")) { App.getAgent().selectData("frmDOB_Month", "Aug"); return true; }
-            if (response.Contains("Sep")) { App.getAgent().selectData("frmDOB_Month", "Sep"); return true; }
-            if (response.Contains("Oct")) { App.getAgent().selectData("frmDOB_Month", "Oct"); return true; }
-            if (response.Contains("Nov")) { App.getAgent().selectData("frmDOB_Month", "Nov"); return true; }
-            if (response.Contains("Dec")) { App.getAgent().selectData("frmDOB_Month", "Dec"); return true; }
+            if (response.Contains("jan")) { App.getAgent().selectData("frmDOB_Month","Jan"); return true; }
+            if (response.Contains("feb")) { App.getAgent().selectData("frmDOB_Month", "Feb"); return true; }
+            if (response.Contains("mar")) { App.getAgent().selectData("frmDOB_Month", "Mar"); return true; }
+            if (response.Contains("apr")) { App.getAgent().selectData("frmDOB_Month", "Apr"); return true; }
+            if (response.Contains("may")) { App.getAgent().selectData("frmDOB_Month", "May"); return true; }
+            if (response.Contains("jun")) { App.getAgent().selectData("frmDOB_Month", "Jun"); return true; }
+            if (response.Contains("july")) { App.getAgent().selectData("frmDOB_Month", "Jul"); return true; }
+            if (response.Contains("aug")) { App.getAgent().selectData("frmDOB_Month", "Aug"); return true; }
+            if (response.Contains("sep")) { App.getAgent().selectData("frmDOB_Month", "Sep"); return true; }
+            if (response.Contains("oct")) { App.getAgent().selectData("frmDOB_Month", "Oct"); return true; }
+            if (response.Contains("nov")) { App.getAgent().selectData("frmDOB_Month", "Nov"); return true; }
+            if (response.Contains("dec")) { App.getAgent().selectData("frmDOB_Month", "Dec"); return true; }
             else { return false;}
 
         }
@@ -2128,7 +2127,7 @@ namespace AutoBotCSharp
                     App.getAgent().HangUpandDispo("Answering Machine");
 
                 }
-                else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk"))
+                else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk") || resp.Contains("busy now") || resp.Contains("busy right now"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
                     App.RollTheClip(clip);
@@ -2226,7 +2225,7 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
-                else if (resp.Contains("don't have a car") || resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                else if (resp.Contains("don't have a car") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
                 {
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
@@ -2370,8 +2369,8 @@ namespace AutoBotCSharp
             while(testing == true)
             {
                 if (isTalking == false) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }
-                if (SilenceTimer >= 5) { INPUTDEFAULT(); }
-                if (SilenceTimer >= 5) { CheckForContact(SilenceTimer); }
+                if (SilenceTimer >= 3) { INPUTDEFAULT(); }
+                if (SilenceTimer >= 4) { CheckForContact(SilenceTimer); }
                 Thread.Sleep(200);
             }
            
@@ -2428,6 +2427,7 @@ namespace AutoBotCSharp
             }
             try
             {
+                if (maleNames.Contains(firstName)) { selectData("frmGender", "Male"); } else { EnterData("frmGender", "Female"); }
                 string[] clips = App.findNameClips(firstName);
                 Application.Current.Dispatcher.Invoke((() =>
                 {
@@ -2468,6 +2468,7 @@ namespace AutoBotCSharp
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
             try
             {
+                if (maleNames.Contains(firstName)){ selectData("frmGender", "Male"); }else { EnterData("frmGender", "Female"); }
                 string[] clips = App.findNameClips(firstName);
                 Application.Current.Dispatcher.Invoke((() =>
                 {
