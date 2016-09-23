@@ -108,7 +108,7 @@ namespace AutoBotCSharp
                 getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(x = await Agent.checkForObjection(response)))
                 {
-                    Agent.checkforData(response);
+                    Agent.checkforData(response); 
                     
                     getAgent().hasAsked = false;
                 }
@@ -196,8 +196,9 @@ namespace AutoBotCSharp
 
                                         if (!getAgent().hasAsked)
                                         {
-
+                                            
                                             getAgent().hasAsked = true;
+                                        longDictationClient.EndMicAndRecognition();
                                              bool ba = await PlayHumanism();
                                         }
                                   
@@ -220,13 +221,14 @@ namespace AutoBotCSharp
             {
      
                 case Agent.INS_EXP:
+                   // if(!App.getAgent().currentlyRebuttaling)
+                  //  App.getAgent().currentlyRebuttaling = true
                     clip = @"C:\SoundBoard\Cheryl\REACTIONS\OTAGC.mp3";
                     b = await RollTheClipAndWait(clip);
                     break;
                 case Agent.RES_TYPE:
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\we're almost done.mp3";
                     b = await RollTheClipAndWait(clip);
-                    getAgent().Question = Agent.INS_EXP;
                     break;
 
             }
@@ -249,8 +251,7 @@ namespace AutoBotCSharp
             {
                 switch (ag.Question)
                 {
-                    case Agent.STARTYMCSTARTFACE: if (response != "") { ag.Question = Agent.INTRO;  }
-                        break;
+                    
                     case Agent.INTRO:
                        
                       
@@ -622,25 +623,31 @@ namespace AutoBotCSharp
 
                         }
                         break;
-
+                    
                     case Agent.TCPA:
 
-                        if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure"))
+                        if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure") || response.Contains("yep") || response.Contains("yeah") || response.Contains("sounds good") || response.Contains("absolutely") || response.Contains("alright"))
                         {
                            
                             getAgent().Callpos = Agent.INBETWEEN;
                             App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
-                            System.Threading.Thread.Sleep(1000);
-                            if (App.getAgent().driver.PageSource.Contains("submitted successfully"))
+                            App.getAgent().SilenceTimer = 0;
+                            System.Threading.Thread.Sleep(1500);
+                            App.getAgent().SilenceTimer = 0;
+                            if (App.getAgent().driver.PageSource.Contains("added successfully"))
                             {
+                                getAgent().Question = "ENDCALL";
+              
                                 Console.WriteLine("called endcall successfully");
                                 App.getAgent().endcall = true;
-                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPU P\ENDCALL.mp3");
+                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
                             }
                             else
                             {
+                                App.getAgent().SilenceTimer = 0;
                                 RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Justin 02.mp3");
+
                                 getAgent().Callpos = "FIX";
 
                             }
@@ -741,6 +748,7 @@ namespace AutoBotCSharp
             }
             if(user.Callpos == "INBETWEEN")
             {
+                longDictationClient.StartMicAndRecognition();
                 // hidden below is a massive switch statement...
                 switch (user.Question)
                 {

@@ -241,12 +241,13 @@ namespace AutoBotCSharp
                             MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
-                            App.getAgent().autoDispo(App.getAgent().calltime);
+                            if (!App.getAgent().endcall) { App.getAgent().autoDispo(App.getAgent().calltime); }
                             App.getAgent().inCall = false;
                         }
 
                     } catch (Exception ex)
                     {
+                        App.getWindow().speechTxtBox.Text += Environment.NewLine +   ex;
                         Console.WriteLine(ex);
                         Console.WriteLine(ex.StackTrace);
                         Console.WriteLine("Problem getting stats");
@@ -259,6 +260,7 @@ namespace AutoBotCSharp
                     } else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
 
                     {
+                        
                         if (App.getAgent().isTalking == false ) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
                         if (App.getAgent().SilenceTimer >= 3) { App.getAgent().INPUTDEFAULT(); }                             
                         if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
@@ -268,7 +270,10 @@ namespace AutoBotCSharp
                         if (App.getAgent().newCall)
                         {
                             App.getAgent().inCall = true;
+                            App.getAgent().currentlyRebuttaling = false;
+                            App.getAgent().custObjected = false;
                             App.getAgent().setupBot();
+                            App.getAgent().endcall = false;
                             App.getAgent().Callpos = STARTYMCSTARTFACE;
                             App.getAgent().Question = STARTYMCSTARTFACE;
                             App.getAgent().notInterestedFutureBool = false;
@@ -529,8 +534,7 @@ namespace AutoBotCSharp
         public static string CheckIProvider(string s)
         {
 
-            if (s.Contains("none") || s.Contains("no insurance") || s.Contains("don't have") || s.Contains("don't have insurance") || s.Contains("not insured") || s.Contains("not with anybody"))
-            { App.getAgent().HangUpandDispo("No insurance"); return "FALSE"; }
+            
             if (s.Contains("twenty first") || s.Contains("21st") || s.Contains("twenty first century") || s.Contains("21st century") || s.Contains("twenty first century insurance") || s.Contains("21st century insurance") || s.Contains("first century"))
             { return ("21st Century Insurance"); }
             if (s.Contains("AAA") || s.Contains("triple A") || s.Contains("triple a") || s.Contains("aaa"))
@@ -1224,6 +1228,7 @@ namespace AutoBotCSharp
 
         public string GETYMM(string response, int vehicleNum)
         {
+          
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -1368,16 +1373,25 @@ namespace AutoBotCSharp
                         switch(vehicleNum)
                         {
                             case 1:
-                                temp.selectData("vehicle-model", model);
+                                 temp.selectData("vehicle-model", model);
+                                Thread.Sleep(250);
+                               driver.FindElementById("vehicle-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
+                         
                                 break;
                             case 2:
                                 temp.selectData("vehicle2-model", model);
+                                Thread.Sleep(250);
+                               driver.FindElementById("vehicle2-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
                                 break;
                             case 3:
                                 temp.selectData("vehicle3-model", model);
+                                Thread.Sleep(250);
+                                driver.FindElementById("vehicle3-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
                                 break;
                             case 4:
                                 temp.selectData("vehicle4-model", model);
+                                Thread.Sleep(250);
+                              //  driver.FindElementById("vehicle4-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
                                 break;
                         }
                         
@@ -2110,11 +2124,12 @@ namespace AutoBotCSharp
         {
             string resp = response;
             string clip;
-            if (!App.getAgent().currentlyRebuttaling)
+            if (App.getAgent().currentlyRebuttaling == false)
             {
               
                 if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
-                {
+                {   
+                     
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2122,13 +2137,19 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-                else if (resp.Contains("leave a message") || resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full"))
+                else if(resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full"))
                 {
-                    App.getAgent().HangUpandDispo("Answering Machine");
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().notInterestedFutureBool = true;
+                    App.getAgent().currentlyRebuttaling = true;
+
+                    App.getAgent().HangUpandDispo("Not Available");
 
                 }
                 else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk") || resp.Contains("busy now") || resp.Contains("busy right now"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2139,6 +2160,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("not interested") || resp.Contains("no interest"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2148,6 +2170,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("take me off your") || resp.Contains("take me off your list") || resp.Contains("put me on your") || resp.Contains("do not call list") || resp.Contains("no call list") || resp.Contains("don't call me again") || resp.Contains("don't ever call me again"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\DNC.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     try
@@ -2167,6 +2190,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("who are you") || resp.Contains("who is this") || resp.Contains("who is calling") || resp.Contains("whose calling"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
                    bool x = await App.RollTheClipAndWait(clip);
                     bool y = await App.RollTheClipAndWait(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
@@ -2177,6 +2201,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
                     App.RollTheClip(clip); 
                     App.getAgent().custObjected = true;
@@ -2185,6 +2210,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("already have") || resp.Contains("already got"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2193,6 +2219,7 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out") || resp.Contains("not getting that out"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2201,14 +2228,18 @@ namespace AutoBotCSharp
                 }
                 else if (resp.Contains("where'd you get") || resp.Contains("how did you get my number") || resp.Contains("get my info") || resp.Contains("where did you get"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\where did you get my info.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
-                else if (resp.Contains("happy with") || resp.Contains("i'm good") || resp.Contains("all set"))
+                else if (resp.Contains("happy with") || resp.Contains("fine with my insurance") || resp.Contains("i'm good") || resp.Contains("all set") || resp.Contains("satisfied"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2218,6 +2249,7 @@ namespace AutoBotCSharp
 
                 else if (resp.Contains("wrong number"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
@@ -2225,8 +2257,10 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
-                else if (resp.Contains("don't have a car") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                else if (resp.Contains("don't have") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
                 {
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
@@ -2234,15 +2268,13 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
+
                 else
                 {
                     return false;
-                }
-                
+                }               
             }
-            return true;
-               
-        
+            return true;                      
         }
     
         //-----------------------------------------------------------------------------------------------------------
@@ -2295,9 +2327,7 @@ namespace AutoBotCSharp
                 App.getAgent().isTalking = false;
                 App.getAgent().SilenceTimer = 0;
                 App.getAgent().calltime = 0;              
-                App.getAgent().inCall = false;
-                App.getAgent().custObjected = false;
-                App.getAgent().currentlyRebuttaling = false;
+                App.getAgent().inCall = false;         
                 calltime = 0;
                 if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => App.StopTheClip())); }
                 if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
@@ -2307,25 +2337,101 @@ namespace AutoBotCSharp
                 Thread.Sleep(400);
                 r.Close();
                 Thread.Sleep(400);
+                MySqlConnection myConnection;
+                MySqlCommand Add;
                 switch (dispo)
                 {
                     case "Not Available":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
+                         myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                         Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1" , myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
+
                         break;
+
                     case "Not Interested":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        r = h.GetResponse();
+                         myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                         Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
+                        r = h.GetResponse();
+
+                        break;
+                    case "No Insurance":
+                    case "NO Ins Transfer Unsuccessful":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        r = h.GetResponse();
+                         myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                         Add = new MySqlCommand("UPDATE `DISPO` SET `NO INS`=`NO INS` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
                         r = h.GetResponse();
                         break;
                     case "Do Not Call":
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        r = h.GetResponse();
+                         myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                         Add = new MySqlCommand("UPDATE `DISPO` SET `DNC`=`DNC` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
                         break;
                     case "Wrong Number":
+                        myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `WRONG NUM`=`WRONG NUM` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
                         r = h.GetResponse();
                         break;
                     case "No Car":
+                        myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `NO CAR`=`NO CAR` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoCar");
                         r = h.GetResponse();
                         break;
@@ -2334,6 +2440,16 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                     case "Auto Lead":
+                        myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `LEAD`=`LEAD` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
                         r = h.GetResponse();
                         PauseUnPause("PAUSE");
@@ -2412,7 +2528,7 @@ namespace AutoBotCSharp
                 {
                     try
                     {
-                        if (driver.PageSource.Contains("resource")) { HangUpandDispo("Not Available");return; }
+                        if (driver.PageSource.Contains("resource") || driver.PageSource.Contains("respectfully")) { HangUpandDispo("Not Available");return; }
                         else
                         {
                             Thread.Sleep(50);
