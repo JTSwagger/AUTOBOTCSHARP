@@ -89,6 +89,7 @@ namespace AutoBotCSharp
         public static Agent temp = App.getAgent();
         public class Customer
         {
+            public string phone { get; set; }
             public int numVehicles { get; set; }
             public string maritalStatus { get; set; }
             public string firstName { get; set; }
@@ -159,26 +160,22 @@ namespace AutoBotCSharp
                     SilenceTimer = 0;
                     Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
                     break;
-             ////   case Agent.INS_EXP:
-             // //      if(driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") == "Month")
-             //   //    { selectData("frmPolicyExpires_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString())); }
-             //       if (driver.FindElementById("frmPolicyExpires_Year").GetAttribute("value") == "Year")
-             //       { selectData("frmPolicyExpires_Year", MonthFromNumeral((DateTime.Now.Year).ToString())); }
-             //       temp.Callpos = "INBETWEEN";
-             //       temp.Question = Agent.INST_START;
-             //       SilenceTimer = 0;
-             //       Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-             //       break;
-             //   case Agent.INST_START:
-             //       if (driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") == "Month")
-             //       { selectData("frmPolicyStart_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString())); }
-             //       if (driver.FindElementById("frmPolicyStart_Year").GetAttribute("value") == "Year")
-             //       { selectData("frmPolicyStart_Year", MonthFromNumeral((DateTime.Now.Year-1).ToString())); }
-             //       temp.Callpos = "INBETWEEN";
-             //       temp.Question = Agent.NUM_VEHICLES;
-             //       SilenceTimer = 0;
-             //       Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-             //       break;
+              case Agent.INS_EXP:
+              selectData("frmPolicyExpires_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString()));
+              selectData("frmPolicyExpires_Year", (DateTime.Now.Year).ToString()); 
+              temp.Callpos = "INBETWEEN";
+              temp.Question = Agent.INST_START;
+              SilenceTimer = 0;
+               Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+               break;
+              case Agent.INST_START:
+               selectData("frmPolicyStart_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString())); 
+               selectData("frmPolicyStart_Year", (DateTime.Now.Year-1).ToString()); 
+               temp.Callpos = "INBETWEEN";
+               temp.Question = Agent.NUM_VEHICLES;
+               SilenceTimer = 0;
+                  Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                 break;
 
              //   case Agent.NUM_VEHICLES:
              //       if (Int32.Parse(NUM_VEHICLES) == 1)
@@ -222,13 +219,14 @@ namespace AutoBotCSharp
                 App.getAgent().reader.Close();
                     
                 string[] tempstr = stats.Split(',');
+               
                 try
                 {
                     App.getAgent().Dialer_Status = tempstr[0];
                     App.getAgent().Agent_Name = tempstr[5];
                     try
                     {
-                        if (stats.Contains("DEAD"))
+                        if (stats.Contains("DEAD") || stats.Contains("DISPO"))
                         {
 
                             MySqlConnection myConnection = new MySqlConnection();
@@ -241,7 +239,7 @@ namespace AutoBotCSharp
                             MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
-                            if (!App.getAgent().endcall) { App.getAgent().autoDispo(App.getAgent().calltime); }
+                            App.getAgent().HangUpandDispo("hangup");
                             App.getAgent().inCall = false;
                         }
 
@@ -262,13 +260,14 @@ namespace AutoBotCSharp
                     {
                         
                         if (App.getAgent().isTalking == false ) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
-                        if (App.getAgent().SilenceTimer >= 3) { App.getAgent().INPUTDEFAULT(); }                             
+                        if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }                             
                         if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                         App.getAgent().calltime += 0.2;
                        App.totalTimer += 0.2;
                         Thread.Sleep(200);
                         if (App.getAgent().newCall)
                         {
+                           
                             App.getAgent().inCall = true;
                             App.getAgent().currentlyRebuttaling = false;
                             App.getAgent().custObjected = false;
@@ -296,7 +295,7 @@ namespace AutoBotCSharp
                 }
                 App.getAgent().setGlobals();
               
-                    Thread.Sleep(200);
+                    
 
             }
             return true;
@@ -958,6 +957,15 @@ namespace AutoBotCSharp
                 }
                 else { expyear = DateTime.Now.Year.ToString(); }
             }
+            else if (s.Contains("in a month") || s.Contains("next month"))
+            {
+                expMonth = App.getAgent().MonthFromNumeral((DateTime.Now.Month + 1).ToString());
+                if (DateTime.Now.Month == 12)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
             else if (s.Contains("february"))
             {
                 expMonth = "Feb";
@@ -1060,26 +1068,10 @@ namespace AutoBotCSharp
                 }
                 else { expyear = DateTime.Now.Year.ToString(); }
             }
+            
             else
             {
-                expMonth = (DateTime.Now.Month + 1).ToString();
-                switch (expMonth)
-                {
-                    case "1": expMonth = "Jan"; break;
-                    case "2": expMonth = "Feb"; break;
-                    case "3": expMonth = "Mar"; break;
-                    case "4": expMonth = "Apr"; break;
-                    case "5": expMonth = "May"; break;
-                    case "6": expMonth = "Jun"; break;
-                    case "7": expMonth = "Jul"; break;
-                    case "8": expMonth = "Aug"; break;
-                    case "9": expMonth = "Sep"; break;
-                    case "10": expMonth = "Oct"; break;
-                    case "11": expMonth = "Nov"; break;
-                    case "12": expMonth = "Dec"; break;
-
-                }
-                expyear = DateTime.Now.Year.ToString();
+                return "NULL";
             }
 
             return (expMonth + " " + expyear);
@@ -1212,7 +1204,7 @@ namespace AutoBotCSharp
             
             if (response.Contains("1") || response.Contains("one"))
             { return 1; }
-            else if (response.Contains("2") || response.Contains("two"))
+            else if (response.Contains("2") || response.Contains("two") || response.Contains("too") || response.Contains("take") || response.Contains("true"))
             { return 2; }
             else if (response.Contains("3") || response.Contains("three"))
             { return 3; }
@@ -1531,7 +1523,7 @@ namespace AutoBotCSharp
                    
                     if (temp.cust.isNameEnabled)
                     {
-                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is") || response.Contains("yeah") ||  response.Contains("hi"))
+                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("hello") || response.Contains("this is") || response.Contains("yeah") ||  response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him") )
                         {
                             Thread.Sleep(200);
                             App.getAgent().custObjected = false;
@@ -1558,7 +1550,7 @@ namespace AutoBotCSharp
                     }
                     break;
                 case "SPOUSE?":
-                    if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is"))
+                    if (response.Contains("yes") || response.Contains("speaking") || response.Contains("yup") || response.Contains("yeah") || response.Contains("this is") || response.Contains("yep") || response.Contains("it is"))
                     {
                         App.getAgent().custObjected = false;
                         temp.Question = Agent.INTRO;
@@ -1582,11 +1574,7 @@ namespace AutoBotCSharp
                         if (temp.selectData("frmInsuranceCarrier", Data))
                         {
                             
-                            Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));
-                            Thread.Sleep(300);
-                       
-                          
-
+                            Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));                                                
                             if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                             Console.WriteLine("put stuff in, current question is: " + temp.Question);
                             App.RESULTS.Add(Agent.PROVIDER, true);
@@ -1640,14 +1628,8 @@ namespace AutoBotCSharp
                         temp.selectData("frmPolicyStart_Year", theDates[1]);
                         temp.Callpos = Agent.INBETWEEN;
                         //Console.WriteLine("\n BEYBLADE \n");                      
-                    } else if (Data == "FALSE")
-                    {
-                        int year;
-                        int.TryParse(temp.cust.expYear, out year);
-                        temp.selectData("frmPolicyStart_Month", temp.cust.expMonth);
-                        temp.selectData("frmPolicyStart_Year", (year - 1).ToString());
-                        if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
-                    }
+                    } 
+                  
                     else
                     {
                         mrMeseeks = false;
@@ -2063,15 +2045,16 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string checkMaritalStatus(string response)
         {
-            if (response.Contains("single"))
+            
+            if (response.Contains("single") || response.Contains("bingo") || response.Contains("not together") || response.Contains("thing go"))
             {
                 return "Single";
             }
-            if (response.Contains("married") || response.Contains("marry") || response.Contains("merry"))
+            if (response.Contains("married") || response.Contains("marry") || response.Contains("bury") || response.Contains("buried") || response.Contains("mary") || response.Contains("merry") || response.Contains("larry"))
             {
                 return "Married";
             }
-            else if (response.Contains("divorce"))
+            else if (response.Contains("divorce") || response.Contains("even worse") || response.Contains("did worse"))
             {
                 return "Divorced";
             }
@@ -2079,7 +2062,7 @@ namespace AutoBotCSharp
             {
                 return "Separated";
             }
-            else if (response.Contains("widow"))
+            else if (response.Contains("widow") || response.Contains("window"))
             {
                 return "Widowed";
             }
@@ -2091,34 +2074,7 @@ namespace AutoBotCSharp
             return "";
         }
         //------------------------------------------------------------------
-        public void autoDispo(double calltime)
-        {
-            Console.WriteLine("calltime: " + calltime);
-            if (calltime < 10)
-            {
-                HangUpandDispo("Not Available");
-            }
-            else if (calltime > 10)
-            {
-                if (Callpos == "INTRO")
-                {
-                    HangUpandDispo("Not Interested");
-                }
-                if (notInterestedFutureBool)
-                {
-                    HangUpandDispo("Not Interested");
-                }
-                else
-                {
-                    HangUpandDispo("Not Available");
-                }
-            }
-            else
-            {
-                HangUpandDispo("Not Available");
-            }
-
-        }
+      
         //------------------------------------------------------------------------------------------------------------------------
         public static async Task <bool> checkForObjection(string response)
         {
@@ -2137,7 +2093,7 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-                else if(resp.Contains("not here right now") || resp.Contains("leave a message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full"))
+                else if(resp.Contains("not here right now") || resp.Contains("leave a message") ||  resp.Contains("record your message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full") || resp.Contains("press 2"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2253,8 +2209,7 @@ namespace AutoBotCSharp
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\sorry.mp3";
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                    App.getAgent().HangUpandDispo("Wrong Number");
-                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().HangUpandDispo("Wrong Number");                   
                     return true;
                 }
                 else if (resp.Contains("don't have") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
@@ -2265,7 +2220,6 @@ namespace AutoBotCSharp
                     bool x = await App.RollTheClipAndWait(clip);
                     x = await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                     App.getAgent().HangUpandDispo("No Car");
-                    App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
 
@@ -2318,7 +2272,8 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
- 
+            MySqlConnection myConnection;
+            MySqlCommand Add;
             Console.WriteLine("got called");
             try
             {
@@ -2333,17 +2288,62 @@ namespace AutoBotCSharp
                 if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
                 App.getAgent().Question = STARTYMCSTARTFACE;
                 WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
-                WebResponse r = h.GetResponse();
-                Thread.Sleep(400);
+                WebResponse r = h.GetResponse();      
                 r.Close();
-                Thread.Sleep(400);
-                MySqlConnection myConnection;
-                MySqlCommand Add;
+                
+
+
+                Thread.Sleep(1000);
                 switch (dispo)
                 {
+                    case "hangup":
+
+                        if(!endcall)
+                        {
+                            if (notInterestedFutureBool)
+                            {
+
+                                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
+                                r = h.GetResponse();
+                                myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                                break;
+
+                            }else
+                            {
+                                h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                                r = h.GetResponse();
+                                
+                                myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                                break;
+
+
+
+                            }
+                            
+                        }
+                        break;
                     case "Not Available":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
+               
                          myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
@@ -2354,13 +2354,12 @@ namespace AutoBotCSharp
                          Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1" , myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-
                         break;
 
                     case "Not Interested":
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                         r = h.GetResponse();
-                         myConnection = new MySqlConnection();
+                        myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
                         "Database=sql9136099;" +
@@ -2370,15 +2369,14 @@ namespace AutoBotCSharp
                          Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
-                        r = h.GetResponse();
+                    
 
                         break;
                     case "No Insurance":
                     case "NO Ins Transfer Unsuccessful":
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
                         r = h.GetResponse();
-                         myConnection = new MySqlConnection();
+                        myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
                         "Database=sql9136099;" +
@@ -2388,13 +2386,12 @@ namespace AutoBotCSharp
                          Add = new MySqlCommand("UPDATE `DISPO` SET `NO INS`=`NO INS` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
-                        r = h.GetResponse();
+    
                         break;
                     case "Do Not Call":
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
+                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
-                         myConnection = new MySqlConnection();
+                        myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
                         "Database=sql9136099;" +
@@ -2404,8 +2401,7 @@ namespace AutoBotCSharp
                          Add = new MySqlCommand("UPDATE `DISPO` SET `DNC`=`DNC` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
-                        r = h.GetResponse();
+
                         break;
                     case "Wrong Number":
                         myConnection = new MySqlConnection();
@@ -2440,6 +2436,9 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                     case "Auto Lead":
+                     
+                        string name = cust.firstName + " " +  driver.FindElementById("frmLastName").GetAttribute("value");
+                        string phone = cust.phone;
                         myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
@@ -2447,12 +2446,10 @@ namespace AutoBotCSharp
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `LEAD`=`LEAD` + 1", myConnection);
+                        Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "')", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-                        h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
-                        r = h.GetResponse();
-                        PauseUnPause("PAUSE");
+
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
                         r = h.GetResponse();
                         break;
@@ -2485,7 +2482,7 @@ namespace AutoBotCSharp
             while(testing == true)
             {
                 if (isTalking == false) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }
-                if (SilenceTimer >= 3) { INPUTDEFAULT(); }
+                if (SilenceTimer >= 2) { INPUTDEFAULT(); }
                 if (SilenceTimer >= 4) { CheckForContact(SilenceTimer); }
                 Thread.Sleep(200);
             }
@@ -2533,6 +2530,7 @@ namespace AutoBotCSharp
                         {
                             Thread.Sleep(50);
                             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+                            cust.phone = driver.FindElementById("frmPhone1").GetAttribute("value");
                             cust.firstName = firstName;
                         }
                     }
@@ -2582,6 +2580,9 @@ namespace AutoBotCSharp
             string firstName = "";
 
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            cust.firstName = firstName;
+            cust.phone = "123-456-7890";
+            AgentNum = "1198";
             try
             {
                 if (maleNames.Contains(firstName)){ selectData("frmGender", "Male"); }else { EnterData("frmGender", "Female"); }

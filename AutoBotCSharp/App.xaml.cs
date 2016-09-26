@@ -628,7 +628,7 @@ namespace AutoBotCSharp
 
                         if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure") || response.Contains("yep") || response.Contains("yeah") || response.Contains("sounds good") || response.Contains("absolutely") || response.Contains("alright"))
                         {
-                           
+                            App.getAgent().endcall = true;
                             getAgent().Callpos = Agent.INBETWEEN;
                             App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
@@ -638,9 +638,9 @@ namespace AutoBotCSharp
                             if (App.getAgent().driver.PageSource.Contains("added successfully"))
                             {
                                 getAgent().Question = "ENDCALL";
-              
+                                
                                 Console.WriteLine("called endcall successfully");
-                                App.getAgent().endcall = true;
+                                
                                 App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
                             }
                             else

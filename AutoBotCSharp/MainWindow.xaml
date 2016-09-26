@@ -29,8 +29,8 @@
                         <ColumnDefinition Width="423*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="btnHello" Grid.ColumnSpan="3" Content="Hello" HorizontalAlignment="Left" Margin="5,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Click="btnHello_Click"/>
-                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnTheirName_Click" />
-                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
+                    <Button x:Name="btnTheirName" Content="" HorizontalAlignment="Left" Margin="19,9,0,11" Width="121" Grid.Column="6" Click="btnTheirName_Click" />
+                    <Button x:Name="btnIntro" Content="INTRO" HorizontalAlignment="Right" Margin="0,10,51,0" VerticalAlignment="Top" Width="121" Height="50" Grid.Column="6" Click="btnIntro_Click"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tbInsuranceInfo" Header="INS INFO" Margin="48,0,-48,0" FontWeight="Bold" HorizontalAlignment="Left" Width="64" Height="20" VerticalAlignment="Top">
@@ -191,7 +191,7 @@
                 </Grid>
 
             </TabItem>
-            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-101,0,101,0" HorizontalAlignment="Right" Width="137" FontWeight="Bold" Height="23" VerticalAlignment="Top">
+            <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-101,0,0,0" HorizontalAlignment="Left" Width="137" FontWeight="Bold" Height="23" VerticalAlignment="Top">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
