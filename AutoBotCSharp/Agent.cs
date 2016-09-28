@@ -89,6 +89,10 @@ namespace AutoBotCSharp
         public static Agent temp = App.getAgent();
         public class Customer
         {
+            public string IMPORT_ID { get; set; }
+            public string LEADGUID { get; set; }
+            public string LeadID { get; set; }
+            public string speech { get; set; }
             public string phone { get; set; }
             public int numVehicles { get; set; }
             public string maritalStatus { get; set; }
@@ -97,7 +101,7 @@ namespace AutoBotCSharp
             public string expMonth { get; set; }
             public string expYear { get; set; }
         }
-        public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single" };
+        public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "" };
 
         public string[] dobInfo;
         private bool notInterestedFutureBool = false;
@@ -149,61 +153,64 @@ namespace AutoBotCSharp
         //-----------------------------------------------------------------------
         public void INPUTDEFAULT()
         {
-            switch (temp.Question)
+            Console.WriteLine("CUSTOMER SPEECH FOR DEFAULT: " + cust.speech);
+            if (cust.speech != "")
             {
-                case Agent.INTRO:
-                case Agent.PROVIDER:
-                    
-                     selectData("frmInsuranceCarrier", "Progressive Auto Pro"); 
-                    temp.Question = Agent.INS_EXP;
-                    temp.Callpos = "INBETWEEN";
-                    SilenceTimer = 0;
-                    Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                    break;
-              case Agent.INS_EXP:
-              selectData("frmPolicyExpires_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString()));
-              selectData("frmPolicyExpires_Year", (DateTime.Now.Year).ToString()); 
-              temp.Callpos = "INBETWEEN";
-              temp.Question = Agent.INST_START;
-              SilenceTimer = 0;
-               Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-               break;
-              case Agent.INST_START:
-               selectData("frmPolicyStart_Month", MonthFromNumeral((DateTime.Now.Month+1).ToString())); 
-               selectData("frmPolicyStart_Year", (DateTime.Now.Year-1).ToString()); 
-               temp.Callpos = "INBETWEEN";
-               temp.Question = Agent.NUM_VEHICLES;
-               SilenceTimer = 0;
-                  Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                 break;
+                switch (temp.Question)
+                {
+                    case Agent.INTRO:
+                    case Agent.PROVIDER:
 
-             //   case Agent.NUM_VEHICLES:
-             //       if (Int32.Parse(NUM_VEHICLES) == 1)
-             //       {
-             //           temp.Callpos = "INBETWEEN";
-             //           temp.Question = Agent.YMM_ONLY_ONE;
-             //           SilenceTimer = 0;
-             //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-             //           break;
-             //       }else
-             //       {
-             //           temp.Callpos = "INBETWEEN";
-             //           temp.Question = Agent.YMM1;
-             //           SilenceTimer = 0;
-             //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-             //           break;
-             //       }
+                        selectData("frmInsuranceCarrier", "Progressive Auto Pro");
+                        temp.Question = Agent.INS_EXP;
+                        temp.Callpos = "INBETWEEN";
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
+                    case Agent.INS_EXP:
+                        selectData("frmPolicyExpires_Month", MonthFromNumeral((DateTime.Now.Month + 1).ToString()));
+                        selectData("frmPolicyExpires_Year", (DateTime.Now.Year).ToString());
+                        temp.Callpos = "INBETWEEN";
+                        temp.Question = Agent.INST_START;
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
+                    case Agent.INST_START:
+                        selectData("frmPolicyStart_Month", MonthFromNumeral((DateTime.Now.Month + 1).ToString()));
+                        selectData("frmPolicyStart_Year", (DateTime.Now.Year - 1).ToString());
+                        temp.Callpos = "INBETWEEN";
+                        temp.Question = Agent.NUM_VEHICLES;
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
 
-             //   case Agent.YMM_ONLY_ONE:
-             //       temp.Callpos = "INBETWEEN";
-             //       temp.Question = Agent.DOB;
-             //       SilenceTimer = 0;
-             //       Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-             //       break;
+                        //   case Agent.NUM_VEHICLES:
+                        //       if (Int32.Parse(NUM_VEHICLES) == 1)
+                        //       {
+                        //           temp.Callpos = "INBETWEEN";
+                        //           temp.Question = Agent.YMM_ONLY_ONE;
+                        //           SilenceTimer = 0;
+                        //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        //           break;
+                        //       }else
+                        //       {
+                        //           temp.Callpos = "INBETWEEN";
+                        //           temp.Question = Agent.YMM1;
+                        //           SilenceTimer = 0;
+                        //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        //           break;
+                        //       }
 
-                   
+                        //   case Agent.YMM_ONLY_ONE:
+                        //       temp.Callpos = "INBETWEEN";
+                        //       temp.Question = Agent.DOB;
+                        //       SilenceTimer = 0;
+                        //       Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        //       break;
+
+
+                }
             }
-         
 
         }
         //--------------------------------------------------------------------------
@@ -1204,7 +1211,7 @@ namespace AutoBotCSharp
             
             if (response.Contains("1") || response.Contains("one"))
             { return 1; }
-            else if (response.Contains("2") || response.Contains("two") || response.Contains("too") || response.Contains("take") || response.Contains("true"))
+            else if (response.Contains("2") || response.Contains("two") || response.Contains("too") || response.Contains("take") || response.Contains("two"))
             { return 2; }
             else if (response.Contains("3") || response.Contains("three"))
             { return 3; }
@@ -1331,32 +1338,37 @@ namespace AutoBotCSharp
             else { make = "FALSE"; }
 
             if (year != "FALSE" && make != "FALSE")
-            {
+            {              
                 switch (vehicleNum)
                 {
                     case 1:
+                      
                         App.getAgent().selectData("vehicle-year", year);
-                        App.getAgent().selectData("vehicle-make", make);
+                       
+                         App.getAgent().selectData("vehicle-make", make); 
                         break;
                     case 2:
-                        App.getAgent().selectData("vehicle2-year", year);
-                        App.getAgent().selectData("vehicle2-make", make);
+                        App.getAgent().selectData("vehiqcle2-year", year);
+                       
+                        App.getAgent().selectData("vehicle2-make", make); 
                         break;
                     case 3:
                         App.getAgent().selectData("vehicle3-year", year);
-                        App.getAgent().selectData("vehicle3-make", make);
+                        App.getAgent().selectData("vehicle3-make", make); 
                         break;
                     case 4:
                         App.getAgent().selectData("vehicle4-year", year);
-                        App.getAgent().selectData("vehicle4-make", make);
+                        App.getAgent().selectData("vehicle4-make", make); 
                         break;
-
                 }
+                Thread.Sleep(300);
+                Console.WriteLine(Modelcontrol);
 
                 models = driver.FindElementById(Modelcontrol);
                 IReadOnlyCollection<OpenQA.Selenium.IWebElement> theModels = models.FindElements(OpenQA.Selenium.By.TagName("option"));
                 foreach (OpenQA.Selenium.IWebElement option in theModels)
                 {
+                    Console.WriteLine("Searching...." + option.Text);
                     searcher = option.Text.Split(' ')[0];
                     if (response.Contains(searcher.ToLower()))
                     {
@@ -1366,24 +1378,21 @@ namespace AutoBotCSharp
                         {
                             case 1:
                                  temp.selectData("vehicle-model", model);
-                                Thread.Sleep(250);
-                               driver.FindElementById("vehicle-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
+                                
+                               
                          
                                 break;
                             case 2:
                                 temp.selectData("vehicle2-model", model);
-                                Thread.Sleep(250);
-                               driver.FindElementById("vehicle2-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
+                                
                                 break;
                             case 3:
                                 temp.selectData("vehicle3-model", model);
-                                Thread.Sleep(250);
-                                driver.FindElementById("vehicle3-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
+                              
                                 break;
                             case 4:
                                 temp.selectData("vehicle4-model", model);
-                                Thread.Sleep(250);
-                              //  driver.FindElementById("vehicle4-submodel").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click();
+
                                 break;
                         }
                         
@@ -1508,31 +1517,49 @@ namespace AutoBotCSharp
                     return "Dec";
             }
         }
-        public static async Task<bool> checkforData(string response)
+        public  static async Task<bool> checkforData(string response)
         {
             string Data;
             bool mrMeseeks = true;
             bool isrebuttaling = false;
 
-            //Console.WriteLine("CHECKING FOR DATAS");
-            //Console.WriteLine("QUESTION: " + temp.Question);
+            Console.WriteLine("CHECKING FOR DATAS");
+            Console.WriteLine("QUESTION: " + temp.Question);
+            string raw = response;
             response = response.ToLower();
+            if(response.Contains("i have no idea") || response.Contains("i have no clue") || response.Contains("don't know"))
+            {
+                string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
+
+                App.RollTheClip(clip);
+                return (false);
+            }
             switch (temp.Question)
             {
                 case Agent.STARTYMCSTARTFACE:
-                   
+
                     if (temp.cust.isNameEnabled)
                     {
-                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("hello") || response.Contains("this is") || response.Contains("yeah") ||  response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him") )
+                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is") || response.Contains("yeah") || response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him") )
                         {
-                            Thread.Sleep(200);
+                            Thread.Sleep(300);
                             App.getAgent().custObjected = false;
-                            temp.Question = Agent.INTRO ;
+                            temp.Question = Agent.INTRO;
                             App.getAgent().AskQuestion();
                         }
-                        else if (response.Contains("no"))
+                        
+                        else if (response.Contains("hello"))
                         {
-                            Thread.Sleep(200);
+                            if (!isrebuttaling)
+                            {
+                                isrebuttaling = true;
+
+                                App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
+                            }
+                        }
+                        else if (response.Contains("no this is not") || response.Contains("no it isn't") || response.Contains("no it is not"))
+                        {
+                            Thread.Sleep(300);
                             if (!isrebuttaling)
                             {
                                 isrebuttaling = true;
@@ -1741,6 +1768,7 @@ namespace AutoBotCSharp
                     if (phoneType.Length > 0)
                     {
                         temp.selectData("frmPhoneType1", phoneType);
+                       
                     }
 
                     else
@@ -1751,7 +1779,15 @@ namespace AutoBotCSharp
                     break;
                 case Agent.LAST_NAME:
                     App.getAgent().driver.FindElementById("frmLastName").Clear();
-                    temp.EnterData("frmLastName", response);
+                    foreach (char c in raw)
+                    {
+                        if (Char.IsUpper(c))
+                        {
+
+                            App.getAgent().EnterData("frmLastName", c.ToString());
+                            Console.WriteLine(c + " IS PART OF THEIR NAME");
+                        }
+                    }
                     if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
                 case Agent.SECONDARIES:
@@ -2212,7 +2248,7 @@ namespace AutoBotCSharp
                     App.getAgent().HangUpandDispo("Wrong Number");                   
                     return true;
                 }
-                else if (resp.Contains("don't have") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                else if (resp.Contains("don't have insurance") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2284,9 +2320,9 @@ namespace AutoBotCSharp
                 App.getAgent().calltime = 0;              
                 App.getAgent().inCall = false;         
                 calltime = 0;
-                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => App.StopTheClip())); }
+                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => { App.StopTheClip();})); }
                 if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
-                App.getAgent().Question = STARTYMCSTARTFACE;
+                
                 WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
                 WebResponse r = h.GetResponse();      
                 r.Close();
@@ -2446,7 +2482,7 @@ namespace AutoBotCSharp
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                        Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "')", myConnection);
+                        Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "','" + cust.LeadID + "','" + cust.LEADGUID + "','" + cust.IMPORT_ID + "')", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
 
@@ -2458,14 +2494,18 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                 }
+                App.getAgent().Question = STARTYMCSTARTFACE;
                 Thread.Sleep(400);
                 r.Close();
+                
             }
             catch(Exception ex)
             {
                 Console.WriteLine("ERROR");
                 Console.WriteLine(ex);
             }
+
+            App.checkVersion();
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void getDob()
@@ -2482,7 +2522,7 @@ namespace AutoBotCSharp
             while(testing == true)
             {
                 if (isTalking == false) { SilenceTimer += .2; Console.WriteLine("Silence is " + SilenceTimer + " seconds"); }
-                if (SilenceTimer >= 2) { INPUTDEFAULT(); }
+                if (SilenceTimer >= 2.4) { INPUTDEFAULT(); }
                 if (SilenceTimer >= 4) { CheckForContact(SilenceTimer); }
                 Thread.Sleep(200);
             }
@@ -2516,6 +2556,10 @@ namespace AutoBotCSharp
             driver.SwitchTo().Window(driver.WindowHandles.Last());
             Console.WriteLine("driver title: " + driver.Title); 
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+                cust.LeadID = driver.Url.Split('&')[1].Replace("lead_id=","");
+                cust.LEADGUID = driver.Url.Split('&')[2].Replace("lead_guid=", "");
+                cust.IMPORT_ID = driver.Url.Split('&')[3].Replace("import_id=", "");
+                Console.WriteLine("LEAD ID: " + driver.Url.Split('&')[1]);
             cust.firstName = firstName;
             }
             catch (Exception)
@@ -2651,6 +2695,7 @@ namespace AutoBotCSharp
         {
             try
             {
+                cust.speech = "";
                 App.longDictationClient.EndMicAndRecognition();
                 isTalking = true;
                 SilenceTimer = 0;

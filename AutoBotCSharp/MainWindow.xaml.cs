@@ -353,7 +353,7 @@ namespace AutoBotCSharp
             string clip = @"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3";
             App.RollTheClip(clip);
         }
-        private async void btnTCPA_Click(object sender, RoutedEventArgs e)
+        private void btnTCPA_Click(object sender, RoutedEventArgs e)
         {
             user.Question = "TCPA";
             user.Callpos = "INBETWEEN";
@@ -642,7 +642,7 @@ namespace AutoBotCSharp
         }
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
-            App.PlayHumanism();
+           
         }
 
         // below is my hotkey handling code
@@ -677,12 +677,12 @@ namespace AutoBotCSharp
             base.OnSourceInitialized(e);
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
-            _source.AddHook(HwndHook);
+        
             RegisterHotkeys();
         }
         protected override void OnClosed(EventArgs e)
         {
-            _source.RemoveHook(HwndHook);
+   
             _source = null;
             UnregisterHotkeys();
 
@@ -703,30 +703,7 @@ namespace AutoBotCSharp
             UnregisterHotKey(helper.Handle, 1);
             UnregisterHotKey(helper.Handle, 2);
         }
-        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            const int WM_HOTKEY = 0x0312;
-            switch (msg)
-            {
-                case WM_HOTKEY:
-                    switch (wParam.ToInt32())
-                    {
-                        case 0:
-                            App.playOkClip();
-                            break;
-                        case 1:
-                            App.PlayHumanism();
-                            break;
-                        case 2:
-                            App.StopTheClip();
-                            break;
-                    }
-                    break;
-            }
-
-
-            return IntPtr.Zero;
-        }
+       
         private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
         {
             App.startReco();
