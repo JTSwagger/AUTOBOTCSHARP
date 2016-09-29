@@ -32,10 +32,12 @@ namespace AutoBotCSharp
         public ChromeDriver testDriver;
         private Random randy;
         public Agent user;
-        
+        public string version;
 
-        public MainWindow()
+
+        public  MainWindow()
         {
+
             App.getWindow().Closed += closeall;
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
             string[] keys = System.IO.File.ReadAllLines(path);
@@ -44,13 +46,17 @@ namespace AutoBotCSharp
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            App.longDictationClient.OnMicrophoneStatus += App. onMicrophoneStatusHandler;
+            App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
 
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
+            user.version = App.version.ToString();
+            
+            Console.WriteLine("OPENING BOT VERSION: " + user.version);
             randy = new Random();
             InitializeComponent();
-            
+            frmMain.Title = "AutoBotC# Ver: " + user.version;
+
             string procName = Process.GetCurrentProcess().ProcessName;
             foreach (Process proc in Process.GetProcessesByName("chromedriver"))
             {
@@ -82,8 +88,14 @@ namespace AutoBotCSharp
                     user.maleNames.Add(line);
                     Console.WriteLine(line);
                 }
+
+
+                
             }
+            frmMain.Title = "AutoBotC# Ver: " + user.version;
         }
+
+           
 
         public void setNameText(string name)
         {

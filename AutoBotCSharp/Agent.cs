@@ -13,12 +13,18 @@ using OpenQA.Selenium.Support.UI;
 using System.ComponentModel;
 using System.Windows;
 using MySql.Data.MySqlClient;
+using OpenQA.Selenium.PhantomJS;
+using System.IO.Compression;
+using Ionic.Zip;
+using System.Diagnostics;
 
 namespace AutoBotCSharp
 {
 
     public class Agent
     {
+        
+        public string version = "Version 1";
         public List<string> maleNames = new List<string>();
         public bool endcall = false;
         public string BDAYHOLDER = "";
@@ -89,6 +95,7 @@ namespace AutoBotCSharp
         public static Agent temp = App.getAgent();
         public class Customer
         {
+           
             public string IMPORT_ID { get; set; }
             public string LEADGUID { get; set; }
             public string LeadID { get; set; }
@@ -1522,7 +1529,7 @@ namespace AutoBotCSharp
             string Data;
             bool mrMeseeks = true;
             bool isrebuttaling = false;
-
+            App.getAgent().cust.speech = response;
             Console.WriteLine("CHECKING FOR DATAS");
             Console.WriteLine("QUESTION: " + temp.Question);
             string raw = response;
@@ -2484,7 +2491,7 @@ namespace AutoBotCSharp
                         myConnection.Open();
                         Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "','" + cust.LeadID + "','" + cust.LEADGUID + "','" + cust.IMPORT_ID + "')", myConnection);
                         Add.ExecuteNonQuery();
-                        myConnection.Close();
+                        myConnection.Close(); 
 
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
                         r = h.GetResponse();
@@ -2495,6 +2502,55 @@ namespace AutoBotCSharp
                         break;
                 }
                 App.getAgent().Question = STARTYMCSTARTFACE;
+                var driverService = PhantomJSDriverService.CreateDefaultService();
+                driverService.HideCommandPromptWindow = true;
+                PhantomJSDriver GHOST = new PhantomJSDriver(driverService);
+                try
+                {
+                    GHOST.Navigate().GoToUrl("https://rink.hockeyapp.net/apps/27b5c4930f7d4e52a31542739e6fda99");
+                    GHOST.FindElementById("user_email").SendKeys("JTSwagger@gmail.com");
+                    GHOST.FindElementById("user_password").SendKeys("Jt55153910");
+                    GHOST.FindElementByName("commit").Click();
+
+                    Thread.Sleep(300);
+                    Console.WriteLine("CURRENT VERSION: " + version + ". SHOW ME WHAT YOU GOT!");
+                    drawHead();
+                    string versionToCheck = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("h3")).GetAttribute("innerHTML");
+                    versionToCheck = System.Text.RegularExpressions.Regex.Match(versionToCheck, @"\d+").Value;
+                    if ( version !=  versionToCheck)
+                    {
+                        Console.WriteLine(versionToCheck + " IS AVAILABLE! I LIKE WHAT YOU GOT");
+                        App.getAgent().PauseUnPause("PAUSE");
+                        WebClient wc = new WebClient();
+                        string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BEST_APP_IN_THE_WORLD.zip";
+                        string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\' ;
+                        wc.DownloadFileAsync(new Uri("https://rink.hockeyapp.net/api/2/apps/27b5c4930f7d4e52a31542739e6fda99/app_versions/2?format=zip&amp;avtoken=337bf7a3d712fc4530d50dc2bb39f330b0dc1eb0"), path);
+                        wc.DownloadFileCompleted += delegate
+                        {
+                            ICSharpCode.SharpZipLib.Zip.FastZip b = new ICSharpCode.SharpZipLib.Zip.FastZip();
+                            b.ExtractZip(path, path2 + @"\AutoBotCSharpV\" + versionToCheck, null);
+
+                            ProcessStartInfo start = new ProcessStartInfo();
+                            start.UseShellExecute = true;
+
+                            start.Arguments = "/version" + versionToCheck;
+                            start.FileName = path2 + @"\AutoBotCSharpV\" + versionToCheck +@"\AutoBotCSharp.exe";
+                            Process.Start(start);
+
+                        };
+                        version = GHOST.FindElementByClassName("icon-md5").GetAttribute("innerHTML");
+                        GHOST.Quit();
+                        Console.WriteLine("done");
+
+                 
+
+
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
                 Thread.Sleep(400);
                 r.Close();
                 
@@ -2505,7 +2561,86 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex);
             }
 
-            App.checkVersion();
+         
+        }
+        public void drawHead()
+        {
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNmdddhhdddmNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMNdmMMMMMMMMMMMMMMMMMMMMMMMMMMNmhhso +/:-----------::+ shmNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdMMMMMMMMMMMM");
+            Console.WriteLine("MMMmhMMMMMMMMNNMMMMMMMMMMMMMMMMmNMMMMNds +:-------------------------/ ohmNMMMMMMMMMMMMMMMMMMMMMMNmMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdo: -----------.-------------------- -/ oydNMMMMMMMMMMMMMMMMMMNmMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMNNMMMMMMMMmy / ---:----------------------------------.-:+ymMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNs: --::--------:::::::://///////:::://///::::--:/smMMMmyMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMh / --::----:::::---------------------------:::::::--/ oymMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMNy-- -::----:---------------:::::::----------------------:+hNMMMMMMMMMMMMMMMMMMMMMMMMdmMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMNo--::::--.---- -:://////////////////////::::::::::::::/::::/odNNNMMMMMMMMMMMMMMMMMMMMdhNMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMd / --::::---- -:///:::--------------------:::::::::::::::-------::/+oydNMMMMMMMMMMMMMMMMMNMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMdNMMMMNy: --:::/:--:/:::----------------.................-------------------- -/ odNMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMNMMMMmo-- -:/://:-------------::::::------....................-------------------/dMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMd: --::/::/::------ -:/::::::::::::://///:::::-----------------::::///////:::::/shdNMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMNo-- -:::/ -/:::--://::-....................---::::://::::::::::::--................-:sNMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMNd: --::::+ -/:::://:......----:::://////////:::----.................--------:::::-----:/mMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMs--:::::/:-+:::/ +...--://///////:::::-:::::////////////:::::////////////////::::/:::/mMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMNs--:::::/:--+::::///::::-----::::--:::::--------------:::::::::::::::::/::::::--------sMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMNo--:::://:-.-//:::-------.-:::.````  ``..-::::-.-------------------/:--.``````.-:/:----:NMMMMMMMMMMMMMMMM");
+Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-/:----------------:/-```           `-/----yMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMd--://:////:://--::--.----/.`                   `-/:------------:/-`   `             `::--/NMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMN / -:::///:::::://---------+`````                   `:/----------/-`                    `/:--hMMMMMMMMMMMmMMM");
+            Console.WriteLine("MMMMMMMMMMMMh--::::::::::::::-------- / -               `       `  -/ --------+``                      `+--/ MMMMMMMMMMMmMMM");
+            Console.WriteLine("MMMMMMMMMMMN: -:::::::::::::---------.+.             `//-          /:------::`             -o+        /:-:mMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMy--::::::::::::----------.+`           ` `oo.          /:.-----/ -              `+:        -/ --sMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMN / --:::::::::::-----------.+`                           /:----.-/:                 ``      -/ --+NMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMd--:::::::::::/:-----------/.                          `+-----..- +`              `  `      -/ --:NMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMh--:::::::::::+:-----------/ - -/ --..----:/` `                     +----mMMMMMMMMMMMNM");
+            Console.WriteLine("hmMMMMMMMMy.-:::::::::::+-------------+`                        ./ --.../:--./ -`                     -/ ----hMMMMMMMMMMMMM");
+            Console.WriteLine("NMMMMMMMMMo--:::::::::::+-------------:/```                    -/ --....- +:---/:`          `       `-/ ---:-oMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMM + --::::/:::::://------------.:/-``            ` ```.:/----....-+----:/.`             ``./:----::/MMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMNN / -:::::+--//:::+:--------------:/:.```   `````` `.::------...../:-----::-..`````...--:::------::/MMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMmmo--:://:-//::::/+-----------------::::::-------:/:--------.....-+:--------:::::::::-----------::/NMNmMMMmNMMMM");
+            Console.WriteLine("MMMMMMMMMMy.-://---+:::::://-------------------------:----.---------......:+.---------------------------::/mMMMMMMmNMMMM");
+            Console.WriteLine("MMMMMMMMMMd -:/:-..- +::::::://---------------------------------------.......+----------------------------:::mMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMN +:--...-/:::::::://:-------------------------------------.......-+--------------------------::::dMMMMMNMMMMMM");
+            Console.WriteLine("MMMMMMMMMMm / -----..:/::::::::://:-----------------------------------........+:-------------------------::::mMMMMMsmMMMMM");
+            Console.WriteLine("MMMMMMMMMMm: ---------::::::::::://::--------------------------------........:/---------------------------:/NMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMy--::///:----::::::::::::///:-----------------------------.......:+---------------------------:/NMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMN + -:::::///--:::::::::::::::::::-------------------::::::::::::://:----------------------------/MNdMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMh--::::::///:::::::::::::::::::::------------------::::::::--------------------------:::----::oMNmMMMMMMMMMM");
+            Console.WriteLine("MMMMMNNMMMMMN:-:::::::://::::::::::::::::::::--------------------------------------------------::::::::::-yMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMs.-::::::::+:::::::::::::::::::--------------------------------------------------::::::::::::mMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMN / --:::::::/::::::::::::::::::----::--------------------------------------------::::::::::::/ NMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMd: --:::::::::::::::::::::::::::/:::----------------------------------------------://::::::-");
+            Console.WriteLine("MMMMMMMNMMMMNNMh: --::::::::::::::::::::::::/:---------------------:::::/::::::::::::://:::--------//::::-dMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMmsmMMdhMMm: -:::::::::::::::::::::://-----------://///////::::--------------------:::////:---//::-+MMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMNdMMMMMMMMd:-:::::::::::::::::::::/:------:///::-------------------------------------.--:---:/:-/mMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMm + --::::::::::::::::::://-----:-------------------------------------------------:/:-:mMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMy: -::::::::::::::::::://::------------------------------------------------::///:-+mMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMm +::::::::::::::::::::::://::::------------------------------------------:::::-oNMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMNMMMh: -:::::::::::::::-----------------------------------------------------::::- oMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMm / -::::::::::::::::-------------------------------------------------- -:::-oNMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMN + --:::::::::::::::-------------------------------------------------:::-:MMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMs--:::::::::::::::------------------------------------------------:::-yMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMo--:::::::::::::::-----------------------------------------------::-:dMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMN + --::::::::::::::::-------------------------------------------- -::-/ NMMMMMMMMMMNMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMNhsNMMMMMMMMN + ---::::::::::::::::------------------------------------------ -:--yMMMMMMMMMMMNMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMNdMMMMMMMMMMMN + --:::::::::::::::::--------------------------------------------:mMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMm:.-:::::::::::::::::-------------------------------------------+NMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMNNMMMMMMMMMMMMMMMMMMMMMMMm / --:::::::::::::::::------------------------------------------sMMMMMMMMMMMNMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm / --:::::::::::::::-------------------------------------------hMMMMMMMMMMMNMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMd / --::::::::::::::------------------------------------------:mMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMNMMMMMMMMMMMMMMMMMMMMMMNd / --::::::::::::::-------------------------------------- -.- +MMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMMm / --::::::::::::::--------------------------------------.- sMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm + --:::::::::::::----------------------------------------hMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMNyNMMMMMMMMNo--::::::::::::-------------------------------------- -:hMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMNMMMMMMMMMMNy-- -:::::::::::-------------------------------------:/ mMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMh: --:::::::::::------------------------------------:oNMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmo--:::::::::::----------------------------------::yMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMh + ---::::::::::------------------------------ -::/ mMMMMMMMMMMMMMMMMMMMMMMNmMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMdo / --:::::::::-----------------------------::+ dMMMMMMMMMMMMMMMMMMMMMMMNNMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNy: --::::::::::------------------------::+ hNMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdo /:::::::::::::-----------------::/ ohNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMmmMMMMMMNmhso//:::::::::----------::::/ohmMMMMMMMMMMMMMMMMMMMMMMMMMNNMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdhys +///:::::::::::/+shNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNhMMMMMMMMMMMMNNmddhhhhhhdmNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void getDob()

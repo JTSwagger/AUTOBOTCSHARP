@@ -23,7 +23,7 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
-        public string version = "32.3.1";
+        public static int version = 1;
         public static int screenshots = 0;
         public static Dictionary<string, bool> RESULTS = new Dictionary<string, bool>();
 
@@ -43,13 +43,14 @@ namespace AutoBotCSharp
             return mainwindow;
         }
 
+
         /*
          * Returns the current agent object available to MainWindow.
          * :)
          */ 
          public static void checkVersion()
         {
-
+            
 
 
 
@@ -70,8 +71,34 @@ namespace AutoBotCSharp
             }
             return temp;
         }
+        void App_Startup(object sender, StartupEventArgs e)
+        {
+            // Application is running
+            // Process command line args
+            bool startMinimized = false;
+            for (int i = 0; i != e.Args.Length; ++i)
+            {
+                if (e.Args[i].Contains("version"))
+                {
+                    int ver = int.Parse(System.Text.RegularExpressions.Regex.Match(e.Args[i], @"\d+").Value);
+                    version = ver;
+                    Console.WriteLine(version);
+                    }
+            }
 
-       public static void reInitMicClient()
+            // Create main application window, starting minimized if specified
+            MainWindow mainWindow = new MainWindow();
+            if (startMinimized)
+            {
+                mainWindow.WindowState = WindowState.Minimized;
+                mainWindow.WindowState = WindowState.Normal;
+            }
+            MainWindow.Title = "AutoBotC# ver. " + version;
+            mainWindow.Show();
+
+        }
+
+        public static void reInitMicClient()
         {
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
             string[] keys = System.IO.File.ReadAllLines(path);
