@@ -20,7 +20,7 @@ using OpenQA.Selenium.Chrome;
 using Microsoft.ProjectOxford.SpeechRecognition;
 using MySql.Data.MySqlClient;
 using System.IO;
-
+using Microsoft.CognitiveServices.SpeechRecognition;
 
 namespace AutoBotCSharp
 {
