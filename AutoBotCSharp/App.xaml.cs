@@ -23,7 +23,9 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
-        public static int version = 1;
+        public static int version = 66;
+        public string session = "";
+        public string url = "";
         public static int screenshots = 0;
         public static Dictionary<string, bool> RESULTS = new Dictionary<string, bool>();
 
@@ -73,34 +75,36 @@ namespace AutoBotCSharp
         }
         void App_Startup(object sender, StartupEventArgs e)
         {
+            string agent = "";
             // Application is running
             // Process command line args
             bool startMinimized = false;
-            for (int i = 0; i != e.Args.Length; ++i)
-            {
-                if (e.Args[i].Contains("version"))
-                {
-                    int ver = int.Parse(System.Text.RegularExpressions.Regex.Match(e.Args[i], @"\d+").Value);
-                    version = ver;
-                    Console.WriteLine(version);
-                    }
-            }
 
+            if (e.Args.Length > 1)
+            {
+                int ver = int.Parse(System.Text.RegularExpressions.Regex.Match(e.Args[0], @"\d+").Value);
+                version = ver;
+                agent = System.Text.RegularExpressions.Regex.Match(e.Args[1], @"\d+").Value;
+            }  
+         
             // Create main application window, starting minimized if specified
             MainWindow mainWindow = new MainWindow();
             if (startMinimized)
             {
-                mainWindow.WindowState = WindowState.Minimized;
                 mainWindow.WindowState = WindowState.Normal;
             }
-            MainWindow.Title = "AutoBotC# ver. " + version;
+          
             mainWindow.Show();
+            MainWindow.Title = "AutoBotC# ver. " + version.ToString();
+            mainWindow.speechTxtBox.Text += "APP_STARTUP CALLED";
+            mainWindow.txtAgentNum.Text = agent;
+            if (agent != "") { App.getAgent().Login(agent); }
 
         }
 
         public static void reInitMicClient()
         {
-            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
+            string path =  System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
             string[] keys = System.IO.File.ReadAllLines(path);
             string apiKey1 = keys[0];
             string apiKey2 = keys[1];
@@ -351,16 +355,25 @@ namespace AutoBotCSharp
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.NUM_VEHICLES:
+                        ag.hasAsked = true;
                         if (ag.cust.numVehicles > 1)
                         {
                             ag.Question = Agent.YMM1;
+                            ag.hasAsked = false;
                             longDictationClient.EndMicAndRecognition();
                         }
                         else if (ag.cust.numVehicles == 1)
                         {
                             ag.Question = Agent.YMM_ONLY_ONE;
+                            ag.hasAsked = false;
                             longDictationClient.EndMicAndRecognition();
                         }
+                        else
+                        {
+                            ag.cust.numVehicles = 1;
+                            ag.hasAsked = true;
+                        }
+
                         break;
                     case Agent.YMM_ONLY_ONE:
                         if (ag.driver.FindElementById("vehicle-make").Displayed)
@@ -521,9 +534,8 @@ namespace AutoBotCSharp
                         {
                             if (!App.getAgent().CheckForMonth(response))
                             {
-                                ag.BDAYHOLDER = App.getAgent().returnNumeric(response);                               
-                                ag.Question = Agent.BDAYMONTH;
-                               
+                                ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
+                                ag.hasAsked = true;
                             }
 
                             else
@@ -544,8 +556,8 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.BDAYMONTH:
-                        if (App.getAgent().ParseDOB(response,0)) { ag.Question = Agent.MARITAL_STATUS; }
-                        
+                        ag.Question = Agent.MARITAL_STATUS;
+                        ag.hasAsked = false;
                         break;
 
                     case Agent.MARITAL_STATUS:
@@ -608,39 +620,26 @@ namespace AutoBotCSharp
                         }
                         break;
                     case Agent.SPOUSEBDAYMONTH:
-                        if (App.getAgent().ParseDOB(response,1)) { ag.Question = Agent.OWN_OR_RENT; }
-
+                        ag.Question = Agent.OWN_OR_RENT; 
                         break;
                     case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; break;
                     case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; break;
                     case Agent.ADDRESS:
-                        //   if (getAgent().ParseAddress(response))
-                        // {
-                        //   getAgent().Callpos = Agent.INBETWEEN;
-                        // ag.Question = Agent.EMAIL;
-                        //}
-                        //break;
-                        App.getAgent().driver.FindElementById("btnValidate").Click();
-                        getAgent().Callpos = Agent.INBETWEEN;
+                        ag.Callpos = Agent.INBETWEEN;
                         ag.Question = Agent.EMAIL;
-                        break;
+                        break;      
                     case Agent.EMAIL:
-                        if(getAgent().ParseEmail(response))
-                        {
-
-                        }
-
-
-                        ag.Question = Agent.CREDIT; break;
+                        ag.Callpos = Agent.INBETWEEN;
+                        ag.Question = Agent.CREDIT;
+                        break;                                              
                     case Agent.CREDIT: ag.Question = Agent.PHONE_TYPE; break;
                     case Agent.PHONE_TYPE:
                         App.getAgent().cust.phone = App.getAgent().driver.FindElementById("frmPhone1").GetAttribute("value");
                         ag.Question = Agent.LAST_NAME; break;
                     case Agent.LAST_NAME:
-                       
-               
                         ag.hasAsked = false;
                         ag.Question = Agent.SECONDARIES;
+                        
                         break;
                     case Agent.SECONDARIES:
                         if (response.Contains("no")) { ag.Question = Agent.TCPA; }
@@ -689,17 +688,17 @@ namespace AutoBotCSharp
 
                         }
                         break;
-                    
+                    case "REPEAT":
                     case Agent.TCPA:
 
                         if (response.ToLower().TrimEnd('.','?','!').Contains("yes") || response.Contains("ok") || response.ToLower().TrimEnd('.', '?', '!').Contains("fine") || response.ToLower().TrimEnd('.', '?', '!').Contains("okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("sure") || response.Contains("yep") || response.Contains("yeah") || response.Contains("sounds good") || response.Contains("absolutely") || response.Contains("alright"))
                         {
                             App.getAgent().endcall = true;
                             getAgent().Callpos = Agent.INBETWEEN;
+                            App.getAgent().Question = "";
                             App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             App.getAgent().SilenceTimer = 0;
-                            System.Threading.Thread.Sleep(1500);
                             App.getAgent().SilenceTimer = 0;
                        
                                 getAgent().Question = "ENDCALL";
@@ -722,17 +721,26 @@ namespace AutoBotCSharp
                                     Console.WriteLine(e.StackTrace);
                                 }                                                                                                      
                         }
-                        else
+                        else if(response.ToLower().TrimEnd('.', '?', '!').Contains("no") || response.Contains("no thank you") || response.ToLower().TrimEnd('.', '?', '!').Contains("do not consent") || response.ToLower().TrimEnd('.', '?', '!').Contains("not okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("nope") || response.Contains("don't think so") || response.Contains("negative") || response.Contains("sounds bad"))
                         {
                             getAgent().selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
                             getAgent().Callpos = Agent.INBETWEEN;
                             App.getWindow().cmbDispo.SelectedIndex = 7;
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
+                            App.getAgent().Question = "";
                         }
 
-                        ag.Question = "";break;
-                 
+                        else
+                        {
 
+                            getAgent().Callpos = Agent.INBETWEEN;
+                            getAgent().Question = "REPEAT";
+                            
+                        }
+
+
+
+                        break;
                         
                 }
 
@@ -902,9 +910,11 @@ namespace AutoBotCSharp
                         if (getAgent().doHome || getAgent().doRenters) { user.Callpos = Agent.YEARBUILT; }
                         else { user.Callpos = Agent.TCPA; break; }
                         break;
-
                     case "TCPA":
                         user.Callpos = Agent.TCPA;
+                        break;
+                    case "REPEAT":
+                        user.Callpos = "REPEAT";
                         break;
                 }
             }
@@ -948,6 +958,7 @@ namespace AutoBotCSharp
 
         public static async Task<bool> RollTheClipAndWait(string Clip)
         {
+            App.getAgent().SilenceTimer = 0;
             //if (Clip == "no clip")
             //{
             //    return false;

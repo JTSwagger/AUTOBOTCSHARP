@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
 using OpenQA.Selenium.Support;
+using OpenQA.Selenium;
 using System.Net;
 using System.IO;
 using System.Windows.Media;
@@ -17,6 +18,7 @@ using OpenQA.Selenium.PhantomJS;
 using System.IO.Compression;
 using Ionic.Zip;
 using System.Diagnostics;
+using OpenQA.Selenium;
 
 namespace AutoBotCSharp
 {
@@ -24,7 +26,8 @@ namespace AutoBotCSharp
     public class Agent
     {
         
-        public string version = "Version 1";
+        public string version = "Version 66";
+        public string verToCheck = "";
         public List<string> maleNames = new List<string>();
         public bool endcall = false;
         public string BDAYHOLDER = "";
@@ -107,8 +110,10 @@ namespace AutoBotCSharp
             public bool isNameEnabled { get; set; }
             public string expMonth { get; set; }
             public string expYear { get; set; }
+
+            public string lastName { get; set; }
         }
-        public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "" };
+        public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "", lastName="" };
 
         public string[] dobInfo;
         private bool notInterestedFutureBool = false;
@@ -131,13 +136,14 @@ namespace AutoBotCSharp
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
                         SilenceTimer = 6;
                         break;
-                    case  8:
+                    case 7:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 2.mp3")));
                         SilenceTimer = 10;
                         break;
 
-                    case 12:
+                    case 11:
                         SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3")));
                         Application.Current.Dispatcher.Invoke((() => HangUpandDispo("Not Available")));
                         break;
                 }
@@ -166,6 +172,7 @@ namespace AutoBotCSharp
                 switch (temp.Question)
                 {
                     case Agent.INTRO:
+
                     case Agent.PROVIDER:
 
                         selectData("frmInsuranceCarrier", "Progressive Auto Pro");
@@ -191,30 +198,54 @@ namespace AutoBotCSharp
                         Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
                         break;
 
-                        //   case Agent.NUM_VEHICLES:
-                        //       if (Int32.Parse(NUM_VEHICLES) == 1)
-                        //       {
-                        //           temp.Callpos = "INBETWEEN";
-                        //           temp.Question = Agent.YMM_ONLY_ONE;
-                        //           SilenceTimer = 0;
-                        //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                        //           break;
-                        //       }else
-                        //       {
-                        //           temp.Callpos = "INBETWEEN";
-                        //           temp.Question = Agent.YMM1;
-                        //           SilenceTimer = 0;
-                        //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                        //           break;
-                        //       }
-
-                        //   case Agent.YMM_ONLY_ONE:
-                        //       temp.Callpos = "INBETWEEN";
-                        //       temp.Question = Agent.DOB;
-                        //       SilenceTimer = 0;
-                        //       Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                        //       break;
-
+                    //   case Agent.NUM_VEHICLES:
+                    //       if (Int32.Parse(NUM_VEHICLES) == 1)
+                    //       {
+                    //           temp.Callpos = "INBETWEEN";
+                    //           temp.Question = Agent.YMM_ONLY_ONE;
+                    //           SilenceTimer = 0;
+                    //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                    //           break;
+                    //       }else
+                    //       {
+                    //           temp.Callpos = "INBETWEEN";
+                    //           temp.Question = Agent.YMM1;
+                    //           SilenceTimer = 0;
+                    //           Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                    //           break;
+                    //       }
+                    case NUM_VEHICLES:
+                        temp.Callpos = "INBETWEEN";
+                        temp.Question = Agent.YMM_ONLY_ONE;
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
+                    case Agent.YMM1:
+                    case YMM2:
+                    case YMM3:
+                    case YMM4:
+                              temp.Callpos = "INBETWEEN";
+                              temp.Question = Agent.DOB;
+                              SilenceTimer = 0;
+                              Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                             break;
+                    case DOB:
+                        SilenceTimer = 0;
+                        temp.Question = Agent.BDAYMONTH;
+                        App.getAgent().Question = Agent.BDAYMONTH;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
+                    case BDAYMONTH:
+                       
+                        temp.Question = Agent.MARITAL_STATUS;
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
+                    case SPOUSEBDAYMONTH:
+                        temp.Question = Agent.OWN_OR_RENT;
+                        SilenceTimer = 0;
+                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
+                        break;
 
                 }
             }
@@ -230,6 +261,7 @@ namespace AutoBotCSharp
                  
                 App.getAgent().StartWebRequest();
                 string stats = App.getAgent().reader.ReadToEnd();
+                Console.WriteLine(stats);
                 App.getAgent().reader.Close();
                     
                 string[] tempstr = stats.Split(',');
@@ -253,6 +285,16 @@ namespace AutoBotCSharp
                             MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
+                            if (App.getAgent().calltime > 120)
+                            {
+                                Thread.Sleep(250);
+                                myConnection.Open();
+                                string name = App.getAgent().cust.firstName + " " + App.getAgent().cust.lastName;
+                                Add = new MySqlCommand("INSERT INTO `LONGCALLS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + App.getAgent().AgentNum + "','" + name + "','" + App.getAgent().cust.phone + "','" + App.getAgent().cust.LeadID + "','" + App.getAgent().cust.LEADGUID + "','" + App.getAgent().cust.IMPORT_ID + "','" + App.getAgent().calltime.ToString() + "')", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
+                            }
+
                             App.getAgent().HangUpandDispo("hangup");
                             App.getAgent().inCall = false;
                         }
@@ -275,7 +317,7 @@ namespace AutoBotCSharp
                         
                         if (App.getAgent().isTalking == false ) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
                         if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }                             
-                        if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
+                        if (App.getAgent().SilenceTimer >= 4) {  App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                         App.getAgent().calltime += 0.2;
                        App.totalTimer += 0.2;
                         Thread.Sleep(200);
@@ -306,6 +348,7 @@ namespace AutoBotCSharp
                         MessageBox.Show("You're not logged in anymore");
                         App.getAgent().driver.Quit();
                     }
+ 
                 }
                 App.getAgent().setGlobals();
               
@@ -543,6 +586,8 @@ namespace AutoBotCSharp
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
+            
+            
         }
         public static string CheckIProvider(string s)
         {
@@ -564,7 +609,7 @@ namespace AutoBotCSharp
             { return ("AIU"); }
             if (s.Contains("allied") || s.Contains("ally"))
             { return ("Allied"); }
-            if (s.Contains("allstate") || s.Contains("all state") || s.Contains("ball state") || s.Contains("mall state") || s.Contains("I'll say it"))
+            if (s.Contains("allstate") || s.Contains("all state") || s.Contains("ball state") || s.Contains("mall state") || s.Contains("I'll say it") || s.Contains("I'll stay"))
             { return ("Allstate Insurance"); }
             if (s.Contains("american"))
             { return ("American Insurance"); }
@@ -650,7 +695,7 @@ namespace AutoBotCSharp
             { return ("Foresters"); }
             if (s.Contains("frank") || s.Contains("frankenstein") || s.Contains("frankenmuth"))
             { return ("Frankenmuth Insurance"); }
-            if (s.Contains("geico") || s.Contains("gecko") || s.Contains("i go"))
+            if (s.Contains("geico") || s.Contains("gecko") || s.Contains("i go") || s.Contains("gotta go"))
             { return ("Geico General Insurance"); }
             if (s.Contains("gmac") || s.Contains("gee em"))
             { return ("GMAC Insurance"); }
@@ -784,7 +829,7 @@ namespace AutoBotCSharp
             { return ("Reliance Insurance"); }
             if (s.Contains("response"))
             { return ("Response Insurance"); }
-            if (s.Contains("safeco") || s.Contains("safe co"))
+            if (s.Contains("safeco") || s.Contains("safe co") || s.Contains("safe auto"))
             { return ("SAFECO"); }
             if (s.Contains("safeway") || s.Contains("safe way"))
             { return ("Safeway Insurance"); }
@@ -804,7 +849,7 @@ namespace AutoBotCSharp
             { return ("Standard Fire Insurance Company"); }
             if (s.Contains("state and county"))
             { return ("State and County Mutual Fire Insurance"); }
-            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park") || s.Contains("say farm"))
+            if (s.Contains("state farm") || s.Contains("statefarm") || s.Contains("haystack") || s.Contains("stay farm") || s.Contains("stayfarm") || s.Contains("state park") || s.Contains("say farm") || s.Contains("has a farm"))
             { return ("State Farm General"); }
             if (s.Contains("state fund"))
             { return ("State Fund"); }
@@ -852,7 +897,7 @@ namespace AutoBotCSharp
             { return ("US Financial"); }
             if (s.Contains("USA"))
             { return ("USA Benefits/Continental General"); }
-            if (s.Contains("USAA") || s.Contains("USA"))
+            if (s.Contains("USAA") || s.Contains("USA") || s.Contains("usaa"))
             { return ("USAA"); }
             if (s.Contains("usf and g"))
             { return ("USF and G"); }
@@ -962,10 +1007,21 @@ namespace AutoBotCSharp
             string expMonth;
             string expyear;
             s = s.ToLower();
+
+
             if (s.Contains("january"))
             {
                 expMonth = "Jan";
                 if (DateTime.Now.Month > 1)
+                {
+                    expyear = (DateTime.Now.Year + 1).ToString();
+                }
+                else { expyear = DateTime.Now.Year.ToString(); }
+            }
+            else if (s.Contains("just renewed") || s.Contains("this month") || s.Contains("just did"))
+            {
+                expMonth = App.getAgent().MonthFromNumeral((DateTime.Now.Month).ToString());
+                if (DateTime.Now.Month == 12)
                 {
                     expyear = (DateTime.Now.Year + 1).ToString();
                 }
@@ -1215,14 +1271,15 @@ namespace AutoBotCSharp
         public int getNumVehicles(string response)
           
         {
+
             
-            if (response.Contains("1") || response.Contains("one"))
+            if (response.Contains("1") || response.Contains("one") || response.Contains("won") || response.Contains("want"))
             { return 1; }
             else if (response.Contains("2") || response.Contains("two") || response.Contains("too") || response.Contains("take") || response.Contains("two"))
             { return 2; }
             else if (response.Contains("3") || response.Contains("three"))
             { return 3; }
-            else if (response.Contains("4") || response.Contains("four"))
+            else if (response.Contains("4") || response.Contains("four") || response.Contains("for"))
             { return 4; }
             else if (response.Contains("5") || response.Contains("five"))
             { return 5; }
@@ -1530,17 +1587,12 @@ namespace AutoBotCSharp
             bool mrMeseeks = true;
             bool isrebuttaling = false;
             App.getAgent().cust.speech = response;
+            Console.WriteLine(App.getAgent().cust.speech);
             Console.WriteLine("CHECKING FOR DATAS");
             Console.WriteLine("QUESTION: " + temp.Question);
             string raw = response;
             response = response.ToLower();
-            if(response.Contains("i have no idea") || response.Contains("i have no clue") || response.Contains("don't know"))
-            {
-                string clip = @"C:\SoundBoard\Cheryl\TIE INS\Great What's Your Best Guess.mp3";
-
-                App.RollTheClip(clip);
-                return (false);
-            }
+           
             switch (temp.Question)
             {
                 case Agent.STARTYMCSTARTFACE:
@@ -1784,18 +1836,7 @@ namespace AutoBotCSharp
                     }
                     if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                     break;
-                case Agent.LAST_NAME:
-                    App.getAgent().driver.FindElementById("frmLastName").Clear();
-                    foreach (char c in raw)
-                    {
-                        if (Char.IsUpper(c))
-                        {
-
-                            App.getAgent().EnterData("frmLastName", c.ToString());
-                            Console.WriteLine(c + " IS PART OF THEIR NAME");
-                        }
-                    }
-                    if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
+                case Agent.LAST_NAME:                      
                     break;
                 case Agent.SECONDARIES:
                     if(temp.checkIfSecondaries(response) != "NONE") { if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; } }
@@ -2126,9 +2167,10 @@ namespace AutoBotCSharp
             if (App.getAgent().currentlyRebuttaling == false)
             {
               
+
                 if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
-                {   
-                     
+                {
+                    App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                     App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
@@ -2136,7 +2178,7 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-                else if(resp.Contains("not here right now") || resp.Contains("leave a message") ||  resp.Contains("record your message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full") || resp.Contains("press 2"))
+                else if(resp.Contains("not here right now") || resp.Contains("leave a message") ||  resp.Contains("record your message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full") || resp.Contains("press 2") || resp.Contains("satisfied with the message") || resp.Contains("the tone"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2144,6 +2186,25 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
 
                     App.getAgent().HangUpandDispo("Not Available");
+
+                }
+                else if (resp.Contains("why do you need that"))
+                {
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Why do you need my info.mp3";
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().notInterestedFutureBool = true;
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.RollTheClip(clip);
+                }
+                else if (resp.Contains("what is this about") || resp.Contains("what's this about") || resp.Contains("why are you calling") || resp.Contains("what are you calling for") || resp.Contains("what's this 14") || resp.Contains("why you callin") || resp.Contains("what's this all about") || resp.Contains("purpose of your call"))
+                {
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().notInterestedFutureBool = true;
+                    App.getAgent().currentlyRebuttaling = true;
+                    clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
+                    App.RollTheClip(clip);
 
                 }
                 else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk") || resp.Contains("busy now") || resp.Contains("busy right now"))
@@ -2187,7 +2248,7 @@ namespace AutoBotCSharp
                 {
                     return true;
                 }
-                else if (resp.Contains("who are you") || resp.Contains("who is this") || resp.Contains("who is calling") || resp.Contains("whose calling"))
+                else if (resp.Contains("who are you") || resp.Contains("who is this") || resp.Contains("who is calling") || resp.Contains("whose calling") || resp.Contains("who's calling") || resp.Contains("who is calling") || resp.Contains("who's this"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
@@ -2198,7 +2259,7 @@ namespace AutoBotCSharp
                     return true;
 
                 }
-                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in"))
+                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("I'll see you then") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
@@ -2216,7 +2277,7 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
                 }
-                else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out") || resp.Contains("not getting that out"))
+                else if (resp.Contains("not giving you") || resp.Contains("none of your business") || resp.Contains("not giving that out") || resp.Contains("not getting that out") || resp.Contains("that's personal"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
@@ -2255,7 +2316,7 @@ namespace AutoBotCSharp
                     App.getAgent().HangUpandDispo("Wrong Number");                   
                     return true;
                 }
-                else if (resp.Contains("don't have insurance") || resp.Contains("don't have the car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                else if (resp.Contains("don't have insurance") || resp.Contains("don't have the car") || resp.Contains("don't have a car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2278,10 +2339,10 @@ namespace AutoBotCSharp
         public bool Login(string AgentNumber)
         {
             AgentNum = AgentNumber;
-
+          
             ChromeDriverService cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
-            driver = new ChromeDriver(cds);
+            driver = new  ChromeDriver(cds);
             try
             {
                 driver.Navigate().GoToUrl("http://loudcloud9.ytel.com");
@@ -2300,8 +2361,7 @@ namespace AutoBotCSharp
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
-                Task task = Task.Run(doAgentStatusRequest);
-               
+                Task task = Task.Run(doAgentStatusRequest);               
             }
             catch
             {
@@ -2315,6 +2375,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
+            
             MySqlConnection myConnection;
             MySqlCommand Add;
             Console.WriteLine("got called");
@@ -2324,24 +2385,22 @@ namespace AutoBotCSharp
                 App.getAgent().isListening = false;
                 App.getAgent().isTalking = false;
                 App.getAgent().SilenceTimer = 0;
-                App.getAgent().calltime = 0;              
-                App.getAgent().inCall = false;         
+                App.getAgent().calltime = 0;
+                App.getAgent().inCall = false;
                 calltime = 0;
-                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => { App.StopTheClip();})); }
-                if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }            
-                
-                WebRequest h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1");
-                WebResponse r = h.GetResponse();      
+                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => { App.StopTheClip(); })); }
+                if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }
+                string hangupDisp = "http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1";
+                Console.WriteLine("API CALL TO YTEL: " + hangupDisp);
+                WebRequest h = WebRequest.Create(hangupDisp);
+                WebResponse r = h.GetResponse();
+                Thread.Sleep(300);
                 r.Close();
-                
-
-
-                Thread.Sleep(1000);
                 switch (dispo)
                 {
                     case "hangup":
 
-                        if(!endcall)
+                        if (!endcall)
                         {
                             if (notInterestedFutureBool)
                             {
@@ -2359,12 +2418,12 @@ namespace AutoBotCSharp
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
                                 break;
-
-                            }else
+                            }
+                            else
                             {
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                                 r = h.GetResponse();
-                                
+
                                 myConnection = new MySqlConnection();
                                 myConnection.ConnectionString =
                                 "Server=sql9.freemysqlhosting.net;" +
@@ -2380,21 +2439,21 @@ namespace AutoBotCSharp
 
 
                             }
-                            
+
                         }
                         break;
                     case "Not Available":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
-               
-                         myConnection = new MySqlConnection();
+
+                        myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
                         "Server=sql9.freemysqlhosting.net;" +
                         "Database=sql9136099;" +
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                         Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1" , myConnection);
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
                         break;
@@ -2409,10 +2468,10 @@ namespace AutoBotCSharp
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                         Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-                    
+
 
                         break;
                     case "No Insurance":
@@ -2426,10 +2485,10 @@ namespace AutoBotCSharp
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                         Add = new MySqlCommand("UPDATE `DISPO` SET `NO INS`=`NO INS` + 1", myConnection);
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `NO INS`=`NO INS` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
-    
+
                         break;
                     case "Do Not Call":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
@@ -2441,7 +2500,7 @@ namespace AutoBotCSharp
                         "Uid=sql9136099;" +
                         "Pwd=HvsN6cVwbx;";
                         myConnection.Open();
-                         Add = new MySqlCommand("UPDATE `DISPO` SET `DNC`=`DNC` + 1", myConnection);
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `DNC`=`DNC` + 1", myConnection);
                         Add.ExecuteNonQuery();
                         myConnection.Close();
 
@@ -2479,8 +2538,8 @@ namespace AutoBotCSharp
                         r = h.GetResponse();
                         break;
                     case "Auto Lead":
-                     
-                        string name = cust.firstName + " " +  driver.FindElementById("frmLastName").GetAttribute("value");
+
+                        string name = cust.firstName + " " + driver.FindElementById("frmLastName").GetAttribute("value");
                         string phone = cust.phone;
                         myConnection = new MySqlConnection();
                         myConnection.ConnectionString =
@@ -2491,7 +2550,7 @@ namespace AutoBotCSharp
                         myConnection.Open();
                         Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "','" + cust.LeadID + "','" + cust.LEADGUID + "','" + cust.IMPORT_ID + "')", myConnection);
                         Add.ExecuteNonQuery();
-                        myConnection.Close(); 
+                        myConnection.Close();
 
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
                         r = h.GetResponse();
@@ -2500,68 +2559,102 @@ namespace AutoBotCSharp
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "LOW");
                         r = h.GetResponse();
                         break;
+                        
                 }
-                App.getAgent().Question = STARTYMCSTARTFACE;
-                var driverService = PhantomJSDriverService.CreateDefaultService();
-                driverService.HideCommandPromptWindow = true;
-                PhantomJSDriver GHOST = new PhantomJSDriver(driverService);
-                try
-                {
-                    GHOST.Navigate().GoToUrl("https://rink.hockeyapp.net/apps/27b5c4930f7d4e52a31542739e6fda99");
-                    GHOST.FindElementById("user_email").SendKeys("JTSwagger@gmail.com");
-                    GHOST.FindElementById("user_password").SendKeys("Jt55153910");
-                    GHOST.FindElementByName("commit").Click();
-
-                    Thread.Sleep(300);
-                    Console.WriteLine("CURRENT VERSION: " + version + ". SHOW ME WHAT YOU GOT!");
-                    drawHead();
-                    string versionToCheck = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("h3")).GetAttribute("innerHTML");
-                    versionToCheck = System.Text.RegularExpressions.Regex.Match(versionToCheck, @"\d+").Value;
-                    if ( version !=  versionToCheck)
-                    {
-                        Console.WriteLine(versionToCheck + " IS AVAILABLE! I LIKE WHAT YOU GOT");
-                        App.getAgent().PauseUnPause("PAUSE");
-                        WebClient wc = new WebClient();
-                        string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BEST_APP_IN_THE_WORLD.zip";
-                        string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\' ;
-                        wc.DownloadFileAsync(new Uri("https://rink.hockeyapp.net/api/2/apps/27b5c4930f7d4e52a31542739e6fda99/app_versions/2?format=zip&amp;avtoken=337bf7a3d712fc4530d50dc2bb39f330b0dc1eb0"), path);
-                        wc.DownloadFileCompleted += delegate
-                        {
-                            ICSharpCode.SharpZipLib.Zip.FastZip b = new ICSharpCode.SharpZipLib.Zip.FastZip();
-                            b.ExtractZip(path, path2 + @"\AutoBotCSharpV\" + versionToCheck, null);
-
-                            ProcessStartInfo start = new ProcessStartInfo();
-                            start.UseShellExecute = true;
-
-                            start.Arguments = "/version" + versionToCheck;
-                            start.FileName = path2 + @"\AutoBotCSharpV\" + versionToCheck +@"\AutoBotCSharp.exe";
-                            Process.Start(start);
-
-                        };
-                        version = GHOST.FindElementByClassName("icon-md5").GetAttribute("innerHTML");
-                        GHOST.Quit();
-                        Console.WriteLine("done");
-
-                 
-
-
-                    }
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.StackTrace);
-                }
-                Thread.Sleep(400);
                 r.Close();
-                
+                App.getAgent().Question = STARTYMCSTARTFACE;
             }
-            catch(Exception ex)
+            
+
+            // try
+
+            //  {
+            //   GHOST.Navigate().GoToUrl("https://rink.hockeyapp.net/apps/27b5c4930f7d4e52a31542739e6fda99");
+            //  GHOST.FindElementById("user_email").SendKeys("JTSwagger@gmail.com");
+            // GHOST.FindElementById("user_password").SendKeys("Jt55153910");
+            // GHOST.FindElementByName("commit").Click();
+
+            //Thread.Sleep(300);
+            //  Console.WriteLine("CURRENT VERSION: " + version + ". SHOW ME WHAT YOU GOT!");
+            //  drawHead();
+            //  string versionToCheck = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("h3")).GetAttribute("innerHTML");
+            //  versionToCheck = System.Text.RegularExpressions.Regex.Match(versionToCheck, @"\d+").Value;
+            //  verToCheck = versionToCheck;
+            //  if ( version !=  versionToCheck)
+            //  {
+            //     App.getWindow().speechTxtBox.AppendText(versionToCheck + " IS AVAILABLE! I LIKE WHAT YOU GOT");
+
+            //     WebClient wc = new WebClient();
+            //      string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BEST_APP_IN_THE_WORLD.zip";
+            //     string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\' ;
+            //  try
+            // {
+            //   string dl = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("a")).GetAttribute("href");
+            // App.getWindow().speechTxtBox.AppendText(dl);
+            //wc.DownloadFileAsync(new Uri(dl), path);
+
+            //   wc.DownloadFileCompleted += delegate
+            //  {
+            //      using (var zip = Ionic.Zip.ZipFile.Read(path))
+            //     {
+            //          Console.WriteLine("extracting " + path + " to: " + path2 + "AutoBotCSharpV" + App.getAgent().verToCheck);
+            //          zip.ExtractProgress += zip_extract_progress;
+            //         zip.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+            //          zip.ExtractAll(path2 + "AutoBotCSharpV" + App.getAgent().verToCheck, ExtractExistingFileAction.OverwriteSilently);
+
+            //      }
+            //   };
+            //    version = GHOST.FindElementByClassName("icon-md5").GetAttribute("innerHTML");
+            //    GHOST.Quit();               
+            // }
+            // catch(Exception e)
+            // {
+            //      App.getWindow().speechTxtBox.AppendText(e.StackTrace);
+
+            // }
+
+
+
+            // }
+            // else
+            //   {
+
+            //  GHOST.Quit();
+            //  }
+            //  }
+            //   catch(Exception e)
+            //  {
+            //      App.getWindow().speechTxtBox.AppendText(e.StackTrace);
+            //  }
+            //Thread.Sleep(400);
+            //   r.Close();
+
+            // }
+            catch (Exception ex)
             {
-                Console.WriteLine("ERROR");
-                Console.WriteLine(ex);
+                App.getWindow().speechTxtBox.AppendText(ex.StackTrace);
+                Thread.Sleep(250);
+                HangUpandDispo(dispo);
             }
 
          
+        }
+        static void zip_extract_progress(object sender, ExtractProgressEventArgs e)
+        {
+            Console.WriteLine("extracting..." );
+            string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\';
+            if (e.EventType == ZipProgressEventType.Extracting_AfterExtractAll)
+            {
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.UseShellExecute = true;
+                start.Arguments = "version" + App.getAgent().verToCheck + " agent" + App.getAgent().AgentNum;
+                Console.WriteLine(start.Arguments);
+                start.FileName = "\"" + path2 + "AutoBotCSharpV" + App.getAgent().verToCheck + "\\" + "AutoBotCSharp.exe" + "\"";
+                Console.WriteLine(start.FileName);
+                Process.Start(start);
+                App.getAgent().driver.Quit();
+                Application.Current.Shutdown();
+            }
         }
         public void drawHead()
         {
@@ -2672,12 +2765,11 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
             {
                 // okey
             }
-
-
         }
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public async void setupBot()
         {
+            cust = new Customer();
             int x = 0;
             Question = STARTYMCSTARTFACE;
             string firstName = "";
@@ -2697,7 +2789,7 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
                 Console.WriteLine("LEAD ID: " + driver.Url.Split('&')[1]);
             cust.firstName = firstName;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 x += 1;
                 if (x < 3)
@@ -2717,6 +2809,7 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
 
                 }
                else { HangUpandDispo("Not Available");}
+                Console.WriteLine(ex.StackTrace);
             }
             try
             {
@@ -2924,9 +3017,15 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3");
                         break;
                     case SECONDARIES:
-                        App.RollTheClip(getSecondaryClip());
-                        break;
-                    case TCPA:                 
+                        try
+                        {
+                            if (!App.RollTheClip(getSecondaryClip())) { Question = Agent.TCPA;  goto TCPA; };
+                            break;
+                        }
+                        catch { goto TCPA; }
+                    case TCPA:
+                        TCPA:
+                        
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");                  
                         break;
                     case Agent.WHICHSECONDARIES:
@@ -2940,6 +3039,9 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
                         break;
                     case PPC:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\PPCoverage.mp3");
+                        break;
+                    case "REPEAT":
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Can you repeat that.mp3");                  
                         break;
                 }
                 Callpos = INBETWEEN;

@@ -721,6 +721,8 @@ namespace AutoBotCSharp
             App.startReco();
         }
 
+
+
         private void frmReactions_Navigated(object sender, NavigationEventArgs e)
         {
 
@@ -784,6 +786,7 @@ namespace AutoBotCSharp
         private void btnOpenTestPage_Click(object sender, RoutedEventArgs e)
         {
             user = new Agent();
+            user.AgentNum = "1198";
             var cds = ChromeDriverService.CreateDefaultService();
             cds.HideCommandPromptWindow = true;
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MALENAMES.txt";
