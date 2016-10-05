@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
+using OpenQA.Selenium.Support;
+using OpenQA.Selenium;
 using System.Net;
 using System.IO;
 using System.Windows.Media;
@@ -11,8 +14,11 @@ using OpenQA.Selenium.Support.UI;
 using System.ComponentModel;
 using System.Windows;
 using MySql.Data.MySqlClient;
+using OpenQA.Selenium.PhantomJS;
+using System.IO.Compression;
 using Ionic.Zip;
 using System.Diagnostics;
+using OpenQA.Selenium;
 
 namespace AutoBotCSharp
 {
@@ -104,6 +110,7 @@ namespace AutoBotCSharp
             public bool isNameEnabled { get; set; }
             public string expMonth { get; set; }
             public string expYear { get; set; }
+
             public string lastName { get; set; }
         }
         public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "", lastName="" };
@@ -111,12 +118,13 @@ namespace AutoBotCSharp
         public string[] dobInfo;
         private bool notInterestedFutureBool = false;
 
-        WebRequest webRequest;
+        WebRequest webRequest; 
         WebResponse resp;
         StreamReader reader;
         //--------------------------------------------------------------------------------------------------------
         private double calltime = 0;
 
+      
         public void CheckForContact(double time)
         {
             Console.WriteLine("was called successfully");
@@ -143,14 +151,15 @@ namespace AutoBotCSharp
         }
            //---------------------------------------------
 
-        public string CheckLead()
+            public string CheckLead()
         {
             int i = 0;
-            IReadOnlyCollection<OpenQA.Selenium.IWebElement> field = driver.FindElementsByClassName("error");
+           IReadOnlyCollection<OpenQA.Selenium.IWebElement> field = driver.FindElementsByClassName("error");
             foreach (OpenQA.Selenium.IWebElement item in field)
             {
                 Console.WriteLine("MISSED"+ i + ": " + item.GetAttribute("id"));
                 if (item.GetAttribute("id") != "") { return item.GetAttribute("id"); }
+                
             }
             return "";           
         }
@@ -188,6 +197,7 @@ namespace AutoBotCSharp
                         SilenceTimer = 0;
                         Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
                         break;
+
                     //   case Agent.NUM_VEHICLES:
                     //       if (Int32.Parse(NUM_VEHICLES) == 1)
                     //       {
@@ -1606,7 +1616,7 @@ namespace AutoBotCSharp
                                 App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
                             }
                         }
-                        else if (response.Contains("no this is not") || response.Contains("no it isn't") || response.Contains("no it is not") || response.Contains("ain't") || response.Contains("aint"))
+                        else if (response.Contains("no this is not") || response.Contains("no it isn't") || response.Contains("no it is not"))
                         {
                             Thread.Sleep(300);
                             if (!isrebuttaling)
@@ -2162,7 +2172,7 @@ namespace AutoBotCSharp
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2185,7 +2195,7 @@ namespace AutoBotCSharp
                     App.getAgent().custObjected = true;
                     App.getAgent().notInterestedFutureBool = true;
                     App.getAgent().currentlyRebuttaling = true;
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                 }
                 else if (resp.Contains("what is this about") || resp.Contains("what's this about") || resp.Contains("why are you calling") || resp.Contains("what are you calling for") || resp.Contains("what's this 14") || resp.Contains("why you callin") || resp.Contains("what's this all about") || resp.Contains("purpose of your call"))
                 {
@@ -2194,25 +2204,25 @@ namespace AutoBotCSharp
                     App.getAgent().notInterestedFutureBool = true;
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
 
                 }
                 else if (resp.Contains("real busy") || resp.Contains("i'm at work") || resp.Contains("going to work") || resp.Contains("call back") || resp.Contains("the middle of something") || resp.Contains("can't right now") || resp.Contains("can't talk") || resp.Contains("busy now") || resp.Contains("busy right now"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\This Will be Real quick.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().notInterestedFutureBool = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
 
                 }
-                else if (resp.Contains("not interested") || resp.Contains("no interest") || resp.Contains("don't need"))
+                else if (resp.Contains("not interested") || resp.Contains("no interest"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\nothing to be interested in.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().notInterestedFutureBool = true;
                     App.getAgent().currentlyRebuttaling = true;
@@ -2242,7 +2252,7 @@ namespace AutoBotCSharp
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                   bool x = await App.RollTheClipAndWait(clip);
                     bool y = await App.RollTheClipAndWait(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
@@ -2253,7 +2263,7 @@ namespace AutoBotCSharp
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip); 
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2262,7 +2272,7 @@ namespace AutoBotCSharp
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\I already have insurance rebuttal.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2271,7 +2281,7 @@ namespace AutoBotCSharp
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Let me Just confirm a few things.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2281,7 +2291,7 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\where did you get my info.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2291,7 +2301,7 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\ThisIsJustAQuickProccess.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
+                    App.RollTheClip(clip);
                     App.getAgent().custObjected = true;
                     App.getAgent().currentlyRebuttaling = true;
                     return true;
@@ -2666,7 +2676,7 @@ namespace AutoBotCSharp
             Console.WriteLine("MMMMMMMMMMMMMMMMMs--:::::/:-+:::/ +...--://///////:::::-:::::////////////:::::////////////////::::/:::/mMMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMMMNs--:::::/:--+::::///::::-----::::--:::::--------------:::::::::::::::::/::::::--------sMMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMMNo--:::://:-.-//:::-------.-:::.````  ``..-::::-.-------------------/:--.``````.-:/:----:NMMMMMMMMMMMMMMMM");
-            Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-/:----------------:/-```           `-/----yMMMMMMMMMMMMMMMM");
+Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-/:----------------:/-```           `-/----yMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMd--://:////:://--::--.----/.`                   `-/:------------:/-`   `             `::--/NMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMN / -:::///:::::://---------+`````                   `:/----------/-`                    `/:--hMMMMMMMMMMMmMMM");
             Console.WriteLine("MMMMMMMMMMMMh--::::::::::::::-------- / -               `       `  -/ --------+``                      `+--/ MMMMMMMMMMMmMMM");
