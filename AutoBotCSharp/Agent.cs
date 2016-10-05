@@ -2316,13 +2316,7 @@ namespace AutoBotCSharp
                     App.getAgent().HangUpandDispo("No Car");
                     return true;
                 }
-                else if (resp.Contains("no email"))
-                {
-                    App.getAgent().currentlyRebuttaling = true;
-                    App.getAgent().custObjected = true;
-                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Email Rebuttal.mp3";
-                    bool x = await App.RollTheClipAndWait(clip);
-                }
+
                 else
                 {
                     return false;
