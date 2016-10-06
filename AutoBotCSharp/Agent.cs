@@ -30,6 +30,7 @@ namespace AutoBotCSharp
         public string verToCheck = "";
         public List<string> maleNames = new List<string>();
         public bool endcall = false;
+        public bool low_blow_bro = false;
         public string BDAYHOLDER = "";
         public bool AskingBDay = false;
         public bool doHome = false;
@@ -271,7 +272,7 @@ namespace AutoBotCSharp
                     App.getAgent().Agent_Name = tempstr[5];
                     try
                     {
-                        if (stats.Contains("DEAD") || stats.Contains("DISPO"))
+                        if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
                         {
 
                             MySqlConnection myConnection = new MySqlConnection();
@@ -284,15 +285,6 @@ namespace AutoBotCSharp
                             MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
-                            if (App.getAgent().calltime > 120)
-                            {
-                                Thread.Sleep(250);
-                                myConnection.Open();
-                                string name = App.getAgent().cust.firstName + " " + App.getAgent().cust.lastName;
-                                Add = new MySqlCommand("INSERT INTO `LONGCALLS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + App.getAgent().AgentNum + "','" + name + "','" + App.getAgent().cust.phone + "','" + App.getAgent().cust.LeadID + "','" + App.getAgent().cust.LEADGUID + "','" + App.getAgent().cust.IMPORT_ID + "','" + App.getAgent().calltime.ToString() + "')", myConnection);
-                                Add.ExecuteNonQuery();
-                                myConnection.Close();
-                            }
 
                             App.getAgent().HangUpandDispo("hangup");
                             App.getAgent().inCall = false;
@@ -2432,9 +2424,6 @@ namespace AutoBotCSharp
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
                                 break;
-
-
-
                             }
 
                         }

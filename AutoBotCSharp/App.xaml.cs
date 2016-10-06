@@ -707,56 +707,42 @@ namespace AutoBotCSharp
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             App.getAgent().SilenceTimer = 0;
                             App.getAgent().SilenceTimer = 0;
-                       
-                                getAgent().Question = "ENDCALL";
-                                
-                                Console.WriteLine("called endcall successfully");
-                                
-                                
-                                App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
-                           
-                           
-                                App.screenshots ++;
-                                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/";
-                                try
-                                {
-                                    OpenQA.Selenium.Screenshot Lead = App.getAgent().driver.GetScreenshot();
-                                    Lead.SaveAsFile(path + "Lead" + App.screenshots + ".jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                                }
-                                catch(Exception e)
-                                {
-                                    Console.WriteLine(e.StackTrace);
-                                }                                                                                                      
+                            getAgent().Question = "ENDCALL";
+                            Console.WriteLine("called endcall successfully");
+                            App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
+                            App.screenshots ++;
+                            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/";
+                            try
+                            {
+                                OpenQA.Selenium.Screenshot Lead = App.getAgent().driver.GetScreenshot();
+                                Lead.SaveAsFile(path + "Lead" + App.screenshots + ".jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine(e.StackTrace);
+                            }                                                                                                      
                         }
                         else if(response.ToLower().TrimEnd('.', '?', '!').Contains("no") || response.Contains("no thank you") || response.ToLower().TrimEnd('.', '?', '!').Contains("do not consent") || response.ToLower().TrimEnd('.', '?', '!').Contains("not okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("nope") || response.Contains("don't think so") || response.Contains("negative") || response.Contains("sounds bad"))
                         {
                             getAgent().selectData("frmTcpaConsumerConsented", "Responded NO, did not respond, hung up, etc.");
                             getAgent().Callpos = Agent.INBETWEEN;
-                            App.getWindow().cmbDispo.SelectedIndex = 7;
-                            App.getAgent().driver.FindElementById("btnSubmit").Click();
-                            App.getAgent().Question = "";
+                            getWindow().cmbDispo.SelectedIndex = 7;
+                            getAgent().driver.FindElementById("btnSubmit").Click();
+                            getAgent().Question = "";
+                            getAgent().low_blow_bro = true;
+                            RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                         }
 
                         else
                         {
-
                             getAgent().Callpos = Agent.INBETWEEN;
                             getAgent().Question = "REPEAT";
-                            
                         }
-
-
-
                         break;
-                        
                 }
-
             }
              if (App.getAgent().Callpos == Agent.FIXING) {getAgent().FixLead(); }
         }
-
-       
-  
         public async void doIntroduction()
         {
             Agent ag = getAgent();
@@ -807,7 +793,6 @@ namespace AutoBotCSharp
             }
             return nameClips;
         }
-
         /*
          * RollTheClip is a method that's part of the application logic, not the Form logic. Therefore, it should be in the App class.
          */
@@ -816,6 +801,7 @@ namespace AutoBotCSharp
             Console.Write(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
+            if (getAgent().low_blow_bro) { getAgent().low_blow_bro = false;  getAgent().HangUpandDispo("LOW");  }
             if (getAgent().inCall || getAgent().testing){ longDictationClient.StartMicAndRecognition();}
             Agent user = getAgent();
             Console.WriteLine("CHERYL JUST REBUTTALED " + getAgent().currentlyRebuttaling);   
