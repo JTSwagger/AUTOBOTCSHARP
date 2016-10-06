@@ -231,12 +231,11 @@ namespace AutoBotCSharp
                              break;
                     case DOB:
                         SilenceTimer = 0;
-                        temp.Question = Agent.BDAYMONTH;
-                        App.getAgent().Question = Agent.BDAYMONTH;
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Can you repeat that.mp3");
+                        App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\DOB1.mp3");
                         Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
                         break;
                     case BDAYMONTH:
-                       
                         temp.Question = Agent.MARITAL_STATUS;
                         SilenceTimer = 0;
                         Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
@@ -1268,11 +1267,8 @@ namespace AutoBotCSharp
 
         }
         //===================================================================================================
-        public int getNumVehicles(string response)
-          
+        public int getNumVehicles(string response) 
         {
-
-            
             if (response.Contains("1") || response.Contains("one") || response.Contains("won") || response.Contains("want"))
             { return 1; }
             else if (response.Contains("2") || response.Contains("two") || response.Contains("too") || response.Contains("take") || response.Contains("two"))
@@ -1936,8 +1932,6 @@ namespace AutoBotCSharp
                     }
             hasAsked = true;
             App.getAgent().Callpos = Agent.FIXING;
-
-
         }
 
         public bool ParseAddress(string response)

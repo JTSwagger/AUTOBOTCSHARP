@@ -312,7 +312,7 @@ namespace AutoBotCSharp
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                           ag.hasAsked = false;
@@ -322,15 +322,16 @@ namespace AutoBotCSharp
                         { ag.hasAsked = true; }
                         break;
                     case Agent.INS_EXP:
-                        if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "") {
-                             myConnection = new MySqlConnection();
+                        if (ag.driver.FindElementById("frmPolicyExpires_Month").GetAttribute("value") != "")
+                        {
+                            myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
                             "Database=sql9136099;" +
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `INS_EXP` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `INS_EXP` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                             ag.Question = Agent.INST_START;
@@ -339,17 +340,18 @@ namespace AutoBotCSharp
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.INST_START:
-                        if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "") {
+                        if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "")
+                        {
                             ag.Question = Agent.NUM_VEHICLES;
                             ag.hasAsked = false;
-                             myConnection = new MySqlConnection();
+                            myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
                             "Database=sql9136099;" +
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `INS_START` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `INS_START` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                         } else { ag.hasAsked = true; }
@@ -424,14 +426,14 @@ namespace AutoBotCSharp
                             if (ag.driver.FindElementById("vehicle2-make").Displayed)  {
                                 ag.Question = Agent.YMM3;
                                 ag.hasAsked = false;
-                                 myConnection = new MySqlConnection();
+                                myConnection = new MySqlConnection();
                                 myConnection.ConnectionString =
                                 "Server=sql9.freemysqlhosting.net;" +
                                 "Database=sql9136099;" +
                                 "Uid=sql9136099;" +
                                 "Pwd=HvsN6cVwbx;";
                                 myConnection.Open();
-                                 Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
 
@@ -443,14 +445,14 @@ namespace AutoBotCSharp
                             if (ag.driver.FindElementById("vehicle2-make").Displayed) {
                                 ag.Question = Agent.DOB;
                                 ag.hasAsked = false;
-                                 myConnection = new MySqlConnection();
+                                myConnection = new MySqlConnection();
                                 myConnection.ConnectionString =
                                 "Server=sql9.freemysqlhosting.net;" +
                                 "Database=sql9136099;" +
                                 "Uid=sql9136099;" +
                                 "Pwd=HvsN6cVwbx;";
                                 myConnection.Open();
-                                 Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add = new MySqlCommand("INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
                             } else { ag.hasAsked = true; }
@@ -461,49 +463,55 @@ namespace AutoBotCSharp
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
                         {
-                            if (ag.driver.FindElementById("vehicle3-make").Displayed){ ag.Question = Agent.YMM4;
+                            if (ag.driver.FindElementById("vehicle3-make").Displayed)
+                            {
+                                ag.Question = Agent.YMM4;
                                 ag.hasAsked = false;
-                                 myConnection = new MySqlConnection();
+                                myConnection = new MySqlConnection();
                                 myConnection.ConnectionString =
                                 "Server=sql9.freemysqlhosting.net;" +
                                 "Database=sql9136099;" +
                                 "Uid=sql9136099;" +
                                 "Pwd=HvsN6cVwbx;";
                                 myConnection.Open();
-                                 Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
                             } else { ag.hasAsked = true; }
                         }
                         else
                         {
-                            if (ag.driver.FindElementById("vehicle3-make").Displayed) { ag.Question = Agent.DOB;
+                            if (ag.driver.FindElementById("vehicle3-make").Displayed)
+                            {
+                                ag.Question = Agent.DOB;
                                 ag.hasAsked = false;
-                                 myConnection = new MySqlConnection();
+                                myConnection = new MySqlConnection();
                                 myConnection.ConnectionString =
                                 "Server=sql9.freemysqlhosting.net;" +
                                 "Database=sql9136099;" +
                                 "Uid=sql9136099;" +
                                 "Pwd=HvsN6cVwbx;";
                                 myConnection.Open();
-                                 Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                                Add = new MySqlCommand("INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                                 Add.ExecuteNonQuery();
                                 myConnection.Close();
                             } else { ag.hasAsked = true; }                          
                         }
                         break;
                     case Agent.YMM4:
-                        if (ag.driver.FindElementById("vehicle4-make").Displayed) { ag.Question = Agent.DOB;
+                        if (ag.driver.FindElementById("vehicle4-make").Displayed)
+                        {
+                            ag.Question = Agent.DOB;
                             ag.hasAsked = false;
 
-                             myConnection = new MySqlConnection();
+                            myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
                             "Database=sql9136099;" +
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `YMM_4` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `YMM_4` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                         } else { ag.hasAsked = true; }
@@ -550,8 +558,6 @@ namespace AutoBotCSharp
                                 getAgent().selectData("frmDOB_Year", DayYear[1]);
                                 ag.Question = Agent.MARITAL_STATUS;
                             }
-
-
                         }
                         break;
 
@@ -565,14 +571,14 @@ namespace AutoBotCSharp
                         if (ag.cust.maritalStatus == "Married")
                         {
 
-                             myConnection = new MySqlConnection();
+                            myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
                             "Database=sql9136099;" +
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                             ag.Question = Agent.SPOUSE_NAME;
@@ -580,14 +586,14 @@ namespace AutoBotCSharp
                         }
                         else
                         {
-                             myConnection = new MySqlConnection();
+                            myConnection = new MySqlConnection();
                             myConnection.ConnectionString =
                             "Server=sql9.freemysqlhosting.net;" +
                             "Database=sql9136099;" +
                             "Uid=sql9136099;" +
                             "Pwd=HvsN6cVwbx;";
                             myConnection.Open();
-                             Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
+                            Add = new MySqlCommand("INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
                             ag.Question = Agent.OWN_OR_RENT;
@@ -595,7 +601,8 @@ namespace AutoBotCSharp
                         }
 
                         break;
-                    case Agent.SPOUSE_NAME: ag.Question = Agent.SPOUSE_DOB; 
+                    case Agent.SPOUSE_NAME:
+                        ag.Question = Agent.SPOUSE_DOB; 
                         getAgent().EnterData("frmSpouseFirstName", response);
                         if (getAgent().maleNames.Contains(response)) { getAgent().selectData("frmGender", "Male"); } else { getAgent().EnterData("frmGender", "Female"); }
                         break;
@@ -864,8 +871,7 @@ namespace AutoBotCSharp
                         user.Callpos = Agent.YMM4;
                         break;
                     case "DOB":
-
-                      user.Callpos = Agent.DOB;
+                        user.Callpos = Agent.DOB;
                         break;
                     case Agent.BDAYMONTH:
                         user.Callpos = Agent.BDAYMONTH;
