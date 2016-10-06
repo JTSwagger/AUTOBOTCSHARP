@@ -315,7 +315,7 @@ namespace AutoBotCSharp
                             Add = new MySqlCommand("INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)", myConnection);
                             Add.ExecuteNonQuery();
                             myConnection.Close();
-                          ag.hasAsked = false;
+                            ag.hasAsked = false;
                             break;
            
                         } else

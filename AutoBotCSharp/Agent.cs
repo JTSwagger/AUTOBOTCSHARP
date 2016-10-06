@@ -1976,9 +1976,6 @@ namespace AutoBotCSharp
                 return false;
                 
             }
-        
-   
-
         }
         
        public bool CheckForMonth(string response)
@@ -2164,6 +2161,10 @@ namespace AutoBotCSharp
 
                 if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
                 {
+                    if (App.getAgent().Callpos == SECONDARIES || App.getAgent().Question == SECONDARIES)
+                    {
+                        return true;
+                    }
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\INTRO\THISISTOGIVENEWQUOTE.mp3";
                     App.RollTheClip(clip);
@@ -2355,7 +2356,8 @@ namespace AutoBotCSharp
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
-                Task task = Task.Run(doAgentStatusRequest);               
+                Task task = Task.Run(doAgentStatusRequest);
+                drawHead();        
             }
             catch
             {
