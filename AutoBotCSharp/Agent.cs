@@ -2161,7 +2161,8 @@ namespace AutoBotCSharp
 
                 if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
                 {
-                    if (App.getAgent().Callpos == SECONDARIES || App.getAgent().Question == SECONDARIES)
+                    if (App.getAgent().Callpos == SECONDARIES || App.getAgent().Question == SECONDARIES
+                        || App.getAgent().Callpos == WHICHSECONDARIES || App.getAgent().Question == WHICHSECONDARIES)
                     {
                         return true;
                     }
