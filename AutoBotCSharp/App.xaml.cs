@@ -731,6 +731,7 @@ namespace AutoBotCSharp
                             getAgent().Question = "";
                             getAgent().low_blow_bro = true;
                             RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                            getAgent().HangUpandDispo("LOW");
                         }
 
                         else

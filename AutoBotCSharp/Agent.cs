@@ -257,8 +257,8 @@ namespace AutoBotCSharp
 
             while (App.getAgent().LoggedIn || App.getAgent().testing ==true)
             {
-               
-                 
+
+                Thread.Sleep(200);
                 App.getAgent().StartWebRequest();
                 string stats = App.getAgent().reader.ReadToEnd();
                 Console.WriteLine(stats);
@@ -311,7 +311,7 @@ namespace AutoBotCSharp
                         if (App.getAgent().SilenceTimer >= 4) {  App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                         App.getAgent().calltime += 0.2;
                        App.totalTimer += 0.2;
-                        Thread.Sleep(200);
+                        
                         if (App.getAgent().newCall)
                         {
                            
@@ -1633,6 +1633,7 @@ namespace AutoBotCSharp
                     else if (response.Contains("no"))
                     {
 
+
                         bool x =  await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                         temp.HangUpandDispo("Not Available");
 
@@ -2377,7 +2378,14 @@ namespace AutoBotCSharp
                 App.getAgent().calltime = 0;
                 App.getAgent().inCall = false;
                 calltime = 0;
-                if (!App.waveOutIsStopped) { Application.Current.Dispatcher.Invoke((() => { App.StopTheClip(); })); }
+                try
+                {
+                    App.StopTheClip();
+                }
+                catch
+                {
+
+                }
                 if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }
                 string hangupDisp = "http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1";
                 Console.WriteLine("API CALL TO YTEL: " + hangupDisp);
@@ -2427,6 +2435,12 @@ namespace AutoBotCSharp
                             }
 
                         }
+                        else
+                        {
+                            h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
+                            r = h.GetResponse();
+                        }
+
                         break;
                     case "Not Available":
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
@@ -2548,6 +2562,7 @@ namespace AutoBotCSharp
                         
                 }
                 r.Close();
+               
                 App.getAgent().Question = STARTYMCSTARTFACE;
             }
             
