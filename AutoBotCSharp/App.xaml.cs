@@ -704,6 +704,18 @@ namespace AutoBotCSharp
                             getAgent().Callpos = Agent.INBETWEEN;
                             App.getAgent().Question = "";
                             App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
+                            string name = App.getAgent().cust.firstName + " " + App.getAgent().driver.FindElementById("frmLastName").GetAttribute("value");
+                            string phone = App.getAgent().cust.phone;
+                            myConnection = new MySqlConnection();
+                            myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                            myConnection.Open();
+                            Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + App.getAgent().AgentNum + "','" + name + "','" + phone + "','" + App.getAgent().cust.LeadID + "','" + App.getAgent().cust.LEADGUID + "','" + App.getAgent().cust.IMPORT_ID + "')", myConnection);
+                            Add.ExecuteNonQuery();
+                            myConnection.Close();
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             App.getAgent().SilenceTimer = 0;
                             App.getAgent().SilenceTimer = 0;

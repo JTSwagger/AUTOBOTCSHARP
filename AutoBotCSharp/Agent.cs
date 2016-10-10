@@ -259,6 +259,7 @@ namespace AutoBotCSharp
             {
 
                 Thread.Sleep(200);
+                
                 App.getAgent().StartWebRequest();
                 string stats = App.getAgent().reader.ReadToEnd();
                 Console.WriteLine(stats);
@@ -274,20 +275,26 @@ namespace AutoBotCSharp
                     {
                         if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
                         {
+                            try
+                            {
+                                MySqlConnection myConnection = new MySqlConnection();
+                                myConnection.ConnectionString =
+                                "Server=sql9.freemysqlhosting.net;" +
+                                "Database=sql9136099;" +
+                                "Uid=sql9136099;" +
+                                "Pwd=HvsN6cVwbx;";
+                                myConnection.Open();
+                                MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
+                                Add.ExecuteNonQuery();
+                                myConnection.Close();
 
-                            MySqlConnection myConnection = new MySqlConnection();
-                            myConnection.ConnectionString =
-                            "Server=sql9.freemysqlhosting.net;" +
-                            "Database=sql9136099;" +
-                            "Uid=sql9136099;" +
-                            "Pwd=HvsN6cVwbx;";
-                            myConnection.Open();
-                            MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
-                            Add.ExecuteNonQuery();
-                            myConnection.Close();
-
-                            App.getAgent().HangUpandDispo("hangup");
-                            App.getAgent().inCall = false;
+                                App.getAgent().HangUpandDispo("hangup");
+                                App.getAgent().inCall = false;
+                            }
+                            catch(Exception ex)
+                            {
+                                App.getWindow().speechTxtBox.Text = ex.StackTrace;   
+                            }
                         }
 
                     } catch (Exception ex)
@@ -577,6 +584,7 @@ namespace AutoBotCSharp
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
+            
             
             
         }
@@ -2365,7 +2373,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-            
+            string DBDISP = "";
             MySqlConnection myConnection;
             MySqlCommand Add;
             Console.WriteLine("got called");
@@ -2401,36 +2409,16 @@ namespace AutoBotCSharp
                         {
                             if (notInterestedFutureBool)
                             {
-
+                                DBDISP = "NI";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                                 r = h.GetResponse();
-                                myConnection = new MySqlConnection();
-                                myConnection.ConnectionString =
-                                "Server=sql9.freemysqlhosting.net;" +
-                                "Database=sql9136099;" +
-                                "Uid=sql9136099;" +
-                                "Pwd=HvsN6cVwbx;";
-                                myConnection.Open();
-                                Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
-                                Add.ExecuteNonQuery();
-                                myConnection.Close();
                                 break;
                             }
                             else
                             {
+                                DBDISP = "NA";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                                 r = h.GetResponse();
-
-                                myConnection = new MySqlConnection();
-                                myConnection.ConnectionString =
-                                "Server=sql9.freemysqlhosting.net;" +
-                                "Database=sql9136099;" +
-                                "Uid=sql9136099;" +
-                                "Pwd=HvsN6cVwbx;";
-                                myConnection.Open();
-                                Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1", myConnection);
-                                Add.ExecuteNonQuery();
-                                myConnection.Close();
                                 break;
                             }
 
@@ -2443,93 +2431,37 @@ namespace AutoBotCSharp
 
                         break;
                     case "Not Available":
+                        DBDISP = "NA";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
-
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `NA`=`NA` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
                         break;
 
                     case "Not Interested":
+                        DBDISP = "NI";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
-                        r = h.GetResponse();
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `NI`=`NI` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
-
-
+                        r = h.GetResponse();            
                         break;
                     case "No Insurance":
                     case "NO Ins Transfer Unsuccessful":
+                        DBDISP = "NO INS";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
                         r = h.GetResponse();
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `NO INS`=`NO INS` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
+         
 
                         break;
                     case "Do Not Call":
+                        DBDISP = "DNC";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
                         myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `DNC`=`DNC` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
-
                         break;
                     case "Wrong Number":
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `WRONG NUM`=`WRONG NUM` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
+                        DBDISP = "WRONG NUM";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
                         r = h.GetResponse();
                         break;
                     case "No Car":
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `NO CAR`=`NO CAR` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
+                        DBDISP = "NO CAR";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoCar");
                         r = h.GetResponse();
                         break;
@@ -2537,21 +2469,7 @@ namespace AutoBotCSharp
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoEng");
                         r = h.GetResponse();
                         break;
-                    case "Auto Lead":
-
-                        string name = cust.firstName + " " + driver.FindElementById("frmLastName").GetAttribute("value");
-                        string phone = cust.phone;
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + AgentNum + "','" + name + "','" + phone + "','" + cust.LeadID + "','" + cust.LEADGUID + "','" + cust.IMPORT_ID + "')", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
-
+                    case "Auto Lead":       
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "1Auto");
                         r = h.GetResponse();
                         break;
@@ -2562,6 +2480,28 @@ namespace AutoBotCSharp
                         
                 }
                 r.Close();
+                try
+                {
+                    if (DBDISP != "")
+                    {
+                        myConnection = new MySqlConnection();
+                        myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                        myConnection.Open();
+                        Add = new MySqlCommand("UPDATE `DISPO` SET `" + DBDISP + "`=`" + DBDISP + "` + 1", myConnection);
+                        Add.ExecuteNonQuery();
+                        myConnection.Close();
+                    }
+                    
+                }
+                catch(Exception ex)
+                {
+                    App.getWindow().speechTxtBox.AppendText(ex.StackTrace);
+
+                }
                
                 App.getAgent().Question = STARTYMCSTARTFACE;
             }
