@@ -721,19 +721,15 @@ namespace AutoBotCSharp
             App.startReco();
         }
 
-
-
         private void frmReactions_Navigated(object sender, NavigationEventArgs e)
         {
 
         }
-
         private void btnDispo_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Hanging up and dispoing as: " + cmbDispo.Text);
             user.HangUpandDispo(cmbDispo.Text);
         }
-
         private void cmbDispo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
