@@ -275,26 +275,11 @@ namespace AutoBotCSharp
                     {
                         if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
                         {
-                            try
-                            {
-                                MySqlConnection myConnection = new MySqlConnection();
-                                myConnection.ConnectionString =
-                                "Server=sql9.freemysqlhosting.net;" +
-                                "Database=sql9136099;" +
-                                "Uid=sql9136099;" +
-                                "Pwd=HvsN6cVwbx;";
-                                myConnection.Open();
-                                MySqlCommand Add = new MySqlCommand("INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')", myConnection);
-                                Add.ExecuteNonQuery();
-                                myConnection.Close();
-
+                            String theCommand = "INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')";
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
-                            }
-                            catch(Exception ex)
-                            {
-                                App.getWindow().speechTxtBox.Text = ex.StackTrace;   
-                            }
+                                Task.Run(() => Agent.UpdateDBase(theCommand));
+
                         }
 
                     } catch (Exception ex)
@@ -1577,6 +1562,31 @@ namespace AutoBotCSharp
                     return "Dec";
             }
         }
+
+        public static bool UpdateDBase(string command)
+        {
+
+            
+            try
+            {
+                MySqlConnection myConnection = new MySqlConnection();
+                MySqlCommand Add = new MySqlCommand(command);
+                myConnection.ConnectionString =
+                        "Server=sql9.freemysqlhosting.net;" +
+                        "Database=sql9136099;" +
+                        "Uid=sql9136099;" +
+                        "Pwd=HvsN6cVwbx;";
+                myConnection.Open();
+                Add.ExecuteNonQuery();
+                myConnection.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
         public  static async Task<bool> checkforData(string response)
         {
             string Data;
@@ -2374,8 +2384,7 @@ namespace AutoBotCSharp
         public void HangUpandDispo(string dispo)
         {
             string DBDISP = "";
-            MySqlConnection myConnection;
-            MySqlCommand Add;
+         
             Console.WriteLine("got called");
             try
             {
@@ -2453,7 +2462,7 @@ namespace AutoBotCSharp
                         DBDISP = "DNC";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
-                        myConnection = new MySqlConnection();
+                        
                         break;
                     case "Wrong Number":
                         DBDISP = "WRONG NUM";
@@ -2480,28 +2489,7 @@ namespace AutoBotCSharp
                         
                 }
                 r.Close();
-                try
-                {
-                    if (DBDISP != "")
-                    {
-                        myConnection = new MySqlConnection();
-                        myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                        myConnection.Open();
-                        Add = new MySqlCommand("UPDATE `DISPO` SET `" + DBDISP + "`=`" + DBDISP + "` + 1", myConnection);
-                        Add.ExecuteNonQuery();
-                        myConnection.Close();
-                    }
-                    
-                }
-                catch(Exception ex)
-                {
-                    App.getWindow().speechTxtBox.AppendText(ex.StackTrace);
-
-                }
+           
                
                 App.getAgent().Question = STARTYMCSTARTFACE;
             }
@@ -2577,8 +2565,8 @@ namespace AutoBotCSharp
                 Thread.Sleep(250);
                 HangUpandDispo(dispo);
             }
+            
 
-         
         }
         static void zip_extract_progress(object sender, ExtractProgressEventArgs e)
         {

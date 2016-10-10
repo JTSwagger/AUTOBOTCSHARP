@@ -211,56 +211,20 @@ namespace AutoBotCSharp
         }
         private void btnPolicyStart_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET POLICY_START START = POLICY_START START + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
-            user.Question = "INS_START";
-            user.Callpos = "INBETWEEN";
+              
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3";
             App.RollTheClip(clip);
         }
         // Vehicle info button group
         private void btnHowManyVehicles_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET NUM_VEHICLES = NUM_VEHICLES + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
-            user.Question = "NUM_VEHICLES";
-            user.Callpos = "INBETWEEN";
+            
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3";
             App.RollTheClip(clip);
         }
         private void btnYmm1_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET YMM_1 = YMM_1 + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
-            App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
-            user.Question = "YMM1";
-            user.Callpos = "INBETWEEN";
+           
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3";
             App.RollTheClip(clip);
         }
