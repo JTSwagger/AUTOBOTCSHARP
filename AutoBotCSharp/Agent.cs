@@ -1612,7 +1612,7 @@ namespace AutoBotCSharp
                     Add.ExecuteNonQuery();
                     myConnection.Close();
                     Console.WriteLine("SUCCESSFULLY OPENED MSQL WITH STRING " + command);
-                    return true;
+                    
 
                 }
                 catch (Exception ex)
@@ -1621,7 +1621,9 @@ namespace AutoBotCSharp
                     myConnection.Close();
                     return false;
                 }
+                return true;
             }
+
         }
         public  static async Task<bool> checkforData(string response)
         {
