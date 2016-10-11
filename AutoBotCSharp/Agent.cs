@@ -377,6 +377,7 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
 
             while (retry)
             {
@@ -389,6 +390,13 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                        return false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException)
                 {
@@ -419,6 +427,8 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
+
             while (retry)
             {
                 try
@@ -431,6 +441,13 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                        return false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException ex)
                 {
