@@ -37,14 +37,15 @@ namespace AutoBotCSharp
 
         public  MainWindow()
         {
-
+            string apiKey1 = "";
+            string apiKey2 = "";
             App.getWindow().Closed += closeall;
             try
             {
                 string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\keys.txt";
                 string[] keys = System.IO.File.ReadAllLines(path);
-                string apiKey1 = keys[0];
-                string apiKey2 = keys[1];
+                apiKey1 = keys[0];
+                apiKey2 = keys[1];
             } catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("keys.txt not found", "ya dun goofed");

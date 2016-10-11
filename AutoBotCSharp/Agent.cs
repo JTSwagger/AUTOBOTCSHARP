@@ -2381,7 +2381,13 @@ namespace AutoBotCSharp
                 driver.FindElementById("btn-get-campaign").Click();
                 Thread.Sleep(750);
                 driver.FindElementById("select-campaign").Click();
-                driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click(); 
+                foreach (IWebElement elem in driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")))
+                {
+                    if (elem.Text.Contains("5000") || elem.Text.Contains("BOT"))
+                    {
+                        elem.Click();
+                    }
+                }
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
