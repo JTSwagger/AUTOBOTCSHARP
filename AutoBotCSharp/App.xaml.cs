@@ -306,7 +306,7 @@ namespace AutoBotCSharp
                         {
                             ag.Question = Agent.INS_EXP;
                             DBCommand = "INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                             ag.hasAsked = false;
                             break;
            
@@ -318,7 +318,7 @@ namespace AutoBotCSharp
                         {
 
                             DBCommand = "INSERT INTO `INS_EXP` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                             ag.Question = Agent.INST_START;
                             ag.hasAsked = false;
 
@@ -330,7 +330,7 @@ namespace AutoBotCSharp
                             ag.Question = Agent.NUM_VEHICLES;
                             ag.hasAsked = false;                       
                             DBCommand = "INSERT INTO `INS_START` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.NUM_VEHICLES:
@@ -360,7 +360,7 @@ namespace AutoBotCSharp
                             ag.Question = Agent.DOB;
                             ag.hasAsked = false;       
                             DBCommand = "INSERT INTO `YMM_1` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                           
+                            Agent.UpdateDBase(DBCommand);
                         }
                         else
                         {
@@ -373,7 +373,7 @@ namespace AutoBotCSharp
                             ag.Question = Agent.YMM2;
                             ag.hasAsked = false;                           
                             DBCommand = "INSERT INTO `YMM_1` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                         }
                         else
                         {
@@ -388,7 +388,7 @@ namespace AutoBotCSharp
                                 ag.Question = Agent.YMM3;
                                 ag.hasAsked = false;
                                 DBCommand = "INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                                Task.Run(() => Agent.UpdateDBase(DBCommand));
+                                Agent.UpdateDBase(DBCommand);
 
                             } else { ag.hasAsked = true; }
                           
@@ -399,7 +399,7 @@ namespace AutoBotCSharp
                                 ag.Question = Agent.DOB;
                                 ag.hasAsked = false;
                                 DBCommand = "INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                                Task.Run(() => Agent.UpdateDBase(DBCommand));
+                                Agent.UpdateDBase(DBCommand);
                             } else { ag.hasAsked = true; }
                             break;
                         }
@@ -413,7 +413,7 @@ namespace AutoBotCSharp
                                 ag.Question = Agent.YMM4;
                                 ag.hasAsked = false;
                                 DBCommand = "INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                                Task.Run(() => Agent.UpdateDBase(DBCommand));
+                                Agent.UpdateDBase(DBCommand);
                             } else { ag.hasAsked = true; }
                         }
                         else
@@ -423,7 +423,7 @@ namespace AutoBotCSharp
                                 ag.Question = Agent.DOB;
                                 ag.hasAsked = false;
                                 DBCommand = "INSERT INTO `YMM_3` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                                Task.Run(() => Agent.UpdateDBase(DBCommand));
+                                Agent.UpdateDBase(DBCommand);
                             } else { ag.hasAsked = true; }                          
                         }
                         break;
@@ -435,7 +435,7 @@ namespace AutoBotCSharp
 
                             
                             DBCommand = "INSERT INTO `YMM_4` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                         } else { ag.hasAsked = true; }
                         break;
 
@@ -494,7 +494,7 @@ namespace AutoBotCSharp
                         {
 
                             DBCommand = "INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                             ag.Question = Agent.SPOUSE_NAME;
                             ag.hasAsked = false;
                         }
@@ -502,7 +502,7 @@ namespace AutoBotCSharp
                         {
                            
                             DBCommand = "INSERT INTO `MARITAL_STATUS` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                             ag.Question = Agent.OWN_OR_RENT;
                             ag.hasAsked = false;
                         }
@@ -614,7 +614,7 @@ namespace AutoBotCSharp
                             string name = App.getAgent().cust.firstName + " " + App.getAgent().driver.FindElementById("frmLastName").GetAttribute("value");
                             string phone = App.getAgent().cust.phone;
                             DBCommand = "INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + App.getAgent().AgentNum + "','" + name + "','" + phone + "','" + App.getAgent().cust.LeadID + "','" + App.getAgent().cust.LEADGUID + "','" + App.getAgent().cust.IMPORT_ID + "')";
-                            Task.Run(() => Agent.UpdateDBase(DBCommand));
+                            Agent.UpdateDBase(DBCommand);
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             App.getAgent().SilenceTimer = 0;
                             App.getAgent().SilenceTimer = 0;

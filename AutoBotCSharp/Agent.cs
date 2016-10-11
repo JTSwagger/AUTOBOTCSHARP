@@ -278,7 +278,7 @@ namespace AutoBotCSharp
                             String theCommand = "INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')";
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
-                                Task.Run(() => Agent.UpdateDBase(theCommand));
+                                Agent.UpdateDBase(theCommand);
 
                         }
 
@@ -1562,29 +1562,32 @@ namespace AutoBotCSharp
                     return "Dec";
             }
         }
-
         public static bool UpdateDBase(string command)
         {
+            using (MySqlConnection myConnection = new MySqlConnection())
+            {
+                MySqlCommand Add = new MySqlCommand(command, myConnection);
+                try
+                {
 
-            
-            try
-            {
-                MySqlConnection myConnection = new MySqlConnection();
-                MySqlCommand Add = new MySqlCommand(command);
-                myConnection.ConnectionString =
-                        "Server=sql9.freemysqlhosting.net;" +
-                        "Database=sql9136099;" +
-                        "Uid=sql9136099;" +
-                        "Pwd=HvsN6cVwbx;";
-                myConnection.Open();
-                Add.ExecuteNonQuery();
-                myConnection.Close();
-                return true;
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-                return false;
+                    myConnection.ConnectionString =
+                            "Server=sql9.freemysqlhosting.net;" +
+                            "Database=sql9136099;" +
+                            "Uid=sql9136099;" +
+                            "Pwd=HvsN6cVwbx;";
+                    myConnection.Open();
+                    Add.ExecuteNonQuery();
+                    myConnection.Close();
+                    Console.WriteLine("SUCCESSFULLY OPENED MSQL WITH STRING " + command);
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    myConnection.Close();
+                    return false;
+                }
             }
         }
         public  static async Task<bool> checkforData(string response)
@@ -1634,7 +1637,7 @@ namespace AutoBotCSharp
                             }
 
                         }
-                       
+                    
                     }
                     else
                     {
