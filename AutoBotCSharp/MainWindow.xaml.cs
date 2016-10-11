@@ -37,12 +37,20 @@ namespace AutoBotCSharp
 
         public  MainWindow()
         {
-
+            string apiKey1 = "";
+            string apiKey2 = "";
             App.getWindow().Closed += closeall;
-            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
-            string[] keys = System.IO.File.ReadAllLines(path);
-            string apiKey1 = keys[0];
-            string apiKey2 = keys[1];
+            try
+            {
+                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\keys.txt";
+                string[] keys = System.IO.File.ReadAllLines(path);
+                apiKey1 = keys[0];
+                apiKey2 = keys[1];
+            } catch (System.IO.FileNotFoundException)
+            {
+                MessageBox.Show("keys.txt not found", "ya dun goofed");
+            }
+            
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
@@ -73,25 +81,33 @@ namespace AutoBotCSharp
                     proc.Kill();
                 }
             }
-            string thepath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MALENAMES.txt";
-            using (StreamReader r = new StreamReader(thepath))
+            try
             {
-                // 3
-                // Use while != null pattern for loop
-                string line;
-                while ((line = r.ReadLine()) != null)
+                string thepath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MALENAMES.txt";
+                using (StreamReader r = new StreamReader(thepath))
                 {
-                    // 4
-                    // Insert logic here.
-                    // ...
-                    // "line" is a line in the file. Add it to our List.
-                    user.maleNames.Add(line);
-                    Console.WriteLine(line);
+                    // 3
+                    // Use while != null pattern for loop
+                    string line;
+                    while ((line = r.ReadLine()) != null)
+                    {
+                        // 4
+                        // Insert logic here.
+                        // ...
+                        // "line" is a line in the file. Add it to our List.
+                        user.maleNames.Add(line);
+                        Console.WriteLine(line);
+                    }
+
+
+
                 }
-
-
-                
+            } catch (System.IO.FileNotFoundException)
+            {
+                MessageBox.Show("MALENAMES.txt Not found", "Ya dun goofed");
             }
+            
+            
             frmMain.Title = "AutoBotC# Ver: " + user.version;
         }
 

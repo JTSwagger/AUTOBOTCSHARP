@@ -262,7 +262,7 @@ namespace AutoBotCSharp
                 
                 App.getAgent().StartWebRequest();
                 string stats = App.getAgent().reader.ReadToEnd();
-                Console.WriteLine(stats);
+                //Console.WriteLine(stats);
                 App.getAgent().reader.Close();
                     
                 string[] tempstr = stats.Split(',');
@@ -377,6 +377,7 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
 
             while (retry)
             {
@@ -389,6 +390,13 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                        return false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException)
                 {
@@ -419,6 +427,8 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
+
             while (retry)
             {
                 try
@@ -431,6 +441,13 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                        return false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException ex)
                 {
@@ -470,6 +487,7 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
 
             while (retry)
             {
@@ -486,6 +504,13 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                        return false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException)
                 {
@@ -519,6 +544,8 @@ namespace AutoBotCSharp
         {
             bool retry = true;
             int staleRefCount = 0;
+            int unhideCount = 0;
+
             while (retry)
             {
                 try
@@ -530,6 +557,12 @@ namespace AutoBotCSharp
                 {
                     unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
+                    if (unhideCount == 1)
+                    {
+                        Console.WriteLine("couldn't unhide, ending...");
+                        retry = false;
+                    }
+                    unhideCount += 1;
                 }
                 catch (OpenQA.Selenium.NoSuchElementException ex)
                 {
@@ -2367,7 +2400,13 @@ namespace AutoBotCSharp
                 driver.FindElementById("btn-get-campaign").Click();
                 Thread.Sleep(750);
                 driver.FindElementById("select-campaign").Click();
-                driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")).Last().Click(); 
+                foreach (IWebElement elem in driver.FindElementById("select-campaign").FindElements(OpenQA.Selenium.By.TagName("option")))
+                {
+                    if (elem.Text.Contains("5000") || elem.Text.Contains("BOT"))
+                    {
+                        elem.Click();
+                    }
+                }
                 Thread.Sleep(250);
                 driver.FindElementById("btn-submit").Click();
                 LoggedIn = true;
@@ -2728,7 +2767,17 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
                 {
                     try
                     {
-                        if (driver.PageSource.Contains("resource") || driver.PageSource.Contains("respectfully")) { HangUpandDispo("Not Available");return; }
+                        if (driver.PageSource.Contains("resource") || driver.PageSource.Contains("respectfully"))
+                        {
+                            HangUpandDispo("Not Available");
+                            return;
+                        }
+                        else if (driver.PageSource.Contains("Service not available"))
+                        {
+                            HangUpandDispo("Not Available");
+                            PauseUnPause("PAUSE");
+                            return;
+                        }
                         else
                         {
                             Thread.Sleep(50);
