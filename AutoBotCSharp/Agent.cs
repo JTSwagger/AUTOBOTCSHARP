@@ -114,6 +114,7 @@ namespace AutoBotCSharp
 
             public string lastName { get; set; }
         }
+        
         public Customer cust = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "", lastName="" };
 
         public string[] dobInfo;
@@ -124,7 +125,7 @@ namespace AutoBotCSharp
         StreamReader reader;
         //--------------------------------------------------------------------------------------------------------
         private double calltime = 0;
-
+    
       
         public void CheckForContact(double time)
         {
@@ -1647,68 +1648,74 @@ namespace AutoBotCSharp
            
             switch (temp.Question)
             {
-                case Agent.STARTYMCSTARTFACE:
+                //case Agent.STARTYMCSTARTFACE:
 
-                    if (temp.cust.isNameEnabled)
-                    {
-                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("this is") || response.Contains("yeah") || response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him") )
-                        {
-                            Thread.Sleep(300);
-                            App.getAgent().custObjected = false;
-                            temp.Question = Agent.INTRO;
-                            App.getAgent().AskQuestion();
-                        }
-                        
-                        else if (response.Contains("hello"))
-                        {
-                            if (!isrebuttaling)
-                            {
-                                isrebuttaling = true;
+                //    string check = "this is " + temp.cust.firstName.ToLower();
+                //    if (temp.cust.isNameEnabled)
+                //    {
 
-                                App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
-                            }
-                        }
-                        else if (response.Contains("no this is not") || response.Contains("no it isn't") || response.Contains("no it is not"))
-                        {
-                            Thread.Sleep(300);
-                            if (!isrebuttaling)
-                            {
-                                isrebuttaling = true;
-                                string clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Is This the Spouse.mp3";
-                                bool x = await App.RollTheClipAndWait(clip);
-                                temp.Question = "SPOUSE?";
-                            }
+                //        if (response.Contains("yes") || response.Contains("speaking") || response.Contains(check) || response.Contains("yeah") || (response.Contains("hi") && !(response.Contains("this"))) || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
+                //        {
+                //            Console.WriteLine("THIS IS THE PERSON YOU WANT");
+                //            Thread.Sleep(300);
+                //            App.getAgent().custObjected = false;
+                //            temp.Question = Agent.INTRO;
+                //            App.getAgent().AskQuestion();
+                //        }
 
-                        }
+                //        else if (response.Contains("hello"))
+                //        {
+                //            Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
+   
+                //            App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
+                            
+                //        }
+                //        else if ( response.Contains("no it isn't") || response.Contains("no it is not") || response.Contains("not " + temp.cust.firstName))
+                //        {
+                //            Console.WriteLine("THIS IS NOT THE PERSON YOU WANT");
+                //            Thread.Sleep(300);
+                           
+                               
+                //                string clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Is This the Spouse.mp3";
+                //                bool x = await App.RollTheClipAndWait(clip);
+                //                temp.Question = "SPOUSE?";
+                            
+
+                //        }
+                //        else
+                //        {
+
+                //        }
                     
-                    }
-                    else
-                    {
-                        temp.Question = INTRO;
-                    }
-                    break;
-                case "SPOUSE?":
-                    if (response.Contains("yes") || response.Contains("speaking") || response.Contains("yup") || response.Contains("yeah") || response.Contains("this is") || response.Contains("yep") || response.Contains("it is"))
-                    {
-                        App.getAgent().custObjected = false;
-                        temp.Question = Agent.INTRO;
-                        App.getAgent().AskQuestion();
-                    }
-                    else if (response.Contains("no"))
-                    {
+                //    }
+                //    else
+                //    {
+                //        temp.Question = INTRO;
+                //    }
+                //    break;
+                //case "SPOUSE?":
+                //    if (response.Contains("yes") || response.Contains("speaking") || response.Contains("yup") || response.Contains("yeah") || response.Contains("yep") || response.Contains("it is"))
+                //    {
+                //        App.getAgent().custObjected = false;
+                //        temp.Question = Agent.INTRO;
+                //        App.getAgent().AskQuestion();
+                //    }
+                //    else if (response.Contains("no"))
+                //    {
 
 
-                        bool x =  await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
-                        temp.HangUpandDispo("Not Available");
+                //        bool x =  await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                //        temp.HangUpandDispo("Not Available");
 
-                    }
-                    break;
+                //    }
+                //    break;
                 case Agent.INTRO: // fall through
                 case Agent.PROVIDER:
                     Console.WriteLine(Agent.PROVIDER);
 
                     Data = CheckIProvider(response);
                     if (Data != "FALSE")
+
                     {
                         if (temp.selectData("frmInsuranceCarrier", Data))
                         {
@@ -2222,11 +2229,15 @@ namespace AutoBotCSharp
             return "";
         }
         //------------------------------------------------------------------
-      
+         public string badSpeechParser(string oldSpeech)
+        {
+
+            return "";
+        }
         //------------------------------------------------------------------------------------------------------------------------
         public static async Task <bool> checkForObjection(string response)
         {
-            string resp = response;
+            string resp = response.ToLower();
             string clip;
             if (App.getAgent().currentlyRebuttaling == false)
             {
@@ -2276,7 +2287,7 @@ namespace AutoBotCSharp
                     App.getAgent().currentlyRebuttaling = true;
                     App.RollTheClip(clip);
                 }
-                else if (resp.Contains("what is this about") || resp.Contains("what's this about") || resp.Contains("why are you calling") || resp.Contains("what are you calling for") || resp.Contains("what's this 14") || resp.Contains("why you callin") || resp.Contains("what's this all about") || resp.Contains("purpose of your call"))
+                else if (resp.Contains("what is this about") || resp.Contains("whats this about") || resp.Contains("why are you calling") || resp.Contains("what are you calling for") || resp.Contains("whats this 14") || resp.Contains("why you callin") || resp.Contains("whats this all about") || resp.Contains("purpose of your call") || resp.Contains("why are you calling") || resp.Contains("what i"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2330,15 +2341,15 @@ namespace AutoBotCSharp
                 else if (resp.Contains("who are you") || resp.Contains("who is this") || resp.Contains("who is calling") || resp.Contains("whose calling") || resp.Contains("who's calling") || resp.Contains("who is calling") || resp.Contains("who's this"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
-                    clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
-                   bool x = await App.RollTheClipAndWait(clip);
-                    bool y = await App.RollTheClipAndWait(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
-                    App.getAgent().custObjected = true;
-                    App.getAgent().currentlyRebuttaling = true;
-                    return true;
+                  clip = @"C:\Soundboard\Cheryl\INTRO\CHERYLCALLING.mp3";
+                  bool x = await App.RollTheClipAndWait(clip);
+                   bool y = await App.RollTheClipAndWait(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
+                   App.getAgent().custObjected = true;
+                   App.getAgent().currentlyRebuttaling = true;
+                  return true;
 
-                }
-                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("I'll see you then") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in"))
+               }
+                else if (resp.Contains("what's lcn") || resp.Contains("what is lcn") || resp.Contains("i'll see you then") || resp.Contains("whats LCN") || resp.Contains("what is LCN") || resp.Contains("else in") || resp.Contains("else n") )
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     clip = @"C:\SoundBoard\Cheryl\REBUTTALS\What's LCN.mp3";
@@ -2395,7 +2406,7 @@ namespace AutoBotCSharp
                     App.getAgent().HangUpandDispo("Wrong Number");                   
                     return true;
                 }
-                else if (resp.Contains("don't have insurance") || resp.Contains("don't have the car") || resp.Contains("don't have a car") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
+                else if (resp.Contains("don't have insurance") || resp.Contains("don't currently have insurance") || resp.Contains("don't have the car")  || resp.Contains("not insured") || resp.Contains("don't even have insurance") || resp.Contains("have no insurance") ||  resp.Contains("don't have a vehicle") || resp.Contains("don't own a vehicle") || resp.Contains("don't own a car") || resp.Contains("no car") || resp.Contains("no vehicle"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
                     App.getAgent().custObjected = true;
@@ -2948,6 +2959,10 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
              
                 switch (Question)
                 {
+                    case "SPOUSE?":
+                        string clip = @"C:\SoundBoard\Cheryl\REBUTTALS\Is This the Spouse.mp3";
+                        App.RollTheClip(clip);
+                        break;
                     case STARTYMCSTARTFACE:
                         Application.Current.Dispatcher.Invoke(() =>
                         {
