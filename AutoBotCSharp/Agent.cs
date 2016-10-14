@@ -279,7 +279,6 @@ namespace AutoBotCSharp
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
                                 Agent.UpdateDBase(theCommand);
-
                         }
 
                     } catch (Exception ex)
@@ -2207,7 +2206,10 @@ namespace AutoBotCSharp
             if (App.getAgent().currentlyRebuttaling == false)
             {
               
-
+                if (resp.Contains("fuck"))
+                {
+                    Console.WriteLine("we've got a 'fuck'");
+                }
                 if (resp.Contains("don't want it") || resp.Contains("no thank you") || resp.Contains("no thank you"))
                 {
                     if (App.getAgent().Callpos == SECONDARIES || App.getAgent().Question == SECONDARIES
