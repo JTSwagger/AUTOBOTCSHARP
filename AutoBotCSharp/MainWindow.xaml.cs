@@ -20,7 +20,17 @@ using OpenQA.Selenium.Chrome;
 using Microsoft.ProjectOxford.SpeechRecognition;
 using MySql.Data.MySqlClient;
 using System.IO;
-
+using ApiAiSDK;
+using ApiAiSDK.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+using Syn.Speech.Recognizers;
+using System.Speech.Recognition;
 
 namespace AutoBotCSharp
 {
@@ -34,8 +44,9 @@ namespace AutoBotCSharp
         public Agent user;
         public string version;
 
-
-        public  MainWindow()
+     
+      
+        public MainWindow()
         {
             string apiKey1 = "";
             string apiKey2 = "";
@@ -46,20 +57,23 @@ namespace AutoBotCSharp
                 string[] keys = System.IO.File.ReadAllLines(path);
                 apiKey1 = keys[0];
                 apiKey2 = keys[1];
-            } catch (System.IO.FileNotFoundException)
+            }
+            catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("keys.txt not found", "ya dun goofed");
             }
-            
+
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
             App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
 
+
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
+            Agent_Google googleUser = new Agent_Google();
             user.version = App.version.ToString();
-            
+
             Console.WriteLine("OPENING BOT VERSION: " + user.version);
             randy = new Random();
             InitializeComponent();
@@ -98,20 +112,15 @@ namespace AutoBotCSharp
                         user.maleNames.Add(line);
                         Console.WriteLine(line);
                     }
-
-
-
                 }
-            } catch (System.IO.FileNotFoundException)
+            }
+            catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("MALENAMES.txt Not found", "Ya dun goofed");
             }
-            
-            
             frmMain.Title = "AutoBotC# Ver: " + user.version;
+            MrSocketGetter.sock.Connect("192.168.1.218", 7979);
         }
-
-           
 
         public void setNameText(string name)
         {
@@ -140,31 +149,11 @@ namespace AutoBotCSharp
         private void btnHello_Click(object sender, RoutedEventArgs e)
         {
             // Keep methods like RollTheClip in App.xaml.cs, call them like this
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET HELLO = HELLO + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
 
         }
-        private  void btnIntro_Click(object sender, RoutedEventArgs e)
+        private void btnIntro_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET INTRO = INTRO + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
             user.Callpos = Agent.INBETWEEN;
             user.Question = Agent.INTRO;
@@ -190,35 +179,15 @@ namespace AutoBotCSharp
         // Insurance info button group
         private void btnInsuranceProvider_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET INS PROVIDER = INS PROVIDER + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
             user.Question = Agent.PROVIDER;
             user.Callpos = "INBETWEEN";
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3";
             App.RollTheClip(clip);
-            
+
         }
         private void btnPolicyExpiration_Click(object sender, RoutedEventArgs e)
         {
-            MySqlConnection myConnection = new MySqlConnection();
-            myConnection.ConnectionString =
-            "Server=sql9.freemysqlhosting.net;" +
-            "Database=sql9136099;" +
-            "Uid=sql9136099;" +
-            "Pwd=HvsN6cVwbx;";
-            myConnection.Open();
-            MySqlCommand Add = new MySqlCommand("UPDATE QUESTIONS SET POLICY_EXPIRATION = POLICY_EXPIRATION + 1", myConnection);
-            Add.ExecuteNonQuery();
-            myConnection.Close();
             App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello.mp3");
             user.Question = "INS_EXP";
             user.Callpos = "INBETWEEN";
@@ -227,20 +196,20 @@ namespace AutoBotCSharp
         }
         private void btnPolicyStart_Click(object sender, RoutedEventArgs e)
         {
-              
+
             string clip = @"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3";
             App.RollTheClip(clip);
         }
         // Vehicle info button group
         private void btnHowManyVehicles_Click(object sender, RoutedEventArgs e)
         {
-            
+
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3";
             App.RollTheClip(clip);
         }
         private void btnYmm1_Click(object sender, RoutedEventArgs e)
         {
-           
+
             string clip = @"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3";
             App.RollTheClip(clip);
         }
@@ -272,7 +241,7 @@ namespace AutoBotCSharp
             user.Question = "DOB";
             //user.Callpos = "INBETWEEN";
             App.playDobClips();
-            
+
         }
         private void btnMaritalStatus_Click(object sender, RoutedEventArgs e)
         {
@@ -634,7 +603,7 @@ namespace AutoBotCSharp
         }
         private void btnReaction_Click(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         // below is my hotkey handling code
@@ -669,12 +638,12 @@ namespace AutoBotCSharp
             base.OnSourceInitialized(e);
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
-        
+
             RegisterHotkeys();
         }
         protected override void OnClosed(EventArgs e)
         {
-   
+
             _source = null;
             UnregisterHotkeys();
 
@@ -695,7 +664,7 @@ namespace AutoBotCSharp
             UnregisterHotKey(helper.Handle, 1);
             UnregisterHotKey(helper.Handle, 2);
         }
-       
+
         private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
         {
             App.startReco();
@@ -716,7 +685,7 @@ namespace AutoBotCSharp
         }
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
-            switch(user.Dialer_Status)
+            switch (user.Dialer_Status)
             {
                 case "PAUSED":
                     user.PauseUnPause("UNPAUSE");
@@ -742,7 +711,8 @@ namespace AutoBotCSharp
                 btnTheirName.IsEnabled = true;
                 btnLookingFor.IsEnabled = true;
                 btnHi.IsEnabled = true;
-            } else if (!torf)
+            }
+            else if (!torf)
             {
                 btnTheirName.IsEnabled = false;
                 btnLookingFor.IsEnabled = false;
@@ -792,7 +762,7 @@ namespace AutoBotCSharp
 
         private void btnTurnOnAutoStuff_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void btnInitSpeechReco_Click_1(object sender, RoutedEventArgs e)
@@ -815,7 +785,7 @@ namespace AutoBotCSharp
         {
 
         }
-        protected  void closeall(Object sender, EventArgs args)
+        protected void closeall(Object sender, EventArgs args)
         {
 
             Environment.Exit(Environment.ExitCode);
@@ -826,7 +796,7 @@ namespace AutoBotCSharp
             App.getAgent().FixLead();
         }
 
-        
+
 
         private void doTestingStuff_Click(object sender, RoutedEventArgs e)
         {
@@ -838,6 +808,10 @@ namespace AutoBotCSharp
         {
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3");
 
+        }
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
     }
     

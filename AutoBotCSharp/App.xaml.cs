@@ -15,6 +15,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System.IO;
 using MySql.Data.MySqlClient;
+using ApiAiSDK;
+using ApiAiSDK.Model;
 
 namespace AutoBotCSharp
 {
@@ -23,6 +25,10 @@ namespace AutoBotCSharp
     /// </summary>
     public partial class App : Application
     {
+        public  static ApiAi apiAi;
+       
+        public static AIConfiguration config = new AIConfiguration("6c83e9e057134cd792c045595aca9528 ", SupportedLanguage.English);
+
         public static int version = 66;
         public string session = "";
         public string url = "";
@@ -44,19 +50,7 @@ namespace AutoBotCSharp
             var mainwindow = Current.MainWindow as MainWindow;
             return mainwindow;
         }
-
-
-        /*
-         * Returns the current agent object available to MainWindow.
-         * :)
-         */ 
-         public static void checkVersion()
-        {
-            
-
-
-
-        }
+        
         public static Agent getAgent()
         {
             Agent temp = null; 
@@ -72,6 +66,21 @@ namespace AutoBotCSharp
                 Console.WriteLine("gracefully not handling this error very well");
             }
             return temp;
+        }
+        public static Agent_Google getGoogleAgent()
+        {
+            Agent_Google agent = null;
+            try
+            {
+                Current.Dispatcher.Invoke(() =>
+                {
+                    agent = getWindow().googleUser;
+                });
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return agent;
         }
         void App_Startup(object sender, StartupEventArgs e)
         {
@@ -112,6 +121,7 @@ namespace AutoBotCSharp
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
             longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
+          
             longDictationClient.OnConversationError += onConversationErrorHandler;
             
             Console.WriteLine("Change the reco, don't let the reco change you."); 
@@ -124,7 +134,7 @@ namespace AutoBotCSharp
         }
         public static void onConversationErrorHandler(object sender, SpeechErrorEventArgs e)
         {
-            Console.WriteLine(e.SpeechErrorText);
+            Console.WriteLine("ERROR WITH SPEECH" + e.SpeechErrorText);
        
         }
         public static void onMicrophoneStatusHandler(object sender, MicrophoneEventArgs e)
@@ -132,6 +142,7 @@ namespace AutoBotCSharp
         
             Agent temp = getAgent();
             Console.WriteLine("MIC IS RECORDING: " + e.Recording);
+            Current.Dispatcher.Invoke((()=> App.getWindow().lblreco.Content = "RECORDING STATUS: " + e));
             temp.isListening = e.Recording;
 
         }
@@ -171,6 +182,7 @@ namespace AutoBotCSharp
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
             if (App.getAgent().inCall)
             {
                 App.longDictationClient.StartMicAndRecognition();

@@ -254,96 +254,100 @@ namespace AutoBotCSharp
         //--------------------------------------------------------------------------
         public static async Task<bool> doAgentStatusRequest()
         {
-
-            while (App.getAgent().LoggedIn || App.getAgent().testing ==true)
+            try
             {
-
-                Thread.Sleep(200);
-                
-                App.getAgent().StartWebRequest();
-                string stats = App.getAgent().reader.ReadToEnd();
-                //Console.WriteLine(stats);
-                App.getAgent().reader.Close();
-                    
-                string[] tempstr = stats.Split(',');
-               
-                try
+                while (App.getAgent().LoggedIn || App.getAgent().testing == true)
                 {
-                    App.getAgent().Dialer_Status = tempstr[0];
-                    App.getAgent().Agent_Name = tempstr[5];
+
+                    Thread.Sleep(200);
+
+                    App.getAgent().StartWebRequest();
+                    string stats = App.getAgent().reader.ReadToEnd();
+                    Console.WriteLine(stats);
+                    App.getAgent().reader.Close();
+
+                    string[] tempstr = stats.Split(',');
+
                     try
                     {
-                        if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
+                        App.getAgent().Dialer_Status = tempstr[0];
+                        App.getAgent().Agent_Name = tempstr[5];
+                        try
                         {
-                            String theCommand = "INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')";
+                            if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
+                            {
+                                String theCommand = "INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')";
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
                                 Agent.UpdateDBase(theCommand);
 
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            App.getWindow().speechTxtBox.Text += Environment.NewLine + ex;
+                            Console.WriteLine(ex);
+                            Console.WriteLine(ex.StackTrace);
+                            Console.WriteLine("Problem getting stats");
+                        }
+                        if (App.getAgent().Dialer_Status == "READY")
+                        {
+                            App.getAgent().newCall = true;
+                            App.longDictationClient.EndMicAndRecognition();
+
+                        }
+                        else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
+
+                        {
+
+                            if (App.getAgent().isTalking == false) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
+                            if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }
+                            if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
+                            App.getAgent().calltime += 0.2;
+                            App.totalTimer += 0.2;
+
+                            if (App.getAgent().newCall)
+                            {
+
+                                App.getAgent().inCall = true;
+                                App.getAgent().currentlyRebuttaling = false;
+                                App.getAgent().custObjected = false;
+                                App.getAgent().setupBot();
+                                App.getAgent().endcall = false;
+                                App.getAgent().Callpos = STARTYMCSTARTFACE;
+                                App.getAgent().Question = STARTYMCSTARTFACE;
+                                App.getAgent().notInterestedFutureBool = false;
+                                App.getAgent().calltime = 0;
+                                App.getAgent().SilenceTimer = 0;
+                                App.getAgent().newCall = false;
+                            }
+                        }
+                        //Console.WriteLine("Dialer Status: " + Dialer_Status);
+                        //Console.WriteLine("Agent Name: " + Agent_Name);
+                        //Console.WriteLine("dead? " + dead);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        if (App.getAgent().started)
+                        {
+                            MessageBox.Show("You're not logged in anymore");
+                            App.getAgent().driver.Quit();
                         }
 
-                    } catch (Exception ex)
-                    {
-                        App.getWindow().speechTxtBox.Text += Environment.NewLine +   ex;
-                        Console.WriteLine(ex);
-                        Console.WriteLine(ex.StackTrace);
-                        Console.WriteLine("Problem getting stats");
                     }
-                    if (App.getAgent().Dialer_Status == "READY")
-                    {
-                        App.getAgent().newCall = true;
-                        App.longDictationClient.EndMicAndRecognition();
-                      
-                    } else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
-
-                    {
-                        
-                        if (App.getAgent().isTalking == false ) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
-                        if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }                             
-                        if (App.getAgent().SilenceTimer >= 4) {  App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
-                        App.getAgent().calltime += 0.2;
-                       App.totalTimer += 0.2;
-                        
-                        if (App.getAgent().newCall)
-                        {
-                           
-                            App.getAgent().inCall = true;
-                            App.getAgent().currentlyRebuttaling = false;
-                            App.getAgent().custObjected = false;
-                            App.getAgent().setupBot();
-                            App.getAgent().endcall = false;
-                            App.getAgent().Callpos = STARTYMCSTARTFACE;
-                            App.getAgent().Question = STARTYMCSTARTFACE;
-                            App.getAgent().notInterestedFutureBool = false;
-                            App.getAgent().calltime = 0;
-                            App.getAgent().SilenceTimer = 0;
-                            App.getAgent().newCall = false;
-                        }                       
-                    }
-                    //Console.WriteLine("Dialer Status: " + Dialer_Status);
-                    //Console.WriteLine("Agent Name: " + Agent_Name);
-                    //Console.WriteLine("dead? " + dead);
+                    App.getAgent().setGlobals();
                 }
-                catch (IndexOutOfRangeException)
-                {
-                    if (App.getAgent().started)
-                    {
-                        MessageBox.Show("You're not logged in anymore");
-                        App.getAgent().driver.Quit();
-                    }
- 
-                }
-                App.getAgent().setGlobals();
-              
-                    
-
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error generating stats report." + Environment.NewLine + ex);
             }
             return true;
         }
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
-
             switch (Dialer_Status)
             {
                 case "READY":
@@ -351,7 +355,6 @@ namespace AutoBotCSharp
                     {
                         App.getWindow().Background = Brushes.LightGoldenrodYellow;
                     }));
-
                     break;
                 case "PAUSED":
                     Application.Current.Dispatcher.Invoke((() =>
@@ -359,17 +362,14 @@ namespace AutoBotCSharp
 
                         App.getWindow().Background = Brushes.IndianRed;
                     }));
-
                     break;
                 case "INCALL":
                     Application.Current.Dispatcher.Invoke((() =>
                     {
                         App.getWindow().Background = Brushes.ForestGreen;
                     }));
-
                     break;
             }
-
         }
         //----------------------------------------------------------------------------------------------------
 
@@ -602,9 +602,7 @@ namespace AutoBotCSharp
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
-            
-            
-            
+
         }
         public static string CheckIProvider(string s)
         {
@@ -1778,6 +1776,7 @@ namespace AutoBotCSharp
                     {
                         temp.Data = temp.GETYMM(response, 1);
                     });
+                    bg.RunWorkerCompleted += DoneZo;
                     bg.RunWorkerAsync();                   
                     break;
                 case Agent.YMM2:
@@ -1904,6 +1903,21 @@ namespace AutoBotCSharp
             return mrMeseeks;
 
         }
+
+        public static void DoneZo(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Console.WriteLine("BACKGROUND WORKER DONE!");
+            if(App.getAgent().driver.FindElementById("vehicle-make").GetAttribute("value") == "- Select Make -" )
+            {
+                Console.WriteLine("NO MAKE DETECTED");
+                string clip = @"C:\Soundboard\Cheryl\VEHICLE INFO\Who Makes That Vehicle.mp3";
+                App.RollTheClip(clip);
+            }
+
+
+        }
+
+
         public void FixLead()
         {
            string bad = App.getAgent().CheckLead();
@@ -2223,6 +2237,16 @@ namespace AutoBotCSharp
                     return true;
 
                 }
+                else if(resp.Contains("my spouse handles") || resp.Contains("my husband handles") || resp.Contains("my wife handles") || resp.Contains("my spouse takes care") || resp.Contains("my husband takes care") || resp.Contains("my wife takes care"))
+                {
+                    App.getAgent().currentlyRebuttaling = true;
+                    App.getAgent().custObjected = true;
+                    App.getAgent().notInterestedFutureBool = true;
+                    App.getAgent().currentlyRebuttaling = true;
+                    clip = @"C:\SoundBoard\Cheryl\REBUTTALS\My spouse takes care of that.mp3";
+                    App.RollTheClip(clip);
+                    return true;
+                }
                 else if(resp.Contains("not here right now") || resp.Contains("leave a message") ||  resp.Contains("record your message") || resp.Contains("voicemail") || resp.Contains("mailbox") || resp.Contains("mail box") || resp.Contains("is full") || resp.Contains("press 2") || resp.Contains("satisfied with the message") || resp.Contains("the tone"))
                 {
                     App.getAgent().currentlyRebuttaling = true;
@@ -2452,6 +2476,7 @@ namespace AutoBotCSharp
                 Console.WriteLine("API CALL TO YTEL: " + hangupDisp);
                 WebRequest h = WebRequest.Create(hangupDisp);
                 WebResponse r = h.GetResponse();
+                Console.WriteLine("YTEL SAYS: " + r.GetResponseStream().ToString());
                 Thread.Sleep(300);
                 r.Close();
                 switch (dispo)
@@ -2649,7 +2674,7 @@ namespace AutoBotCSharp
             Console.WriteLine("MMMMMMMMMMMMMMMMMs--:::::/:-+:::/ +...--://///////:::::-:::::////////////:::::////////////////::::/:::/mMMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMMMNs--:::::/:--+::::///::::-----::::--:::::--------------:::::::::::::::::/::::::--------sMMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMMNo--:::://:-.-//:::-------.-:::.````  ``..-::::-.-------------------/:--.``````.-:/:----:NMMMMMMMMMMMMMMMM");
-Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-/:----------------:/-```           `-/----yMMMMMMMMMMMMMMMM");
+            Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-/:----------------:/-```           `-/----yMMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMMd--://:////:://--::--.----/.`                   `-/:------------:/-`   `             `::--/NMMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMMMN / -:::///:::::://---------+`````                   `:/----------/-`                    `/:--hMMMMMMMMMMMmMMM");
             Console.WriteLine("MMMMMMMMMMMMh--::::::::::::::-------- / -               `       `  -/ --------+``                      `+--/ MMMMMMMMMMMmMMM");
@@ -2657,7 +2682,7 @@ Console.WriteLine("MMMMMMMMMMMMMMs--::///::::---//:--------::.``  `       `  ``-
             Console.WriteLine("MMMMMMMMMMMy--::::::::::::----------.+`           ` `oo.          /:.-----/ -              `+:        -/ --sMMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMN / --:::::::::::-----------.+`                           /:----.-/:                 ``      -/ --+NMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMMd--:::::::::::/:-----------/.                          `+-----..- +`              `  `      -/ --:NMMMMMMMMMMMMM");
-            Console.WriteLine("MMMMMMMMMMh--:::::::::::+:-----------/ - -/ --..----:/` `                     +----mMMMMMMMMMMMNM");
+            Console.WriteLine("MMMMMMMMMMh--:::::::::::+:-----------/                           -/ --..----:/` `                     -/----mMMMMMMMMMMMNM");
             Console.WriteLine("hmMMMMMMMMy.-:::::::::::+-------------+`                        ./ --.../:--./ -`                     -/ ----hMMMMMMMMMMMMM");
             Console.WriteLine("NMMMMMMMMMo--:::::::::::+-------------:/```                    -/ --....- +:---/:`          `       `-/ ---:-oMMMMMMMMMMMMM");
             Console.WriteLine("MMMMMMMMMM + --::::/:::::://------------.:/-``            ` ```.:/----....-+----:/.`             ``./:----::/MMMMMMMMMMMMM");
