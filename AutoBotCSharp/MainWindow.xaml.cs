@@ -69,7 +69,6 @@ namespace AutoBotCSharp
             App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
             App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
 
-
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
             Agent_Google googleUser = new Agent_Google();

@@ -18,7 +18,6 @@ using OpenQA.Selenium.PhantomJS;
 using System.IO.Compression;
 using Ionic.Zip;
 using System.Diagnostics;
-using OpenQA.Selenium;
 using System.Net.Sockets;
 
 namespace AutoBotCSharp
