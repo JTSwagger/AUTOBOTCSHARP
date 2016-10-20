@@ -182,122 +182,7 @@ namespace AutoBotCSharp
                 return false;
             }
         }
-
-            while (retry)
-            {
-                try
-                {
-                    driver.FindElementById(elementId).SendKeys(data);
-                    return true;
-                }
-                catch (ElementNotVisibleException)
-                {
-                    unhideElement(elementId);
-                    Console.WriteLine("Element has been unhidden, retrying...");
-                    if (unhideCount == 1)
-                    {
-                        Console.WriteLine("couldn't unhide, ending...");
-                        retry = false;
-                        return false;
-                    }
-                    unhideCount += 1;
-                }
-                catch (NoSuchElementException)
-                {
-                    Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
-                    retry = false;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    if (staleRefCount == 2)
-                    {
-                        Console.WriteLine("Two stale references, ending");
-                        retry = false;
-                    }
-                    Thread.Sleep(1000);
-                    staleRefCount += 1;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Generic Exception");
-                    Console.WriteLine("Inner exception: " + ex.InnerException);
-                    Console.WriteLine("Message: " + ex.Message);
-                    retry = false;
-                }
-            }
-            return false;
-        }
-        public bool selectData(string elementId, string data)
-        {
-            bool retry = true;
-            int staleRefCount = 0;
-            int unhideCount = 0;
-
-            while (retry)
-            {
-                try
-                {
-                    var select = new SelectElement(driver.FindElementById(elementId));
-                    select.SelectByText(data);
-                    return true;
-                }
-                catch (ElementNotVisibleException)
-                {
-                    unhideElement(elementId);
-                    Console.WriteLine("Element has been unhidden, retrying...");
-                    if (unhideCount == 1)
-                    {
-                        Console.WriteLine("couldn't unhide, ending...");
-                        retry = false;
-                        return false;
-                    }
-                    unhideCount += 1;
-                }
-                catch (NoSuchElementException ex)
-                {
-                    string message = ex.Message;
-                    if (message.Contains(data))
-                    {
-                        Console.WriteLine(data + " is not a valid option for " + elementId + "; try a different option.");
-                    }
-                    else
-                    {
-                        Console.WriteLine(elementId + " does not exist on the current form. Try a different ID?");
-                    }
-                    retry = false;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    if (staleRefCount == 2)
-                    {
-                        Console.WriteLine("Two stale references, ending");
-                        retry = false;
-                    }
-                    Thread.Sleep(1000);
-                    staleRefCount += 1;
-                }
-                catch (Exception ex)
-                {
-                    //Console.WriteLine("Generic Exception");
-                    //Console.WriteLine("Inner exception: " + ex.InnerException);
-                    //Console.WriteLine("Message: " + ex.Message);
-                    retry = false;
-                }
-            }
-            return false;
-        }
-        public bool unhideElement(string elementId)
-        {
-            try
-            {
-                driver.ExecuteScript("$('" + elementId + "').removeClass('hide')");
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        
         public int getFormAge()
         {
 
@@ -351,12 +236,6 @@ namespace AutoBotCSharp
                     App.getWindow().setNameBtns(true);
                     myAgent.customer.isNameEnabled = true;
                 }));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException);
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.Source);
             }
         }
         public void checkPageSource(string pageSource)
