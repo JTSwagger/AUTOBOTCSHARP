@@ -8,6 +8,7 @@ using OpenQA.Selenium.Support;
 using OpenQA.Selenium.Support.UI;
 using System.Threading;
 using OpenQA.Selenium;
+using System.Windows;
 
 namespace AutoBotCSharp
 {
@@ -181,6 +182,79 @@ namespace AutoBotCSharp
                 return false;
             }
         }
+        public int getFormAge()
+        {
 
+            int Month; int Day; int Year;
+            int.TryParse(driver.FindElementById("frmDOB_Month").GetAttribute("value"), out Month);
+            int.TryParse(driver.FindElementById("frmDOB_Day").GetAttribute("value"), out Day);
+            int.TryParse(driver.FindElementById("frmDOB_Year").GetAttribute("value"), out Year);
+            Console.WriteLine(Month.ToString() + Day.ToString() + Year.ToString());
+            DateTime now = DateTime.Now;
+            DateTime birthDate = new DateTime(Year, Month, Day);
+            int age = now.Year - birthDate.Year;
+            if (now.Month < birthDate.Month || (now.Month == birthDate.Month && now.Day < birthDate.Day)) { age--; }
+            Console.WriteLine(age);
+            return age;
+        }
+        public async void Setup()
+        {
+            myAgent.customer = new Customer();
+            myAgent.callPos = AgentStrings.STARTYMCSTARTFACE;
+            while (driver.WindowHandles.Count < 2)
+            {
+                Console.WriteLine("Shoop Da Whoop!");
+            }
+            try
+            {
+                driver.SwitchTo().Window(driver.WindowHandles.Last());
+                //myAgent.customer.firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't switch windows, reason: {0}", e);
+            }
+            checkPageSource(driver.PageSource);
+            string[] clips = App.findNameClips(myAgent.customer.firstName);
+            Application.Current.Dispatcher.Invoke((() =>
+            {
+                App.getWindow().setNameText(myAgent.customer.firstName);
+            }));
+            if (App.findNameClips(myAgent.customer.firstName)[0] == "no clip")
+            {
+                Application.Current.Dispatcher.Invoke((() =>
+                {
+                    App.getWindow().setNameBtns(false);
+                    myAgent.customer.isNameEnabled = false;
+                }));
+            }
+            else
+            {
+                Application.Current.Dispatcher.Invoke((() =>
+                {
+                    App.getWindow().setNameBtns(true);
+                    myAgent.customer.isNameEnabled = true;
+                }));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Source);
+            }
+        }
+        public void checkPageSource(string pageSource)
+        {
+            pageSource = pageSource.ToLower();
+            if (pageSource.Contains("cannot be found"))
+            {
+                myAgent.hangupDispositionCall("Not Available");
+            }
+            else if (pageSource.Contains("respectfully end"))
+            {
+                myAgent.hangupDispositionCall("Not Interested");
+            }
+            return;
+        }
     }
 }
