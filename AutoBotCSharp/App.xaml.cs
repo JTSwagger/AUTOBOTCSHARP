@@ -17,6 +17,7 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using ApiAiSDK;
 using ApiAiSDK.Model;
+using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {
@@ -65,7 +66,7 @@ namespace AutoBotCSharp
         }
         public static Agent getAgent()
         {
-            Agent temp = null; 
+            Agent temp = new Agent(); 
             try
             {
                 Current.Dispatcher.Invoke(() =>
@@ -148,23 +149,22 @@ namespace AutoBotCSharp
         {
 
             string response = e.PartialResult;
+            string raw = response;
             App.getAgent().SilenceTimer = 0;
             Current.Dispatcher.Invoke((async () =>
             {
                 App.getAgent().SilenceTimer = 0;
                 Console.WriteLine(App.getAgent().SilenceTimer);
                 bool x;
-                getWindow().setSpeechBoxText("Partial: " + response);
+                getWindow().setSpeechBoxText("Partial: " + response);              
                 if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
                     Agent.checkforData(response); 
                     
                     getAgent().hasAsked = false;
                 }
-               // getAgent().custObjected = x;
-                
-            }));
-            
+               // getAgent().custObjected = x;               
+            }));          
         }
 
        public static void REMIX()
@@ -238,17 +238,11 @@ namespace AutoBotCSharp
                         {
                             if (waveOutIsStopped)
                             {
-
-
-                                {
-                                   
+                                {                              
                                          doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
-
                                         if (!getAgent().hasAsked)
-                                        {
-                                            
+                                        {                                          
                                             getAgent().hasAsked = true;
-                                        longDictationClient.EndMicAndRecognition();
                                              bool ba = await PlayHumanism();
                                         }
                                   
@@ -289,8 +283,10 @@ namespace AutoBotCSharp
 
 
 
-        public static void doBackgroundQuestionSwitchingStuff(string response)
+        public static async void doBackgroundQuestionSwitchingStuff(string response)
         {
+            Console.WriteLine("DOING BACKGROUND SWITCHY THINGS WITH "+ response);
+            string raw = response;
             string DBCommand;
             bool DBSuccess;
             response = response.TrimEnd('.', '?', '!');
@@ -318,14 +314,12 @@ namespace AutoBotCSharp
                                 App.getAgent().custObjected = false;
                                 getAgent().Question = Agent.INTRO;
                             }
-
                             else if (response.Contains("hello"))
                             {
                                 Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
 
                                 getAgent().hasAsked = true;
-                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);
-                                
+                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
                             }
                             else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here"))
                             {
@@ -333,13 +327,11 @@ namespace AutoBotCSharp
                                                   
                                 getAgent().Question = "SPOUSE?";
                                 ag.hasAsked = false;
-
                             }
                             else
                             {
                                 getAgent().hasAsked = true;
                             }
-
                         }
                         else
                         {
@@ -362,7 +354,11 @@ namespace AutoBotCSharp
 
                         }
                         break;
+                    case Agent.INTRO:
+
                     case Agent.PROVIDER:
+                        string Provider = App.getAgent().CheckIProvider(response);
+                       
                         if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
                         {
                             ag.Question = Agent.INS_EXP;

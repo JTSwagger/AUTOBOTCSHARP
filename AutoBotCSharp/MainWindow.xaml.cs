@@ -31,6 +31,7 @@ using System.Net;
 using System.IO;
 using Syn.Speech.Recognizers;
 using System.Speech.Recognition;
+using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {
@@ -123,6 +124,7 @@ namespace AutoBotCSharp
 
 
             frmMain.Title = "AutoBotC# Ver: " + user.version;
+
         }
 
 
@@ -847,6 +849,7 @@ namespace AutoBotCSharp
         {
             App.getAgent().testing = true;
             user.setupTesting();
+
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
