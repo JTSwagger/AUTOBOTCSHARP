@@ -610,9 +610,6 @@ namespace AutoBotCSharp
             webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
-
-
-
         }
         public  string CheckIProvider(string s)
         {
