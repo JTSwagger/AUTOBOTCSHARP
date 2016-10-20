@@ -35,7 +35,7 @@ namespace AutoBotCSharp
                             App.getWindow().setSpeechBoxText("Partial: " + Speech);
                             if (!await Agent.checkForObjection(Speech))
                             {
-                                if (await Agent.checkforData(Speech))
+                                if (await App.getAgent().checkforData(Speech))
                                 {
                                     App.getAgent().hasAsked = true;
                                     App.doBackgroundQuestionSwitchingStuff(Speech);

@@ -799,15 +799,17 @@ namespace AutoBotCSharp
         private void onGoogleFinalSpeech(object sender, EventArgs e)
         {
             string FResult = reco.Final_Speech.ToLower().Trim();
-            if (FResult != "")
+            if (App.waveOutIsStopped)
             {
-                Dispatcher.Invoke((() =>
-                 {
-                        App.getWindow().appendSpeechBoxText("Full: " + FResult);
-                        if (FResult.Contains("incoming")) { System.Threading.Thread.Sleep(500); };
-                  }));
+                if (FResult != "")
+                {
+                    Dispatcher.Invoke((() =>
+                     {
+                         App.getWindow().appendSpeechBoxText("Full: " + FResult);
+                         if (FResult.Contains("incoming")) { System.Threading.Thread.Sleep(500); };
+                     }));
 
-             
+
                     Dispatcher.Invoke(async () =>
                     {
 
@@ -822,12 +824,14 @@ namespace AutoBotCSharp
                                 {
                                     App.getAgent().hasAsked = true;
                                     bool ba = await App.PlayHumanism();
-                                } 
+                                }
                             }
                         }
                     });
 
                 }
+            }
+
             }
         
 
@@ -835,20 +839,20 @@ namespace AutoBotCSharp
         private void onGooglePartialSpeech(object sender, EventArgs e)
         {
             Speech_Recognizer reco = (Speech_Recognizer)sender;
-            string response = reco.partial_speech;
+            string response = reco.partial_speech.ToLower().Trim();
             string raw = response;
             App.getAgent().SilenceTimer = 0;
             Dispatcher.Invoke((async () =>
             {
                 App.getAgent().SilenceTimer = 0;
-                Console.WriteLine(App.getAgent().SilenceTimer);         
+                Console.WriteLine(App.getAgent().SilenceTimer);
                 App.getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(App.getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
-                    Agent.checkforData(response);
+                    App.getAgent().checkforData(response);
                     App.getAgent().hasAsked = false;
                 }
-                        
+
             }));
         }
 

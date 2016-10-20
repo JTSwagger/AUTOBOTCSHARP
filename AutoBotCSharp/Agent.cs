@@ -1308,7 +1308,7 @@ namespace AutoBotCSharp
 
         public string GETYMM(string response, int vehicleNum)
         {
-
+            int vnum = vehicleNum;
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -1316,7 +1316,7 @@ namespace AutoBotCSharp
             string model = "FALSE";
             string searcher = "";
             OpenQA.Selenium.IWebElement models;
-            switch (vehicleNum)
+            switch (vnum)
             {
                 case 1:
                     Modelcontrol = "vehicle-model";
@@ -1420,7 +1420,7 @@ namespace AutoBotCSharp
 
             if (year != "FALSE" && make != "FALSE")
             {
-                switch (vehicleNum)
+                switch (vnum)
                 {
                     case 1:
 
@@ -1429,7 +1429,7 @@ namespace AutoBotCSharp
                         App.getAgent().selectData("vehicle-make", make);
                         break;
                     case 2:
-                        App.getAgent().selectData("vehiqcle2-year", year);
+                        App.getAgent().selectData("vehicle2-year", year);
 
                         App.getAgent().selectData("vehicle2-make", make);
                         break;
@@ -1455,13 +1455,10 @@ namespace AutoBotCSharp
                     {
                         Console.WriteLine("FOUND MODEL!" + option.Text);
                         model = option.Text;
-                        switch (vehicleNum)
+                        switch (vnum)
                         {
                             case 1:
                                 temp.selectData("vehicle-model", model);
-
-
-
                                 break;
                             case 2:
                                 temp.selectData("vehicle2-model", model);
@@ -1476,7 +1473,6 @@ namespace AutoBotCSharp
 
                                 break;
                         }
-
                         return (model);
                     }
                 }
@@ -1640,14 +1636,13 @@ namespace AutoBotCSharp
             }
             return speech;
         }
-        public static async Task<bool> checkforData(string response)
+        public async Task<bool> checkforData(string response)
         {
+            Agent temp = App.getAgent();
             string Data;
-            bool mrMeseeks = true;
-            bool isrebuttaling = false;
-            App.getAgent().cust.speech = response;
+            bool mrMeseeks = true;   
             Console.WriteLine(App.getAgent().cust.speech);
-            Console.WriteLine("CHECKING FOR DATAS ");
+            Console.WriteLine("CHECKING FOR DATAS ON " + temp.Question);
 
 
             switch (temp.Question)
@@ -1663,7 +1658,7 @@ namespace AutoBotCSharp
                 //            Console.WriteLine("THIS IS THE PERSON YOU WANT");
                 //            Thread.Sleep(300);
                 //            App.getAgent().custObjected = false;
-                //            temp.Question = Agent.INTRO;
+                //            temp. Agent.INTRO;
                 //            App.getAgent().AskQuestion();
                 //        }
 
@@ -1716,9 +1711,9 @@ namespace AutoBotCSharp
                 case Agent.INTRO: // fall through
 
                 case Agent.PROVIDER:
-                    Console.WriteLine(Agent.PROVIDER);
                     Data = App.getAgent().CheckIProvider(response);
-                    Console.WriteLine("Checking for data for Insurance Provider with " + Data);
+                    Console.WriteLine("Checking for data for Insurance Provider with " + response);
+
                     if (Data != "FALSE")
 
                     {
@@ -2697,6 +2692,7 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void getDob()
         {
+     
 
             string[] dob = new string[3]
             {
@@ -2815,8 +2811,10 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             AskQuestion();
-            await Task.Run((Action)getDob);
-            App.longDictationClient.StartMicAndRecognition();
+            selectData("frmDOB_Month", "May");
+            selectData("frmDOB_Day", "12");
+            selectData("frmDOB_Year", "1986");
+            await Task.Run((Action)getDob);  
             started = true;
         }
         public void setupTesting()
@@ -2826,6 +2824,7 @@ namespace AutoBotCSharp
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
             cust.firstName = firstName;
             cust.phone = "123-456-7890";
+            
             AgentNum = "1198";
             try
             {
@@ -2859,16 +2858,12 @@ namespace AutoBotCSharp
             }
 
 
-
+ 
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
             AskQuestion();
-            App.longDictationClient.StartMicAndRecognition();
-            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("192.168.1.218", 7979);
-            stream = new NetworkStream(sock);
-            Task t = Task.Run((Action)getDob);
+
 
         }
         //---------------------------------------------------------------

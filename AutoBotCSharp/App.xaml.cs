@@ -150,7 +150,7 @@ namespace AutoBotCSharp
                 getWindow().setSpeechBoxText("Partial: " + response);              
                 if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
-                    Agent.checkforData(response); 
+                    App.getAgent().checkforData(response); 
 
                     
                     getAgent().hasAsked = false;
@@ -489,47 +489,53 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.DOB:
+                        try
 
-                        string[] dobby = App.getAgent().dobInfo;
-                        if (dobby[0] != "" && dobby[1] != "")
                         {
-                            
-                            if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
+                            string[] dobby = App.getAgent().dobInfo;
+
+                            if (dobby[0] != "" && dobby[1] != "")
                             {
-     
-                               ag.Question = Agent.MARITAL_STATUS;
-                              
+
+                                if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
+                                {
+
+                                    ag.Question = Agent.MARITAL_STATUS;
+
+                                }
+                                else if (response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect"))
+                                {
+                                    RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                                    getAgent().AskingBDay = true;
+                                    dobby[0] = "";
+                                    dobby[1] = "";
+                                }
                             }
-                            else if(response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect") )
-                            {
-                                RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
-                                getAgent().AskingBDay = true;
-                                dobby[0] = "";
-                                dobby[1] = "";
-                            }
-                           
-                        }
-                        else
-                        {
-                            if (!App.getAgent().CheckForMonth(response))
-                            {
-                                ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
-                                ag.hasAsked = true;
-                            }
+
 
                             else
                             {
-                                string[] DayYear = response.Split(' ');
-                                Console.WriteLine(DayYear[0]);
-                                DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
-                                DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
-                                Console.WriteLine("DAY: " + DayYear[0]);
-                                getAgent().selectData("frmDOB_Day", DayYear[0]);
-                                Console.WriteLine("YEAR: " + DayYear[1]);
-                                getAgent().selectData("frmDOB_Year", DayYear[1]);
-                                ag.Question = Agent.MARITAL_STATUS;
+                                if (!App.getAgent().CheckForMonth(response))
+                                {
+                                    ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
+                                    ag.hasAsked = true;
+                                }
+
+                                else
+                                {
+                                    string[] DayYear = response.Split(' ');
+                                    Console.WriteLine(DayYear[0]);
+                                    DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
+                                    DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
+                                    Console.WriteLine("DAY: " + DayYear[0]);
+                                    getAgent().selectData("frmDOB_Day", DayYear[0]);
+                                    Console.WriteLine("YEAR: " + DayYear[1]);
+                                    getAgent().selectData("frmDOB_Year", DayYear[1]);
+                                    ag.Question = Agent.MARITAL_STATUS;
+                                }
                             }
                         }
+                        catch { ag.Question = Agent.MARITAL_STATUS; }
                         break;
 
                     case Agent.BDAYMONTH:
@@ -981,27 +987,36 @@ namespace AutoBotCSharp
        
         public static async void playDobClips()
         {
-            string[] dobby = getAgent().dobInfo;
-            foreach (string clippy in dobby)
+            try
             {
-                Console.WriteLine(clippy);
+                string[] dobby = getAgent().dobInfo;
+                foreach (string clippy in dobby)
+                {
+                    Console.WriteLine(clippy);
+                }
+                if (dobby[0] != "" && dobby[1] != "")
+                {
+                    string moday = dobby[0] + dobby[1];
+                    string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
+                    bool isDone = await RollTheClipAndWait(modayPath);
+                }
+                else
+                {
+                    RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                    getAgent().AskingBDay = true;
+
+                    return;
+                }
+                if (dobby[2] != "")
+                {
+                    RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+                }
             }
-            if (dobby[0] != "" && dobby[1] != "")
-            {
-                string moday = dobby[0] + dobby[1];
-                string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
-                bool isDone = await RollTheClipAndWait(modayPath);
-            }
-            else
+            catch
             {
                 RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
                 getAgent().AskingBDay = true;
-
                 return;
-            }
-            if (dobby[2] != "")
-            {
-                RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
             }
         }
     }
