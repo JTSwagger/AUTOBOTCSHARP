@@ -1723,16 +1723,18 @@ namespace AutoBotCSharp
                 //    }
                 //    break;
                 case Agent.INTRO: // fall through
+
                 case Agent.PROVIDER:
                     Console.WriteLine(Agent.PROVIDER);
-
                     Data = App.getAgent().CheckIProvider(response);
+                    Console.WriteLine("Checking for data for Insurance Provider with " + Data);
                     if (Data != "FALSE")
 
                     {
+
                         if (temp.selectData("frmInsuranceCarrier", Data))
                         {
-
+                            
                             Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));
                             if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                             Console.WriteLine("put stuff in, current question is: " + temp.Question);
@@ -2945,53 +2947,12 @@ namespace AutoBotCSharp
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
             sock.Connect("192.168.1.218", 7979);
             stream = new NetworkStream(sock);
-            Task z = Task.Run((Action)GetSpeechData);
             Task t = Task.Run((Action)getDob);
 
         }
         //---------------------------------------------------------------
 
-        public async static void GetSpeechData()
-        {
-            while (true)
-            {
-                byte[] buff = new byte[1024];
-                int data = sock.Receive(buff);
-                char[] message = new char[data];
-                System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
-                int charLen = d.GetChars(buff, 0, data, message, 0);
-                System.String recv = new System.String(message);
-                string[] poop = recv.Split('"');
-                if (poop.Length > 0)
-                {
-                    string Speech = poop[1].Trim();
-                    Console.WriteLine("FULL: " + recv);
-                    Console.WriteLine("SPEECH: " + Speech);
-                    try
-                    {
-                        Application.Current.Dispatcher.Invoke(async () =>
-                        {
-                            App.getWindow().setSpeechBoxText("Partial: " + Speech);
-                            if (! await checkForObjection(Speech))
-                            {
-                                checkforData(Speech);
-                                
-                                App.doBackgroundQuestionSwitchingStuff(Speech);
-                                App.getAgent().hasAsked = true;
-                                    App.getAgent().hasAsked = true;
-                                    bool ba = await App.PlayHumanism();
-                                
-
-                            }
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                    }
-                }
-            }
-        }
+        
         //------------------------------------------------------------------
         public void PauseUnPause(string pauseAction)
         {

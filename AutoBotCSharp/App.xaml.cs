@@ -151,6 +151,7 @@ namespace AutoBotCSharp
                 if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
                     Agent.checkforData(response); 
+
                     
                     getAgent().hasAsked = false;
                 }

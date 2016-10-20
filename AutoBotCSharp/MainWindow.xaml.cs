@@ -15,13 +15,13 @@ namespace AutoBotCSharp
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
+    {  
         public ChromeDriver testDriver;
         private Random randy;
         public Agent user;
         public string version;
         public Agent_Google googleUser;
-
+        public static Speech_Recognizer reco = new Speech_Recognizer();
 
 
         public MainWindow()
@@ -40,18 +40,18 @@ namespace AutoBotCSharp
             {
                 MessageBox.Show("keys.txt not found", "ya dun goofed");
             }
-
+            
             App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
+           // App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
+           // App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
+            //App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
 
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
-            googleUser = new Agent_Google("192.168.1.218");
-            user.version = App.version.ToString();
+          //  googleUser = new Agent_Google("192.168.1.218");
+           // user.version = App.version.ToString();
 
-            Console.WriteLine("OPENING BOT VERSION: " + user.version);
+          //  Console.WriteLine("OPENING BOT VERSION: " + user.version);
             randy = new Random();
             InitializeComponent();
             frmMain.Title = "AutoBotC# Ver: " + user.version;
@@ -87,7 +87,6 @@ namespace AutoBotCSharp
                         // ...
                         // "line" is a line in the file. Add it to our List.
                         user.maleNames.Add(line);
-                        Console.WriteLine(line);
                     }
                 }
             }
@@ -789,6 +788,74 @@ namespace AutoBotCSharp
         {
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3");
 
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+           reco.TurnOnMic(Speech_Recognizer.Google);
+           reco.PartialSpeech += onGooglePartialSpeech;
+           reco.FinalSpeech += onGoogleFinalSpeech;
+        }
+        private void onGoogleFinalSpeech(object sender, EventArgs e)
+        {
+            string FResult = reco.Final_Speech.ToLower().Trim();
+            if (FResult != "")
+            {
+                Dispatcher.Invoke((() =>
+                 {
+                        App.getWindow().appendSpeechBoxText("Full: " + FResult);
+                        if (FResult.Contains("incoming")) { System.Threading.Thread.Sleep(500); };
+                  }));
+
+             
+                    Dispatcher.Invoke(async () =>
+                    {
+
+                        if (App.getAgent().custObjected == false)
+                        {
+                            Console.WriteLine("Did not object....");
+                            if (App.waveOutIsStopped)
+                            {
+                                Console.WriteLine("Cheryl isn't talking...");
+                                App.doBackgroundQuestionSwitchingStuff(FResult);
+                                if (!App.getAgent().hasAsked)
+                                {
+                                    App.getAgent().hasAsked = true;
+                                    bool ba = await App.PlayHumanism();
+                                } 
+                            }
+                        }
+                    });
+
+                }
+            }
+        
+
+    
+        private void onGooglePartialSpeech(object sender, EventArgs e)
+        {
+            Speech_Recognizer reco = (Speech_Recognizer)sender;
+            string response = reco.partial_speech;
+            string raw = response;
+            App.getAgent().SilenceTimer = 0;
+            Dispatcher.Invoke((async () =>
+            {
+                App.getAgent().SilenceTimer = 0;
+                Console.WriteLine(App.getAgent().SilenceTimer);         
+                App.getWindow().setSpeechBoxText("Partial: " + response);
+                if (!(App.getAgent().custObjected = await Agent.checkForObjection(response)))
+                {
+                    Agent.checkforData(response);
+                    App.getAgent().hasAsked = false;
+                }
+                        
+            }));
+        }
+
+    
+        private void button3_Click(object sender, RoutedEventArgs e)
+        {
+            reco.TurnOffMic();
         }
     }
     
