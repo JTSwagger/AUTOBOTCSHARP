@@ -7,6 +7,7 @@ using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
 using ApiAiSDK;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
     /// <summary>
@@ -150,7 +151,7 @@ namespace AutoBotCSharp
                 getWindow().setSpeechBoxText("Partial: " + response);              
                 if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
-                    Agent.checkforData(response); 
+                    x = await Agent.checkforData(response); 
 
                     
                     getAgent().hasAsked = false;
@@ -280,7 +281,6 @@ namespace AutoBotCSharp
             Console.WriteLine("DOING BACKGROUND SWITCHY THINGS WITH "+ response);
             string raw = response;
             string DBCommand;
-            bool DBSuccess;
             response = response.TrimEnd('.', '?', '!');
             response = response.Replace("'","");
             response = response.Replace(",", "");
@@ -341,7 +341,7 @@ namespace AutoBotCSharp
                         {
 
 
-                            App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                            await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                             getAgent().HangUpandDispo("Not Available");
 
                         }

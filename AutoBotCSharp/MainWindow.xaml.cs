@@ -845,7 +845,7 @@ namespace AutoBotCSharp
                 App.getWindow().setSpeechBoxText("Partial: " + response);
                 if (!(App.getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
-                    Agent.checkforData(response);
+                    await Agent.checkforData(response);
                     App.getAgent().hasAsked = false;
                 }
                         

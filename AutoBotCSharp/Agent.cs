@@ -16,6 +16,7 @@ using Ionic.Zip;
 using System.Diagnostics;
 using System.Net.Sockets;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
 
@@ -480,7 +481,7 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Console.WriteLine("Generic Exception");
                     //Console.WriteLine("Inner exception: " + ex.InnerException);
@@ -595,7 +596,7 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Console.WriteLine("Generic Exception");
                     //Console.WriteLine("Inner exception: " + ex.InnerException);
@@ -1644,7 +1645,7 @@ namespace AutoBotCSharp
         {
             string Data;
             bool mrMeseeks = true;
-            bool isrebuttaling = false;
+            // bool isrebuttaling = false;
             App.getAgent().cust.speech = response;
             Console.WriteLine(App.getAgent().cust.speech);
             Console.WriteLine("CHECKING FOR DATAS ");
@@ -2478,7 +2479,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-            string DBDISP = "";
+            
 
             Console.WriteLine("got called");
             try
@@ -2514,14 +2515,12 @@ namespace AutoBotCSharp
                         {
                             if (notInterestedFutureBool)
                             {
-                                DBDISP = "NI";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                                 r = h.GetResponse();
                                 break;
                             }
                             else
                             {
-                                DBDISP = "NA";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                                 r = h.GetResponse();
                                 break;
@@ -2536,37 +2535,31 @@ namespace AutoBotCSharp
 
                         break;
                     case "Not Available":
-                        DBDISP = "NA";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
                         break;
 
                     case "Not Interested":
-                        DBDISP = "NI";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                         r = h.GetResponse();
                         break;
                     case "No Insurance":
                     case "NO Ins Transfer Unsuccessful":
-                        DBDISP = "NO INS";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
                         r = h.GetResponse();
 
 
                         break;
                     case "Do Not Call":
-                        DBDISP = "DNC";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
 
                         break;
                     case "Wrong Number":
-                        DBDISP = "WRONG NUM";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
                         r = h.GetResponse();
                         break;
                     case "No Car":
-                        DBDISP = "NO CAR";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoCar");
                         r = h.GetResponse();
                         break;

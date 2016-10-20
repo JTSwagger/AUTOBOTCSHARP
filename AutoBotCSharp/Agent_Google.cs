@@ -10,6 +10,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
     public class Agent_Google
