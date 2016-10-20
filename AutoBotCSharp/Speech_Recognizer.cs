@@ -60,9 +60,7 @@ namespace AutoBotCSharp
 
         }
 
-
         public static string Final_Result = "";
-
 
         public async Task<bool> reco_google()
         {         
@@ -74,7 +72,7 @@ namespace AutoBotCSharp
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("192.168.1.218", 7979);
+            sock.Connect("192.168.1.218", 6969);
             while (shutdown == false)
             {
                 

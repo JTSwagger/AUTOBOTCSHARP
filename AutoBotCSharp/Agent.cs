@@ -1430,7 +1430,7 @@ namespace AutoBotCSharp
                         App.getAgent().selectData("vehicle-make", make);
                         break;
                     case 2:
-                        App.getAgent().selectData("vehiqcle2-year", year);
+                        App.getAgent().selectData("vehicle2-year", year);
 
                         App.getAgent().selectData("vehicle2-make", make);
                         break;
@@ -1454,27 +1454,21 @@ namespace AutoBotCSharp
                     searcher = option.Text.Split(' ')[0];
                     if (response.Contains(searcher.ToLower()))
                     {
-                        Console.WriteLine("FOUND MODEL!" + option.Text);
+                        Console.WriteLine("FOUND MODEL!" + option.Text + " PUTTING IN " + vehicleNum);
                         model = option.Text;
                         switch (vehicleNum)
                         {
                             case 1:
                                 temp.selectData("vehicle-model", model);
-
-
-
                                 break;
                             case 2:
                                 temp.selectData("vehicle2-model", model);
-
                                 break;
                             case 3:
                                 temp.selectData("vehicle3-model", model);
-
                                 break;
                             case 4:
                                 temp.selectData("vehicle4-model", model);
-
                                 break;
                         }
 
@@ -1641,8 +1635,9 @@ namespace AutoBotCSharp
             }
             return speech;
         }
-        public static async Task<bool> checkforData(string response)
+        public async Task<bool> checkforData(string response)
         {
+            temp = App.getAgent();
             string Data;
             bool mrMeseeks = true;
             // bool isrebuttaling = false;
@@ -1719,7 +1714,7 @@ namespace AutoBotCSharp
                 case Agent.PROVIDER:
                     Console.WriteLine(Agent.PROVIDER);
                     Data = App.getAgent().CheckIProvider(response);
-                    Console.WriteLine("Checking for data for Insurance Provider with " + Data);
+                    Console.WriteLine("Checking for data for Insurance Provider with " + response);
                     if (Data != "FALSE")
 
                     {
@@ -2859,7 +2854,7 @@ namespace AutoBotCSharp
             AskQuestion();
             App.longDictationClient.StartMicAndRecognition();
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("192.168.1.218", 7979);
+            sock.Connect("192.168.1.218", 6969);
             stream = new NetworkStream(sock);
             Task t = Task.Run((Action)getDob);
 

@@ -151,7 +151,7 @@ namespace AutoBotCSharp
                 getWindow().setSpeechBoxText("Partial: " + response);              
                 if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
-                    x = await Agent.checkforData(response); 
+                    x = await getAgent().checkforData(response); 
 
                     
                     getAgent().hasAsked = false;

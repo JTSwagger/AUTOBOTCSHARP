@@ -31,7 +31,7 @@ namespace AutoBotCSharp
 
         public Agent_Google(string socketIp)
         {
-            MrSocketGetter.sock.Connect(socketIp, 7979);
+            MrSocketGetter.sock.Connect(socketIp, 6969);
             customer = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "", lastName = "" };
             loggedIn = false;
             inCall = false;
