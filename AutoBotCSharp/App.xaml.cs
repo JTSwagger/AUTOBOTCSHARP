@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Net;
 using System.Threading;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using NAudio.Wave; 
+using NAudio.Wave;
 using Microsoft.ProjectOxford.SpeechRecognition;
-using Microsoft.ProjectOxford;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
-using System.IO;
-using MySql.Data.MySqlClient;
 using ApiAiSDK;
-using ApiAiSDK.Model;
-using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {

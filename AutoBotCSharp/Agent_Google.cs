@@ -12,7 +12,7 @@ using System.Windows.Media;
 
 namespace AutoBotCSharp
 {
-    class Agent_Google
+    public class Agent_Google
     {
         public Customer customer;
         public bool loggedIn;
@@ -83,7 +83,7 @@ namespace AutoBotCSharp
         }
         private void startWebRequest()
         {
-            WebRequest webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + AgentNum + "&stage=csv&header=NO");
+            WebRequest webRequest = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/non_agent.php?source=test&user=101&pass=API101IEpost&function=agent_status&agent_user=" + agentNumber + "&stage=csv&header=NO");
             WebResponse response = webRequest.GetResponse();
             stats = (new StreamReader(response.GetResponseStream())).ReadToEnd().Split(',');
         }

@@ -49,5 +49,9 @@ namespace AutoBotCSharp
                 }
             }
         }
+        public static void killEverything()
+        {
+            sock.Send(Encoding.ASCII.GetBytes("I am He-Man, destroyer of Skeletor"));
+        }
     }
 }
