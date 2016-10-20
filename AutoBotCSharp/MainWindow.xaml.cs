@@ -1,37 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using NAudio.Wave;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Diagnostics;
 using OpenQA.Selenium.Chrome;
 using Microsoft.ProjectOxford.SpeechRecognition;
-using MySql.Data.MySqlClient;
 using System.IO;
-using ApiAiSDK;
-using ApiAiSDK.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using System.IO;
-using Syn.Speech.Recognizers;
-using System.Speech.Recognition;
-using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {
@@ -44,9 +20,10 @@ namespace AutoBotCSharp
         private Random randy;
         public Agent user;
         public string version;
+        public Agent_Google googleUser;
 
-     
-      
+
+
         public MainWindow()
         {
             string apiKey1 = "";
@@ -72,7 +49,7 @@ namespace AutoBotCSharp
 
             Console.WriteLine("Make the reco, don't let the reco make you");
             user = new Agent();
-            Agent_Google googleUser = new Agent_Google();
+            googleUser = new Agent_Google("192.168.1.218");
             user.version = App.version.ToString();
 
             Console.WriteLine("OPENING BOT VERSION: " + user.version);
