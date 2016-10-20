@@ -14,6 +14,9 @@ namespace AutoBotCSharp
 {
     public class Agent_Google
     {
+        // instance variables
+        // about as variable as my arrival time to work in the mornings
+        // :)
         public Customer customer;
         public bool loggedIn;
         public bool inCall;
@@ -23,6 +26,7 @@ namespace AutoBotCSharp
         public string callPos;
         public string[] stats;
         public bool isNewCall = false;
+        private MrDriver mrDriver;
 
         public Agent_Google(string socketIp)
         {
@@ -32,6 +36,7 @@ namespace AutoBotCSharp
             inCall = false;
             stats = new string[10];
             agentName = "LCNMoo";
+            mrDriver = new MrDriver(int.Parse(agentNumber), this);
         }
         public static async Task doAgentStatusRequest()
         {
