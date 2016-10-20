@@ -31,6 +31,7 @@ using System.Net;
 using System.IO;
 using Syn.Speech.Recognizers;
 using System.Speech.Recognition;
+using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {
@@ -118,9 +119,12 @@ namespace AutoBotCSharp
             {
                 MessageBox.Show("MALENAMES.txt Not found", "Ya dun goofed");
             }
+            
+            
             frmMain.Title = "AutoBotC# Ver: " + user.version;
-            MrSocketGetter.sock.Connect("192.168.1.218", 7979);
         }
+
+           
 
         public void setNameText(string name)
         {
@@ -802,16 +806,13 @@ namespace AutoBotCSharp
         {
             App.getAgent().testing = true;
             user.setupTesting();
+
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3");
 
-        }
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-           
         }
     }
     

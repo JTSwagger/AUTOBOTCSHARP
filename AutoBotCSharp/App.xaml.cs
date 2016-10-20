@@ -17,6 +17,7 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using ApiAiSDK;
 using ApiAiSDK.Model;
+using System.Net.Sockets;
 
 namespace AutoBotCSharp
 {
@@ -53,7 +54,7 @@ namespace AutoBotCSharp
         
         public static Agent getAgent()
         {
-            Agent temp = null; 
+            Agent temp = new Agent(); 
             try
             {
                 Current.Dispatcher.Invoke(() =>
@@ -120,8 +121,7 @@ namespace AutoBotCSharp
             longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
             longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
             longDictationClient.OnResponseReceived += onResponseReceivedHandler;
-            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
-          
+            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;      
             longDictationClient.OnConversationError += onConversationErrorHandler;
             
             Console.WriteLine("Change the reco, don't let the reco change you."); 
@@ -152,23 +152,22 @@ namespace AutoBotCSharp
         {
 
             string response = e.PartialResult;
+            string raw = response;
             App.getAgent().SilenceTimer = 0;
             Current.Dispatcher.Invoke((async () =>
             {
                 App.getAgent().SilenceTimer = 0;
                 Console.WriteLine(App.getAgent().SilenceTimer);
                 bool x;
-                getWindow().setSpeechBoxText("Partial: " + response);
-                if (!(x = await Agent.checkForObjection(response)))
+                getWindow().setSpeechBoxText("Partial: " + response);              
+                if (!(getAgent().custObjected = await Agent.checkForObjection(response)))
                 {
                     Agent.checkforData(response); 
                     
                     getAgent().hasAsked = false;
                 }
-                getAgent().custObjected = x;
-                
-            }));
-            
+               // getAgent().custObjected = x;               
+            }));          
         }
 
        public static void REMIX()
@@ -242,17 +241,11 @@ namespace AutoBotCSharp
                         {
                             if (waveOutIsStopped)
                             {
-
-
-                                {
-                                   
+                                {                              
                                          doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
-
                                         if (!getAgent().hasAsked)
-                                        {
-                                            
+                                        {                                          
                                             getAgent().hasAsked = true;
-                                        longDictationClient.EndMicAndRecognition();
                                              bool ba = await PlayHumanism();
                                         }
                                   
@@ -293,27 +286,82 @@ namespace AutoBotCSharp
 
 
 
-        public static void doBackgroundQuestionSwitchingStuff(string response)
+        public static async void doBackgroundQuestionSwitchingStuff(string response)
         {
+            Console.WriteLine("DOING BACKGROUND SWITCHY THINGS WITH "+ response);
+            string raw = response;
             string DBCommand;
             bool DBSuccess;
             response = response.TrimEnd('.', '?', '!');
             response = response.Replace("'","");
+            response = response.Replace(",", "");
             response = response.ToLower();
-            Console.WriteLine(response);
             Agent ag = getAgent();
             // call position advancement
             if (waveOutIsStopped)
             {
+                Console.WriteLine("SPEECH FINALIZED: " + response + Environment.NewLine + "ON QUESTION " + ag.Question);
                 switch (ag.Question)
                 {
                     case Agent.STARTYMCSTARTFACE:
-                        getAgent().hasAsked = true;
+
+
+                        string check = "this is " + getAgent().cust.firstName.ToLower();
+                        if (getAgent().cust.isNameEnabled)
+                        {
+
+                            if (response.Contains("yes") || response.Contains("speaking") || response.Contains(check) || response.Contains("yeah") || (response.Contains("hi") && !(response.Contains("this"))) || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
+                            {
+                                Console.WriteLine("THIS IS THE PERSON YOU WANT");
+                                Thread.Sleep(300);
+                                App.getAgent().custObjected = false;
+                                getAgent().Question = Agent.INTRO;
+                            }
+                            else if (response.Contains("hello"))
+                            {
+                                Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
+
+                                getAgent().hasAsked = true;
+                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
+                            }
+                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here"))
+                            {
+                                Console.WriteLine("THIS IS NOT THE PERSON YOU WANT"); 
+                                                  
+                                getAgent().Question = "SPOUSE?";
+                                ag.hasAsked = false;
+                            }
+                            else
+                            {
+                                getAgent().hasAsked = true;
+                            }
+                        }
+                        else
+                        {
+                            getAgent().Question = Agent.INTRO;
+                        }
+                        break;
+                    case "SPOUSE?":
+                        if (response.Contains("yes") || response.Contains("speaking") || response.Contains("yup") || response.Contains("yeah") || response.Contains("yep") || response.Contains("it is"))
+                        {
+                            App.getAgent().custObjected = false;
+                            getAgent().Question = Agent.INTRO;
+                            App.getAgent().AskQuestion();
+                        }
+                        else if (response.Contains("no"))
+                        {
+
+
+                            App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
+                            getAgent().HangUpandDispo("Not Available");
+
+                        }
                         break;
                     case Agent.INTRO:
-                       
-                      
+
                     case Agent.PROVIDER:
+                        string Provider = App.getAgent().CheckIProvider(response);
+                       
                         if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
                         {
                             ag.Question = Agent.INS_EXP;
@@ -457,7 +505,7 @@ namespace AutoBotCSharp
                         if (dobby[0] != "" && dobby[1] != "")
                         {
                             
-                            if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct"))
+                            if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
                             {
      
                                ag.Question = Agent.MARITAL_STATUS;
@@ -722,7 +770,7 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            Console.Write(getAgent().Callpos);
+            Console.WriteLine(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
             if (getAgent().low_blow_bro) { getAgent().low_blow_bro = false;  getAgent().HangUpandDispo("LOW");  }
