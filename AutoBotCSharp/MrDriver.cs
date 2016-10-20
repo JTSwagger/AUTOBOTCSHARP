@@ -10,6 +10,7 @@ using System.Threading;
 using OpenQA.Selenium;
 using System.Windows;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
     public class MrDriver
@@ -76,7 +77,7 @@ namespace AutoBotCSharp
                 }
                 catch (ElementNotVisibleException)
                 {
-                    this.unhideElement(elementId);
+                    unhideElement(elementId);
                     Console.WriteLine("Element has been unhidden, retrying...");
                     if (unhideCount == 1)
                     {
@@ -160,7 +161,7 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Console.WriteLine("Generic Exception");
                     //Console.WriteLine("Inner exception: " + ex.InnerException);
@@ -170,9 +171,6 @@ namespace AutoBotCSharp
             }
             return false;
         }
-       
-
-    
         public bool unhideElement(string elementId)
         {
             try
@@ -185,6 +183,7 @@ namespace AutoBotCSharp
                 return false;
             }
         }
+        
         public int getFormAge()
         {
 
@@ -200,6 +199,7 @@ namespace AutoBotCSharp
             Console.WriteLine(age);
             return age;
         }
+
         public async void Setup()
         {
             myAgent.customer = new Customer();
@@ -239,7 +239,6 @@ namespace AutoBotCSharp
                     myAgent.customer.isNameEnabled = true;
                 }));
             }
-        
         }
         public void checkPageSource(string pageSource)
         {

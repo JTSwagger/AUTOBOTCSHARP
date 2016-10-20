@@ -16,6 +16,7 @@ using Ionic.Zip;
 using System.Diagnostics;
 using System.Net.Sockets;
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
 
@@ -480,7 +481,7 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Console.WriteLine("Generic Exception");
                     //Console.WriteLine("Inner exception: " + ex.InnerException);
@@ -595,7 +596,7 @@ namespace AutoBotCSharp
                     Thread.Sleep(1000);
                     staleRefCount += 1;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //Console.WriteLine("Generic Exception");
                     //Console.WriteLine("Inner exception: " + ex.InnerException);
@@ -1308,7 +1309,7 @@ namespace AutoBotCSharp
 
         public string GETYMM(string response, int vehicleNum)
         {
-            int vnum = vehicleNum;
+
             List<string> VModels = new List<string>();
             string Modelcontrol = "1";
             string year;
@@ -1316,7 +1317,7 @@ namespace AutoBotCSharp
             string model = "FALSE";
             string searcher = "";
             OpenQA.Selenium.IWebElement models;
-            switch (vnum)
+            switch (vehicleNum)
             {
                 case 1:
                     Modelcontrol = "vehicle-model";
@@ -1420,7 +1421,7 @@ namespace AutoBotCSharp
 
             if (year != "FALSE" && make != "FALSE")
             {
-                switch (vnum)
+                switch (vehicleNum)
                 {
                     case 1:
 
@@ -1429,7 +1430,7 @@ namespace AutoBotCSharp
                         App.getAgent().selectData("vehicle-make", make);
                         break;
                     case 2:
-                        App.getAgent().selectData("vehicle2-year", year);
+                        App.getAgent().selectData("vehiqcle2-year", year);
 
                         App.getAgent().selectData("vehicle2-make", make);
                         break;
@@ -1455,10 +1456,13 @@ namespace AutoBotCSharp
                     {
                         Console.WriteLine("FOUND MODEL!" + option.Text);
                         model = option.Text;
-                        switch (vnum)
+                        switch (vehicleNum)
                         {
                             case 1:
                                 temp.selectData("vehicle-model", model);
+
+
+
                                 break;
                             case 2:
                                 temp.selectData("vehicle2-model", model);
@@ -1473,6 +1477,7 @@ namespace AutoBotCSharp
 
                                 break;
                         }
+
                         return (model);
                     }
                 }
@@ -1636,13 +1641,14 @@ namespace AutoBotCSharp
             }
             return speech;
         }
-        public async Task<bool> checkforData(string response)
+        public static async Task<bool> checkforData(string response)
         {
-            Agent temp = App.getAgent();
             string Data;
-            bool mrMeseeks = true;   
+            bool mrMeseeks = true;
+            // bool isrebuttaling = false;
+            App.getAgent().cust.speech = response;
             Console.WriteLine(App.getAgent().cust.speech);
-            Console.WriteLine("CHECKING FOR DATAS ON " + temp.Question);
+            Console.WriteLine("CHECKING FOR DATAS ");
 
 
             switch (temp.Question)
@@ -1658,7 +1664,7 @@ namespace AutoBotCSharp
                 //            Console.WriteLine("THIS IS THE PERSON YOU WANT");
                 //            Thread.Sleep(300);
                 //            App.getAgent().custObjected = false;
-                //            temp. Agent.INTRO;
+                //            temp.Question = Agent.INTRO;
                 //            App.getAgent().AskQuestion();
                 //        }
 
@@ -1711,9 +1717,9 @@ namespace AutoBotCSharp
                 case Agent.INTRO: // fall through
 
                 case Agent.PROVIDER:
+                    Console.WriteLine(Agent.PROVIDER);
                     Data = App.getAgent().CheckIProvider(response);
-                    Console.WriteLine("Checking for data for Insurance Provider with " + response);
-
+                    Console.WriteLine("Checking for data for Insurance Provider with " + Data);
                     if (Data != "FALSE")
 
                     {
@@ -2473,7 +2479,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-            string DBDISP = "";
+            
 
             Console.WriteLine("got called");
             try
@@ -2509,14 +2515,12 @@ namespace AutoBotCSharp
                         {
                             if (notInterestedFutureBool)
                             {
-                                DBDISP = "NI";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                                 r = h.GetResponse();
                                 break;
                             }
                             else
                             {
-                                DBDISP = "NA";
                                 h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                                 r = h.GetResponse();
                                 break;
@@ -2531,37 +2535,31 @@ namespace AutoBotCSharp
 
                         break;
                     case "Not Available":
-                        DBDISP = "NA";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NotAvl");
                         r = h.GetResponse();
                         break;
 
                     case "Not Interested":
-                        DBDISP = "NI";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NI");
                         r = h.GetResponse();
                         break;
                     case "No Insurance":
                     case "NO Ins Transfer Unsuccessful":
-                        DBDISP = "NO INS";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NITU");
                         r = h.GetResponse();
 
 
                         break;
                     case "Do Not Call":
-                        DBDISP = "DNC";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "DNC");
                         r = h.GetResponse();
 
                         break;
                     case "Wrong Number":
-                        DBDISP = "WRONG NUM";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "Wrong");
                         r = h.GetResponse();
                         break;
                     case "No Car":
-                        DBDISP = "NO CAR";
                         h = WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_status&value=" + "NoCar");
                         r = h.GetResponse();
                         break;
@@ -2692,7 +2690,6 @@ namespace AutoBotCSharp
         //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         public void getDob()
         {
-     
 
             string[] dob = new string[3]
             {
@@ -2811,10 +2808,8 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
             }
             AskQuestion();
-            selectData("frmDOB_Month", "May");
-            selectData("frmDOB_Day", "12");
-            selectData("frmDOB_Year", "1986");
-            await Task.Run((Action)getDob);  
+            await Task.Run((Action)getDob);
+            App.longDictationClient.StartMicAndRecognition();
             started = true;
         }
         public void setupTesting()
@@ -2824,7 +2819,6 @@ namespace AutoBotCSharp
             firstName = driver.FindElementByName("frmFirstName").GetAttribute("value");
             cust.firstName = firstName;
             cust.phone = "123-456-7890";
-            
             AgentNum = "1198";
             try
             {
@@ -2858,12 +2852,16 @@ namespace AutoBotCSharp
             }
 
 
- 
+
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
             AskQuestion();
-
+            App.longDictationClient.StartMicAndRecognition();
+            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+            sock.Connect("192.168.1.218", 7979);
+            stream = new NetworkStream(sock);
+            Task t = Task.Run((Action)getDob);
 
         }
         //---------------------------------------------------------------
