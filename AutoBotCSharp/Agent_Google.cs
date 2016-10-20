@@ -24,9 +24,9 @@ namespace AutoBotCSharp
         public string[] stats;
         public bool isNewCall = false;
 
-        public Agent_Google()
+        public Agent_Google(string socketIp)
         {
-            MrSocketGetter.sock.Connect("192.168.1.218", 7979);
+            MrSocketGetter.sock.Connect(socketIp, 7979);
             customer = new Customer { numVehicles = 0, maritalStatus = "Single", speech = "", LeadID = "", lastName = "" };
             loggedIn = false;
             inCall = false;
@@ -42,7 +42,6 @@ namespace AutoBotCSharp
                 {
                     Thread.Sleep(200);
                     agent.startWebRequest();
-
                     try
                     {
                         agent.dialerStatus = agent.stats[0];
@@ -101,7 +100,6 @@ namespace AutoBotCSharp
                 case "PAUSED":
                     Application.Current.Dispatcher.Invoke((() =>
                     {
-
                         App.getWindow().Background = Brushes.IndianRed;
                     }));
                     break;
