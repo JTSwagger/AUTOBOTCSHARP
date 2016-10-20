@@ -116,6 +116,59 @@ namespace AutoBotCSharp
                     break;
             }
         }
+        public void hangupDispositionCall(string disposition)
+        {
+            inCall = false;
+            try
+            {
+                App.StopTheClip();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception when trying to stop currently playing clip, {0}", e);
+            }
+            string hangupApiCall = "http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_hangup&value=1";
+            WebResponse response = (WebRequest.Create(hangupApiCall)).GetResponse();
+            Thread.Sleep(300);
+            response.Close();
+            switch (disposition)
+            {
+                case "hangup":
+                    if (/* !endCallBooleanHere*/ "42" != "the answer to life the universe and everything")
+                    {
+
+                    }
+                    break;
+                case "Not Available":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "NotAvl")).GetResponse();
+                    break;
+                case "Not Interested":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "NI")).GetResponse();
+                    break;
+                case "No Insurance":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "NITU")).GetResponse();
+                    break;
+                case "Do Not Call":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "DNC")).GetResponse();
+                    break;
+                case "Wrong Number":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "Wrong")).GetResponse();
+                    break;
+                case "No Car":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "NoCar")).GetResponse();
+                    break;
+                case "No English":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "NoEng")).GetResponse();
+                    break;
+                case "Auto Lead":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "1Auto")).GetResponse();
+                    break;
+                case "LOW":
+                    response = (WebRequest.Create("http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + agentNumber + "&function=external_status&value=" + "LOW")).GetResponse();
+                    break;
+            }
+            response.Close();
+        }
     }
     public class Customer
     {

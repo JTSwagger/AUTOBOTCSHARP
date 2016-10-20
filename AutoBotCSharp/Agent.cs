@@ -952,8 +952,6 @@ namespace AutoBotCSharp
             if (now.Month < birthDate.Month || (now.Month == birthDate.Month && now.Day < birthDate.Day)) { age--; }
             Console.WriteLine(age);
             return age;
-
-
         }
 
         //------------------------------------------------------------------------------------------
@@ -1576,10 +1574,6 @@ namespace AutoBotCSharp
             Console.WriteLine(results);
             if (results.Contains("smtp_check\":true,")) { EnterData("frmEmailAddress", email); return true; }
             else { return false; }
-
-
-
-
         }
         public string MonthFromNumeral(string monthNum)
         {
@@ -1943,8 +1937,6 @@ namespace AutoBotCSharp
                 string clip = @"C:\Soundboard\Cheryl\VEHICLE INFO\Who Makes That Vehicle.mp3";
                 App.RollTheClip(clip);
             }
-
-
         }
 
 
@@ -2087,7 +2079,6 @@ namespace AutoBotCSharp
             if (response.Contains("nov")) { App.getAgent().selectData("frmDOB_Month", "Nov"); return true; }
             if (response.Contains("dec")) { App.getAgent().selectData("frmDOB_Month", "Dec"); return true; }
             else { return false; }
-
         }
 
         public String returnNumeric(string response)
@@ -2245,7 +2236,6 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public string badSpeechParser(string oldSpeech)
         {
-
             return "";
         }
         //------------------------------------------------------------------------------------------------------------------------
@@ -2599,72 +2589,6 @@ namespace AutoBotCSharp
 
                 App.getAgent().Question = STARTYMCSTARTFACE;
             }
-
-
-            // try
-
-            //  {
-            //   GHOST.Navigate().GoToUrl("https://rink.hockeyapp.net/apps/27b5c4930f7d4e52a31542739e6fda99");
-            //  GHOST.FindElementById("user_email").SendKeys("JTSwagger@gmail.com");
-            // GHOST.FindElementById("user_password").SendKeys("Jt55153910");
-            // GHOST.FindElementByName("commit").Click();
-
-            //Thread.Sleep(300);
-            //  Console.WriteLine("CURRENT VERSION: " + version + ". SHOW ME WHAT YOU GOT!");
-            //  drawHead();
-            //  string versionToCheck = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("h3")).GetAttribute("innerHTML");
-            //  versionToCheck = System.Text.RegularExpressions.Regex.Match(versionToCheck, @"\d+").Value;
-            //  verToCheck = versionToCheck;
-            //  if ( version !=  versionToCheck)
-            //  {
-            //     App.getWindow().speechTxtBox.AppendText(versionToCheck + " IS AVAILABLE! I LIKE WHAT YOU GOT");
-
-            //     WebClient wc = new WebClient();
-            //      string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\BEST_APP_IN_THE_WORLD.zip";
-            //     string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\' ;
-            //  try
-            // {
-            //   string dl = GHOST.FindElementByClassName("app-body").FindElement(OpenQA.Selenium.By.TagName("a")).GetAttribute("href");
-            // App.getWindow().speechTxtBox.AppendText(dl);
-            //wc.DownloadFileAsync(new Uri(dl), path);
-
-            //   wc.DownloadFileCompleted += delegate
-            //  {
-            //      using (var zip = Ionic.Zip.ZipFile.Read(path))
-            //     {
-            //          Console.WriteLine("extracting " + path + " to: " + path2 + "AutoBotCSharpV" + App.getAgent().verToCheck);
-            //          zip.ExtractProgress += zip_extract_progress;
-            //         zip.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-            //          zip.ExtractAll(path2 + "AutoBotCSharpV" + App.getAgent().verToCheck, ExtractExistingFileAction.OverwriteSilently);
-
-            //      }
-            //   };
-            //    version = GHOST.FindElementByClassName("icon-md5").GetAttribute("innerHTML");
-            //    GHOST.Quit();               
-            // }
-            // catch(Exception e)
-            // {
-            //      App.getWindow().speechTxtBox.AppendText(e.StackTrace);
-
-            // }
-
-
-
-            // }
-            // else
-            //   {
-
-            //  GHOST.Quit();
-            //  }
-            //  }
-            //   catch(Exception e)
-            //  {
-            //      App.getWindow().speechTxtBox.AppendText(e.StackTrace);
-            //  }
-            //Thread.Sleep(400);
-            //   r.Close();
-
-            // }
             catch (Exception ex)
             {
                 App.getWindow().speechTxtBox.AppendText(ex.StackTrace);
