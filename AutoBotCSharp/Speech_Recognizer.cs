@@ -75,7 +75,7 @@ namespace AutoBotCSharp
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("192.168.1.218", 6969);
+            sock.Connect("localhost", 6969);
             while (shutdown == false)
             {
                 this.MicOn = true;
