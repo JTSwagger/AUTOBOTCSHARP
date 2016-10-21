@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -74,6 +75,7 @@ namespace AutoBotCSharp
             proc.StandardInput.WriteLine("python transcribe_streaming.py");
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
+            Thread.Sleep(300);
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
             sock.Connect("localhost", 6969);
             while (shutdown == false)
