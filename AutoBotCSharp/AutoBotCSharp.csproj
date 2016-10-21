@@ -223,7 +223,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MrDriver.cs" />
-	<Compile Include="Speech_Recognizer.cs" />
+    <Compile Include="Speech_Recognizer.cs" />
     <Compile Include="MrSocketGetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -8,8 +8,8 @@
         Title="SkyNet" Height="889.479" Width="611.849">
     <Grid Margin="-24,2,0,7">
         <Grid.RowDefinitions>
-            <RowDefinition Height="19*"/>
-            <RowDefinition Height="64*"/>
+            <RowDefinition/>
+            <RowDefinition Height="655"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15*"/>
@@ -195,7 +195,7 @@
 
             </TabItem>
             <TabItem x:Name="tbInsuranceInfo_Copy" Header="AGENT INFO" Margin="-101,0,0,0" HorizontalAlignment="Left" Width="137" FontWeight="Bold" Height="23" VerticalAlignment="Bottom">
-                <Grid Background="#FFE5E5E5" Margin="10,0,-10,0">
+                <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="47*"/>
                         <RowDefinition Height="25*"/>

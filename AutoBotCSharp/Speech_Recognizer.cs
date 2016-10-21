@@ -72,7 +72,7 @@ namespace AutoBotCSharp
             info.UseShellExecute = false;
             info.RedirectStandardInput = true;
             proc = Process.Start(info);
-            proc.StandardInput.WriteLine("python transcribe_streaming.py");
+            proc.StandardInput.WriteLine("python transcribe_streaming.py lcn infinity");
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
             Thread.Sleep(300);
