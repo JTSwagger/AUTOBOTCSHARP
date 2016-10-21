@@ -183,13 +183,16 @@ namespace AutoBotCSharp
             response = response.Replace(",", "");
             response = response.ToLower();
             Agent ag = getAgent();
+
             // call position advancement
             if (waveOutIsStopped)
-            {
+            {                
                 Console.WriteLine("SPEECH FINALIZED: " + response + Environment.NewLine + "ON QUESTION " + ag.Question);
                 switch (ag.Question)
                 {
                     case Agent.STARTYMCSTARTFACE:
+
+
                         string check = "this is " + getAgent().cust.firstName.ToLower();
                         if (getAgent().cust.isNameEnabled)
                         {
@@ -206,9 +209,9 @@ namespace AutoBotCSharp
                                 Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
 
                                 getAgent().hasAsked = true;
-                                RollTheClip(findNameClips(getWindow().btnTheirName.Content.ToString())[1]);                           
+                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
                             }
-                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here") || response.Contains("no"))
+                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here"))
                             {
                                 Console.WriteLine("THIS IS NOT THE PERSON YOU WANT"); 
                                                   
@@ -251,7 +254,7 @@ namespace AutoBotCSharp
                             DBCommand = "INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                             Agent.UpdateDBase(DBCommand);
                             ag.hasAsked = false;
-                            App.getWindow().reco.TurnOffMic();
+                            App.getWindow().reco.TurnOffMic();                      
                             break;
            
                         } else
@@ -337,6 +340,7 @@ namespace AutoBotCSharp
                                 Agent.UpdateDBase(DBCommand);
 
                             } else { ag.hasAsked = true; }
+                          
                         }
                         else
                         {
@@ -348,6 +352,7 @@ namespace AutoBotCSharp
                             } else { ag.hasAsked = true; }
                             break;
                         }
+
                         break;
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
@@ -384,7 +389,7 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.DOB:
-                        string[] dobby = getAgent().dobInfo;
+                        string[] dobby = App.getAgent().dobInfo;
                         if (dobby[0] != "" && dobby[1] != "")
                         {                           
                             if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
@@ -401,25 +406,10 @@ namespace AutoBotCSharp
                         }
                         else
                         {
-                            if (!App.getAgent().CheckForMonth(response))
-                            {
-                                ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
-                                ag.hasAsked = true;
-                            }
-
-                            else
-                            {
-                                string[] DayYear = response.Split(' ');
-                                Console.WriteLine(DayYear[0]);
-                                DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
-                                DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
-                                Console.WriteLine("DAY: " + DayYear[0]);
-                                getAgent().selectData("frmDOB_Day", DayYear[0]);
-                                Console.WriteLine("YEAR: " + DayYear[1]);
-                                getAgent().selectData("frmDOB_Year", DayYear[1]);
+                           
                                 ag.Question = Agent.MARITAL_STATUS;
-                                ag.hasAsked = true;
-                            }
+                                ag.hasAsked = false;
+                            
                         }
                         break;
 
@@ -650,14 +640,6 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            if (!getWindow().reco.MicOn)
-            {
-                getWindow().reco = new Speech_Recognizer();
-                getWindow().reco.TurnOnMic("GOOGLE");
-                getWindow().reco.PartialSpeech += getWindow().onGooglePartialSpeech;
-                getWindow().reco.FinalSpeech += getWindow().onGoogleFinalSpeech;
-
-            }
             Console.WriteLine(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }

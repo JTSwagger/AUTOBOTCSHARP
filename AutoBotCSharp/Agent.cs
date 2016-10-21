@@ -22,6 +22,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public static int port = 6000;
         public static Socket sock;
         public static NetworkStream stream;
         static string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\trainer.tr";
@@ -259,7 +260,6 @@ namespace AutoBotCSharp
 
                     App.getAgent().StartWebRequest();
                     string stats = App.getAgent().reader.ReadToEnd();
-                    Console.WriteLine(stats);
                     App.getAgent().reader.Close();
 
                     string[] tempstr = stats.Split(',');
@@ -281,7 +281,7 @@ namespace AutoBotCSharp
                         }
                         catch (Exception ex)
                         {
-                            App.getWindow().speechTxtBox.Text += Environment.NewLine + ex;
+                            //App.getWindow().speechTxtBox.Text += Environment.NewLine + ex;
                             Console.WriteLine(ex);
                             Console.WriteLine(ex.StackTrace);
                             Console.WriteLine("Problem getting stats");
@@ -304,7 +304,7 @@ namespace AutoBotCSharp
 
                             if (App.getAgent().newCall)
                             {
-
+                                
                                 App.getAgent().inCall = true;
                                 App.getAgent().currentlyRebuttaling = false;
                                 App.getAgent().custObjected = false;
@@ -2472,6 +2472,13 @@ namespace AutoBotCSharp
             Console.WriteLine("got called");
             try
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (App.getWindow().reco.MicOn)
+                    {
+                        App.getWindow().reco.TurnOffMic();
+                    }
+                });
                 App.getAgent().AskingBDay = false;
                 App.getAgent().isListening = false;
                 App.getAgent().isTalking = false;
@@ -2839,22 +2846,11 @@ namespace AutoBotCSharp
                 Console.WriteLine(ex.Source);
 
             }
-
-
-
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
-            App.getAgent().dobInfo = new string[3];
-            App.getAgent().dobInfo[0] = "5";
-            App.getAgent().dobInfo[1] = "12";
-            App.getAgent().dobInfo[2] = "1986";
             AskQuestion();
-          //  sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-           // sock.Connect("192.168.1.218", 6969);
-         //   stream = new NetworkStream(sock);
-            Task t = Task.Run((Action)getDob);
-
+            //Task t = Task.Run((Action)getDob);
         }
         //---------------------------------------------------------------
 
@@ -2880,9 +2876,25 @@ namespace AutoBotCSharp
             }
 
         }
+     
         public bool AskQuestion()
         {
-
+            Console.WriteLine("ASKING QUESTION");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                 if (!App.getWindow().reco.MicOn)
+                {
+                    App.getWindow().reco = new Speech_Recognizer(port);
+                    App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
+                    App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
+                    App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+                    App.getWindow().reco.TurnOnMic("GOOGLE");
+                    port += 1;
+                    if(port > 6020) { port = 6000; }
+        
+                     
+                }
+            });
             Console.WriteLine("ASKING QUESTION " + Question);
             try
             {

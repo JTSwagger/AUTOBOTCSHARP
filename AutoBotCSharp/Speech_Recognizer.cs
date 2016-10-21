@@ -16,13 +16,15 @@ namespace AutoBotCSharp
 {
     public class Speech_Recognizer
     {
-        public Speech_Recognizer()
+        public Speech_Recognizer(int port)
         {
-
+            shutdown = false;
+            PORT = port;
 
 
         }
-        public  bool MicOn = false;
+        public int PORT;
+        public bool MicOn = false;
         private static string _partial = "";
         private static string _Final = "";
         public const string Microsoft = "MICROSOFT";
@@ -38,6 +40,7 @@ namespace AutoBotCSharp
         public static bool shutdown = false;
         public event System.EventHandler PartialSpeech;
         public event System.EventHandler FinalSpeech;
+        public event System.EventHandler MicChange;
 
         protected virtual void OnPartialSpeech()
         {
@@ -48,6 +51,17 @@ namespace AutoBotCSharp
             FinalSpeech?.Invoke(this, EventArgs.Empty);
         }
 
+        protected virtual void OnMicChange()
+        {
+            MicChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public bool is_recording
+        {
+            get { return MicOn; }
+            set { MicOn = value; OnMicChange(); }
+
+        }
         public string Final_Speech
         {
             get { return _Final; }
@@ -73,25 +87,27 @@ namespace AutoBotCSharp
             info.UseShellExecute = false;
             info.RedirectStandardInput = true;
             proc = Process.Start(info);
-            proc.StandardInput.WriteLine("python transcribe_streaming.py");
+            proc.StandardInput.WriteLine("python transcribe_streaming.py " + PORT);
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
-            Thread.Sleep(300);
-            sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("localhost", 6969);
+            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+            sock.Connect("localhost", PORT);
+            
             while (shutdown == false)
             {
                 this.MicOn = true;
                 byte[] buff = new byte[1024];
                 int data = sock.Receive(buff);
                 char[] message = new char[data];
-                Decoder d = Encoding.UTF8.GetDecoder();
+                System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
                 int charLen = d.GetChars(buff, 0, data, message, 0);
-                string recv = new string(message);
+                System.String recv = new System.String(message);
                 string[] poop = recv.Split('"');
+
                 if (poop.Length > 0)
                 {
                     string Speech = poop[1].Trim();
+                    Speech = Speech.Replace("\\","");
                      this.partial_speech = Speech;
                     if (recv.Contains("confidence:")) { this.Final_Speech = Speech; }
 
@@ -127,6 +143,7 @@ namespace AutoBotCSharp
             Console.WriteLine("***STOPPING GOOGLE SPEECH RECO***");
             byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
             sock.Send(toBytes);
+            sock.Close();
             shutdown = true;
             this.MicOn = false;
 
