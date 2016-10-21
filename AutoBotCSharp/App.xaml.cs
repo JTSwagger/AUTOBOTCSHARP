@@ -174,6 +174,7 @@ namespace AutoBotCSharp
 
         public static async void doBackgroundQuestionSwitchingStuff(string response)
         {
+            
             Console.WriteLine("DOING BACKGROUND SWITCHY THINGS WITH "+ response);
             string raw = response;
             string DBCommand;
@@ -185,6 +186,7 @@ namespace AutoBotCSharp
             // call position advancement
             if (waveOutIsStopped)
             {
+                
                 Console.WriteLine("SPEECH FINALIZED: " + response + Environment.NewLine + "ON QUESTION " + ag.Question);
                 switch (ag.Question)
                 {
@@ -241,8 +243,9 @@ namespace AutoBotCSharp
                         }
                         break;
                     case Agent.INTRO:
-
+                        
                     case Agent.PROVIDER:
+                       
                         string Provider = App.getAgent().CheckIProvider(response);
                        
                         if (ag.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value") != "")
@@ -251,6 +254,7 @@ namespace AutoBotCSharp
                             DBCommand = "INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                             Agent.UpdateDBase(DBCommand);
                             ag.hasAsked = false;
+                            App.getWindow().reco.TurnOffMic();
                             break;
            
                         } else
@@ -264,7 +268,7 @@ namespace AutoBotCSharp
                             Agent.UpdateDBase(DBCommand);
                             ag.Question = Agent.INST_START;
                             ag.hasAsked = false;
-
+                            App.getWindow().reco.TurnOffMic();
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.INST_START:
@@ -274,6 +278,7 @@ namespace AutoBotCSharp
                             ag.hasAsked = false;                       
                             DBCommand = "INSERT INTO `INS_START` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                             Agent.UpdateDBase(DBCommand);
+                            App.getWindow().reco.TurnOffMic();
                         } else { ag.hasAsked = true; }
                         break;
 
@@ -294,6 +299,7 @@ namespace AutoBotCSharp
                             ag.cust.numVehicles = 1;
                             ag.hasAsked = true;
                         }
+                        App.getWindow().reco.TurnOffMic();
                         break;
                     case Agent.YMM_ONLY_ONE:
                         if (ag.driver.FindElementById("vehicle-make").Displayed)
@@ -302,10 +308,12 @@ namespace AutoBotCSharp
                             ag.hasAsked = false;       
                             DBCommand = "INSERT INTO `YMM_1` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                             Agent.UpdateDBase(DBCommand);
+                            App.getWindow().reco.TurnOffMic();
                         }
                         else
                         {
                             App.getAgent().hasAsked = true;
+                            App.getWindow().reco.TurnOffMic();
                         }   
                         break;
                     case Agent.YMM1:
@@ -647,7 +655,14 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
-            getWindow().reco.TurnOnMic(Speech_Recognizer.Google);
+            if (!getWindow().reco.MicOn)
+            {
+                getWindow().reco = new Speech_Recognizer();
+                getWindow().reco.TurnOnMic("GOOGLE");
+                getWindow().reco.PartialSpeech += getWindow().onGooglePartialSpeech;
+                getWindow().reco.FinalSpeech += getWindow().onGoogleFinalSpeech;
+
+            }
             Console.WriteLine(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
