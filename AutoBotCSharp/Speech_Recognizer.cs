@@ -63,7 +63,8 @@ namespace AutoBotCSharp
         public static string Final_Result = "";
 
         public async Task<bool> reco_google()
-        {         
+        {
+            Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
             info.UseShellExecute = false;
             info.RedirectStandardInput = true;
@@ -120,6 +121,9 @@ namespace AutoBotCSharp
 //------------------------------------------------------------------------------------
         public void TurnOffMic()
         {
+            Console.WriteLine("***STOPPING GOOGLE SPEECH RECO***");
+            byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
+            sock.Send(toBytes);
             shutdown = true;
             proc.Kill();
             proc.WaitForExit();

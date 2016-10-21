@@ -31,7 +31,7 @@ namespace AutoBotCSharp
         private static WaveOut waveOut = new WaveOut();
         public  static bool waveOutIsStopped = true;
         //public static MicrophoneRecognitionClient shortPhraseClient;
-        public static MicrophoneRecognitionClient longDictationClient;
+   
 
         public static double totalTimer = 0.0;
 
@@ -101,26 +101,8 @@ namespace AutoBotCSharp
 
         }
 
-        public static void reInitMicClient()
-        {
-            string path =  System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
-            string[] keys = System.IO.File.ReadAllLines(path);
-            string apiKey1 = keys[0];
-            string apiKey2 = keys[1];
-            longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-            longDictationClient.OnPartialResponseReceived += onPartialResponseReceivedHandler;
-            longDictationClient.OnResponseReceived += onResponseReceivedHandler;
-            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;      
-            longDictationClient.OnConversationError += onConversationErrorHandler;
-            
-            Console.WriteLine("Change the reco, don't let the reco change you."); 
-            longDictationClient.StartMicAndRecognition();
-        }
+  
 
-        public static void startReco()
-        {
-            longDictationClient.StartMicAndRecognition();
-        }
         public static void onConversationErrorHandler(object sender, SpeechErrorEventArgs e)
         {
             Console.WriteLine("ERROR WITH SPEECH" + e.SpeechErrorText);
@@ -160,95 +142,9 @@ namespace AutoBotCSharp
             }));          
         }
 
-       public static void REMIX()
-        {
-            Console.WriteLine("\n EETSA ME, MARIO! \n");
-            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\keys.txt";
+       
 
-            string[] keys = System.IO.File.ReadAllLines(path);
-            string apiKey1 = keys[0];
-            string apiKey2 = keys[1];
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-            App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-            App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            longDictationClient.OnMicrophoneStatus += onMicrophoneStatusHandler;
-            if (App.getAgent().inCall)
-            {
-                App.longDictationClient.StartMicAndRecognition();
-            }
-        }
-
-
-        public static void onResponseReceivedHandler(object sender, SpeechResponseEventArgs e)
-        {
-
-            //Console.WriteLine(e.PhraseResponse.RecognitionStatus);
-            if (e.PhraseResponse.RecognitionStatus == ((RecognitionStatus)611) || e.PhraseResponse.RecognitionStatus.ToString() == "611")
-            {
-                Console.WriteLine("REACHED 2 MIN.");
-                Current.Dispatcher.Invoke((() =>
-                {
-                    REMIX();
-                   
-                }));
-            }
-            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.DictationEndSilenceTimeout)
-            {
-                if (App.getAgent().inCall)
-                {
-                    Console.WriteLine("DICTATION END SILENCE");
-                    longDictationClient.EndMicAndRecognition();
-                    longDictationClient.StartMicAndRecognition();
-                }
-            }
-            if (e.PhraseResponse.RecognitionStatus == RecognitionStatus.InitialSilenceTimeout)
-            {
-                if (App.getAgent().inCall)
-                {
-                    Console.WriteLine("INITIAL SILENCE");
-                    longDictationClient.EndMicAndRecognition();
-                    longDictationClient.StartMicAndRecognition();
-                }
-
-            }
-
-            foreach (RecognizedPhrase result in e.PhraseResponse.Results)
-            {
-                if (result.DisplayText != "")
-                {
-                    Console.WriteLine(waveOutIsStopped);
-                    Current.Dispatcher.Invoke((() =>
-                    {
-                        getWindow().appendSpeechBoxText("Full: " + result.DisplayText);
-                        if (result.DisplayText.ToLower().Contains("incoming")) { System.Threading.Thread.Sleep(500); };
-                    }));
-
-
-                    Current.Dispatcher.Invoke(async () =>
-                    {
-
-                        if (getAgent().custObjected == false)
-                        {
-                            if (waveOutIsStopped)
-                            {
-                                {                              
-                                         doBackgroundQuestionSwitchingStuff(e.PhraseResponse.Results[0].DisplayText);
-                                        if (!getAgent().hasAsked)
-                                        {                                          
-                                            getAgent().hasAsked = true;
-                                             bool ba = await PlayHumanism();
-                                        }
-                                  
-                                   
-
-                                }
-                            }
-                        };
-                    });
-
-                }
-            }      
-        }
+       
 
         public static async Task<bool>  PlayHumanism()
         {
@@ -340,10 +236,8 @@ namespace AutoBotCSharp
                         else if (response.Contains("no"))
                         {
 
-
                             await App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\Have a great day.mp3");
                             getAgent().HangUpandDispo("Not Available");
-
                         }
                         break;
                     case Agent.INTRO:
@@ -382,26 +276,24 @@ namespace AutoBotCSharp
                             Agent.UpdateDBase(DBCommand);
                         } else { ag.hasAsked = true; }
                         break;
+
                     case Agent.NUM_VEHICLES:
                         ag.hasAsked = true;
                         if (ag.cust.numVehicles > 1)
                         {
                             ag.Question = Agent.YMM1;
-                            ag.hasAsked = false;
-                            longDictationClient.EndMicAndRecognition();
+                            ag.hasAsked = false;                          
                         }
                         else if (ag.cust.numVehicles == 1)
                         {
                             ag.Question = Agent.YMM_ONLY_ONE;
-                            ag.hasAsked = false;
-                            longDictationClient.EndMicAndRecognition();
+                            ag.hasAsked = false;                        
                         }
                         else
                         {
                             ag.cust.numVehicles = 1;
                             ag.hasAsked = true;
                         }
-
                         break;
                     case Agent.YMM_ONLY_ONE:
                         if (ag.driver.FindElementById("vehicle-make").Displayed)
@@ -489,16 +381,12 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.DOB:
-
                         string[] dobby = App.getAgent().dobInfo;
                         if (dobby[0] != "" && dobby[1] != "")
-                        {
-                            
+                        {                           
                             if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
-                            {
-     
-                               ag.Question = Agent.MARITAL_STATUS;
-                              
+                            {   
+                               ag.Question = Agent.MARITAL_STATUS;                              
                             }
                             else if(response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect") )
                             {
@@ -506,8 +394,7 @@ namespace AutoBotCSharp
                                 getAgent().AskingBDay = true;
                                 dobby[0] = "";
                                 dobby[1] = "";
-                            }
-                           
+                            }                          
                         }
                         else
                         {
@@ -528,6 +415,7 @@ namespace AutoBotCSharp
                                 Console.WriteLine("YEAR: " + DayYear[1]);
                                 getAgent().selectData("frmDOB_Year", DayYear[1]);
                                 ag.Question = Agent.MARITAL_STATUS;
+                                ag.hasAsked = true;
                             }
                         }
                         break;
@@ -759,11 +647,12 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
+            getWindow().reco.TurnOnMic(Speech_Recognizer.Google);
             Console.WriteLine(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
             if (getAgent().low_blow_bro) { getAgent().low_blow_bro = false;  getAgent().HangUpandDispo("LOW");  }
-            if (getAgent().inCall || getAgent().testing){ longDictationClient.StartMicAndRecognition();}
+         
             Agent user = getAgent();
             Console.WriteLine("CHERYL JUST REBUTTALED " + getAgent().currentlyRebuttaling);   
             user.isTalking = false;
@@ -771,7 +660,7 @@ namespace AutoBotCSharp
             //Console.WriteLine(user.Callpos);
             //Console.WriteLine(user.Question);
             waveOutIsStopped = true;
-            if (getAgent().Question == "START") { longDictationClient.StartMicAndRecognition(); }
+            
             if (getAgent().currentlyRebuttaling == true)
             {
                 user.custObjected = false;
@@ -783,7 +672,7 @@ namespace AutoBotCSharp
             }
             if(user.Callpos == "INBETWEEN")
             {
-                longDictationClient.StartMicAndRecognition();
+              
                 // hidden below is a massive switch statement...
                 switch (user.Question)
                 {
@@ -996,7 +885,6 @@ namespace AutoBotCSharp
             {
                 RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
                 getAgent().AskingBDay = true;
-
                 return;
             }
             if (dobby[2] != "")

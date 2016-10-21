@@ -134,16 +134,16 @@ namespace AutoBotCSharp
             {
                 switch ((int)time)
                 {
-                    case 4:
+                    case 5:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
                         SilenceTimer = 6;
                         break;
-                    case 7:
+                    case 8:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 2.mp3")));
                         SilenceTimer = 10;
                         break;
 
-                    case 11:
+                    case 12:
                         SilenceTimer = 0;
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClipAndWait(@"C:\SoundBoard\Cheryl\WRAPUP\bad connection.mp3")));
                         Application.Current.Dispatcher.Invoke((() => HangUpandDispo("Not Available")));
@@ -231,12 +231,7 @@ namespace AutoBotCSharp
                         SilenceTimer = 0;
                         Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
                         break;
-                    case DOB:
-                        SilenceTimer = 0;
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Can you repeat that.mp3");
-                        App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\DOB1.mp3");
-                        Application.Current.Dispatcher.Invoke((() => temp.AskQuestion()));
-                        break;
+
                     case BDAYMONTH:
                         temp.Question = Agent.MARITAL_STATUS;
                         SilenceTimer = 0;
@@ -295,7 +290,7 @@ namespace AutoBotCSharp
                         if (App.getAgent().Dialer_Status == "READY")
                         {
                             App.getAgent().newCall = true;
-                            App.longDictationClient.EndMicAndRecognition();
+                         
 
                         }
                         else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
@@ -1824,8 +1819,7 @@ namespace AutoBotCSharp
                     bx.RunWorkerAsync();
                     break;
                 case Agent.DOB:
-
-
+                    break;
                 case Agent.MARITAL_STATUS:
                     var maritalStatus = App.getAgent().checkMaritalStatus(response);
                     if (maritalStatus.Length > 0)
@@ -2494,7 +2488,7 @@ namespace AutoBotCSharp
                 {
 
                 }
-                if (App.getAgent().isListening) { App.longDictationClient.EndMicAndRecognition(); }
+               
                 string hangupDisp = "http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1";
                 Console.WriteLine("API CALL TO YTEL: " + hangupDisp);
                 WebRequest h = WebRequest.Create(hangupDisp);
@@ -2804,7 +2798,7 @@ namespace AutoBotCSharp
             }
             AskQuestion();
             await Task.Run((Action)getDob);
-            App.longDictationClient.StartMicAndRecognition();
+    
             started = true;
         }
         public void setupTesting()
@@ -2815,6 +2809,7 @@ namespace AutoBotCSharp
             cust.firstName = firstName;
             cust.phone = "123-456-7890";
             AgentNum = "1198";
+            
             try
             {
                 if (maleNames.Contains(firstName)) { selectData("frmGender", "Male"); } else { EnterData("frmGender", "Female"); }
@@ -2851,8 +2846,11 @@ namespace AutoBotCSharp
             Question = STARTYMCSTARTFACE;
             cust.firstName = firstName;
             cust.isNameEnabled = true;
+            App.getAgent().dobInfo = new string[3];
+            App.getAgent().dobInfo[0] = "5";
+            App.getAgent().dobInfo[1] = "12";
+            App.getAgent().dobInfo[2] = "1986";
             AskQuestion();
-            App.longDictationClient.StartMicAndRecognition();
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
             sock.Connect("192.168.1.218", 6969);
             stream = new NetworkStream(sock);
@@ -2885,9 +2883,11 @@ namespace AutoBotCSharp
         }
         public bool AskQuestion()
         {
+
             Console.WriteLine("ASKING QUESTION " + Question);
             try
             {
+                App.getWindow().reco.TurnOffMic();
                 cust.speech = "";
                 isTalking = true;
                 SilenceTimer = 0;

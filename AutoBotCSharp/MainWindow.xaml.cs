@@ -21,11 +21,12 @@ namespace AutoBotCSharp
         public Agent user;
         public string version;
         public Agent_Google googleUser;
-        public static Speech_Recognizer reco = new Speech_Recognizer();
+        public Speech_Recognizer reco = new Speech_Recognizer();
 
 
         public MainWindow()
         {
+            Agent user = new AutoBotCSharp.Agent();
             string apiKey1 = "";
             string apiKey2 = "";
             App.getWindow().Closed += closeall;
@@ -41,20 +42,10 @@ namespace AutoBotCSharp
                 MessageBox.Show("keys.txt not found", "ya dun goofed");
             }
             
-            App.longDictationClient = SpeechRecognitionServiceFactory.CreateMicrophoneClient(SpeechRecognitionMode.LongDictation, "en-US", apiKey1, apiKey2);
-           // App.longDictationClient.OnPartialResponseReceived += App.onPartialResponseReceivedHandler;
-           // App.longDictationClient.OnResponseReceived += App.onResponseReceivedHandler;
-            //App.longDictationClient.OnMicrophoneStatus += App.onMicrophoneStatusHandler;
 
-            Console.WriteLine("Make the reco, don't let the reco make you");
-            user = new Agent();
-          //  googleUser = new Agent_Google("192.168.1.218");
-           // user.version = App.version.ToString();
-
-          //  Console.WriteLine("OPENING BOT VERSION: " + user.version);
             randy = new Random();
             InitializeComponent();
-            frmMain.Title = "AutoBotC# Ver: " + user.version;
+       
 
             string procName = Process.GetCurrentProcess().ProcessName;
             foreach (Process proc in Process.GetProcessesByName("chromedriver"))
@@ -139,7 +130,6 @@ namespace AutoBotCSharp
             string clip = @"C:\Soundboard\Cheryl\INTRO\Intro2.mp3";
             App.RollTheClip(clip);
             user.Question = Agent.INTRO;
-            App.longDictationClient.StartMicAndRecognition();
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
@@ -577,7 +567,6 @@ namespace AutoBotCSharp
         }
         private void btnKillLongDictation_Click(object sender, RoutedEventArgs e)
         {
-            App.longDictationClient.EndMicAndRecognition();
             Console.WriteLine("LD ended");
         }
         private void btnReaction_Click(object sender, RoutedEventArgs e)
@@ -644,10 +633,7 @@ namespace AutoBotCSharp
             UnregisterHotKey(helper.Handle, 2);
         }
 
-        private void btnStartSpeechRecoLong_Click(object sender, RoutedEventArgs e)
-        {
-            App.startReco();
-        }
+   
 
         private void frmReactions_Navigated(object sender, NavigationEventArgs e)
         {
@@ -842,18 +828,21 @@ namespace AutoBotCSharp
             string response = reco.partial_speech.ToLower().Trim();
             string raw = response;
             App.getAgent().SilenceTimer = 0;
-            Dispatcher.Invoke((async () =>
+            if (App.waveOutIsStopped)
             {
-                App.getAgent().SilenceTimer = 0;
-                Console.WriteLine(App.getAgent().SilenceTimer);
-                App.getWindow().setSpeechBoxText("Partial: " + response);
-                if (!(App.getAgent().custObjected = await Agent.checkForObjection(response)))
+                Dispatcher.Invoke((async () =>
                 {
-                    App.getAgent().checkforData(response);
-                    App.getAgent().hasAsked = false;
-                }
+                    App.getAgent().SilenceTimer = 0;
+                    Console.WriteLine(App.getAgent().SilenceTimer);
+                    App.getWindow().setSpeechBoxText("Partial: " + response);
+                    if (!(App.getAgent().custObjected = await Agent.checkForObjection(response)))
+                    {
+                        App.getAgent().checkforData(response);
+                        App.getAgent().hasAsked = false;
+                    }
 
-            }));
+                }));
+            }
         }
 
     
