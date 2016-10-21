@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
 
+
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 namespace AutoBotCSharp
 {
@@ -20,7 +21,7 @@ namespace AutoBotCSharp
 
 
         }
-
+        public  bool MicOn = false;
         private static string _partial = "";
         private static string _Final = "";
         public const string Microsoft = "MICROSOFT";
@@ -64,6 +65,7 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
+            shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
             info.UseShellExecute = false;
@@ -76,7 +78,7 @@ namespace AutoBotCSharp
             sock.Connect("192.168.1.218", 6969);
             while (shutdown == false)
             {
-                
+                this.MicOn = true;
                 byte[] buff = new byte[1024];
                 int data = sock.Receive(buff);
                 char[] message = new char[data];
@@ -92,8 +94,6 @@ namespace AutoBotCSharp
 
                 }
             }
-            proc.Kill();
-            proc.WaitForExit();
             return false;
         }
 //-------------------------------------------------------------------------
@@ -125,8 +125,7 @@ namespace AutoBotCSharp
             byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
             sock.Send(toBytes);
             shutdown = true;
-            proc.Kill();
-            proc.WaitForExit();
+            this.MicOn = false;
 
         }
 //--------------------------------------------------------------------------------

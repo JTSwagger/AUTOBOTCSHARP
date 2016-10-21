@@ -2851,9 +2851,9 @@ namespace AutoBotCSharp
             App.getAgent().dobInfo[1] = "12";
             App.getAgent().dobInfo[2] = "1986";
             AskQuestion();
-            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("192.168.1.218", 6969);
-            stream = new NetworkStream(sock);
+          //  sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+           // sock.Connect("192.168.1.218", 6969);
+         //   stream = new NetworkStream(sock);
             Task t = Task.Run((Action)getDob);
 
         }
@@ -2887,7 +2887,7 @@ namespace AutoBotCSharp
             Console.WriteLine("ASKING QUESTION " + Question);
             try
             {
-                App.getWindow().reco.TurnOffMic();
+                
                 cust.speech = "";
                 isTalking = true;
                 SilenceTimer = 0;

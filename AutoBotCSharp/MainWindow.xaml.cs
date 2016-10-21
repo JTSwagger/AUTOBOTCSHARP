@@ -782,7 +782,7 @@ namespace AutoBotCSharp
            reco.PartialSpeech += onGooglePartialSpeech;
            reco.FinalSpeech += onGoogleFinalSpeech;
         }
-        private void onGoogleFinalSpeech(object sender, EventArgs e)
+        public void onGoogleFinalSpeech(object sender, EventArgs e)
         {
             string FResult = reco.Final_Speech.ToLower().Trim();
             if (App.waveOutIsStopped)
@@ -822,7 +822,7 @@ namespace AutoBotCSharp
         
 
     
-        private void onGooglePartialSpeech(object sender, EventArgs e)
+        public void onGooglePartialSpeech(object sender, EventArgs e)
         {
             Speech_Recognizer reco = (Speech_Recognizer)sender;
             string response = reco.partial_speech.ToLower().Trim();
