@@ -202,7 +202,8 @@
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="23*"/>
-                        <ColumnDefinition Width="151*"/>
+                        <ColumnDefinition Width="120*"/>
+                        <ColumnDefinition Width="31*"/>
                         <ColumnDefinition Width="29*"/>
                         <ColumnDefinition Width="49*"/>
                         <ColumnDefinition Width="24*"/>
@@ -210,14 +211,14 @@
                         <ColumnDefinition Width="109*"/>
                         <ColumnDefinition Width="190*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click" Grid.ColumnSpan="2"/>
-                    <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click" Grid.ColumnSpan="2"/>
-                    <Label x:Name="lblTestingDelim" Content="Here be Dragons" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="137" Grid.ColumnSpan="2"/>
-                    <Button x:Name="doTestingStuff" Grid.ColumnSpan="5" Content="Do Testing Stuff" Margin="144,118,0,0" VerticalAlignment="Top" Click="doTestingStuff_Click" Grid.Column="1"/>
-                    <Button x:Name="btnLeadCheck" Content="Check lead" Grid.Column="7" HorizontalAlignment="Left" Margin="10,118,0,0" VerticalAlignment="Top" Width="75" Click="btnLeadCheck_Click_1"/>
-                    <Button x:Name="button2" Content="Google Reco" Grid.Column="1" HorizontalAlignment="Left" Margin="38,184,0,0" VerticalAlignment="Top" Width="113" Click="button2_Click"/>
-                    <Button x:Name="button3" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="38,209,0,0" VerticalAlignment="Top" Width="113" Click="button3_Click"/>
+                    <Button x:Name="button" Content="CONNECT TO DIALER" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="154" Height="22" Click="button_Click" Grid.ColumnSpan="3"/>
+                    <TextBox x:Name="txtAgentNum" HorizontalAlignment="Left" Height="23" Margin="10,15,0,0" TextWrapping="Wrap" Text="Agent # (4 digits)" VerticalAlignment="Top" Width="154" GotFocus="txtAgentNum_GotFocus" Grid.ColumnSpan="3"/>
+                    <Button x:Name="btnOpenTestPage" Content="Open Test Page" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="137" Click="btnOpenTestPage_Click" Grid.ColumnSpan="3"/>
+                    <Label x:Name="lblTestingDelim" Content="Here be Dragons" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="137" Grid.ColumnSpan="3"/>
+                    <Button x:Name="doTestingStuff" Grid.ColumnSpan="5" Content="Do Testing Stuff" Margin="24,118,0,0" VerticalAlignment="Top" Click="doTestingStuff_Click" Grid.Column="2"/>
+                    <Button x:Name="btnLeadCheck" Content="Check lead" Grid.Column="8" HorizontalAlignment="Left" Margin="10,118,0,0" VerticalAlignment="Top" Width="75" Click="btnLeadCheck_Click_1"/>
+                    <Button x:Name="button2" Content="Google Reco" Grid.Column="1" HorizontalAlignment="Left" Margin="38,184,0,0" VerticalAlignment="Top" Width="113" Click="button2_Click" Grid.ColumnSpan="2"/>
+                    <Button x:Name="button3" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="38,209,0,0" VerticalAlignment="Top" Width="113" Click="button3_Click" Grid.ColumnSpan="2"/>
 
                 </Grid>
             </TabItem>

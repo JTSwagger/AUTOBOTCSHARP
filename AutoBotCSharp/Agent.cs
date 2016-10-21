@@ -2472,6 +2472,13 @@ namespace AutoBotCSharp
             Console.WriteLine("got called");
             try
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (App.getWindow().reco.MicOn)
+                    {
+                        App.getWindow().reco.TurnOffMic();
+                    }
+                });
                 App.getAgent().AskingBDay = false;
                 App.getAgent().isListening = false;
                 App.getAgent().isTalking = false;
@@ -2869,6 +2876,7 @@ namespace AutoBotCSharp
             }
 
         }
+     
         public bool AskQuestion()
         {
             Console.WriteLine("ASKING QUESTION");
@@ -2880,7 +2888,8 @@ namespace AutoBotCSharp
                     App.getWindow().reco.TurnOnMic("GOOGLE");
                     App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
                     App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
-
+                    App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+                     
                 }
             });
             Console.WriteLine("ASKING QUESTION " + Question);

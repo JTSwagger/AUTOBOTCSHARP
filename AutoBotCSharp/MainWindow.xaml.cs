@@ -781,6 +781,15 @@ namespace AutoBotCSharp
            reco.TurnOnMic(Speech_Recognizer.Google);
            reco.PartialSpeech += onGooglePartialSpeech;
            reco.FinalSpeech += onGoogleFinalSpeech;
+            App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+        }
+        public void onMicChange(object sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                Speech_Recognizer r = (Speech_Recognizer)sender;
+                lblreco.Content = "RECORDING: " + r.MicOn;
+            });
         }
         public void onGoogleFinalSpeech(object sender, EventArgs e)
         {

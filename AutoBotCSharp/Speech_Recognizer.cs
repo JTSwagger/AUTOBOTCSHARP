@@ -22,7 +22,7 @@ namespace AutoBotCSharp
 
 
         }
-        public  bool MicOn = false;
+        public bool MicOn = false;
         private static string _partial = "";
         private static string _Final = "";
         public const string Microsoft = "MICROSOFT";
@@ -38,6 +38,7 @@ namespace AutoBotCSharp
         public static bool shutdown = false;
         public event System.EventHandler PartialSpeech;
         public event System.EventHandler FinalSpeech;
+        public event System.EventHandler MicChange;
 
         protected virtual void OnPartialSpeech()
         {
@@ -48,6 +49,17 @@ namespace AutoBotCSharp
             FinalSpeech?.Invoke(this, EventArgs.Empty);
         }
 
+        protected virtual void OnMicChange()
+        {
+            MicChange?.Invoke(this, EventArgs.Empty);
+        }
+
+        public bool is_recording
+        {
+            get { return MicOn; }
+            set { MicOn = value; OnMicChange(); }
+
+        }
         public string Final_Speech
         {
             get { return _Final; }
@@ -88,9 +100,10 @@ namespace AutoBotCSharp
                 int charLen = d.GetChars(buff, 0, data, message, 0);
                 System.String recv = new System.String(message);
                 string[] poop = recv.Split('"');
+
                 if (poop.Length > 0)
-                {
-                    string Speech = poop[1].Trim();
+                {   
+                    string Speech = poop[1].Trim().Remove('\\');
                      this.partial_speech = Speech;
                     if (recv.Contains("confidence:")) { this.Final_Speech = Speech; }
 
@@ -126,6 +139,7 @@ namespace AutoBotCSharp
             Console.WriteLine("***STOPPING GOOGLE SPEECH RECO***");
             byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
             sock.Send(toBytes);
+            sock.Close();
             shutdown = true;
             this.MicOn = false;
 
