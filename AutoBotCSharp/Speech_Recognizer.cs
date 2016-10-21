@@ -66,7 +66,7 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"C:\Users\Insurance Express\Documents\verifier-key.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\verifier-key.json");
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               

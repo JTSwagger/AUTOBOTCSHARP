@@ -276,7 +276,6 @@ namespace AutoBotCSharp
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
                                 Agent.UpdateDBase(theCommand);
-
                             }
 
                         }
