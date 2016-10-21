@@ -39,24 +39,24 @@ namespace AutoBotCSharp
 
         protected virtual void OnPartialSpeech()
         {
-            if (PartialSpeech != null) PartialSpeech(this, EventArgs.Empty);
+            PartialSpeech?.Invoke(this, EventArgs.Empty);
         }
         protected virtual void OnFinalSpeech()
         {
-            if (FinalSpeech != null) FinalSpeech(this, EventArgs.Empty);
+            FinalSpeech?.Invoke(this, EventArgs.Empty);
         }
 
         public string Final_Speech
         {
             get { return _Final; }
-            set { _Final = value; this.OnFinalSpeech(); }
+            set { _Final = value; OnFinalSpeech(); }
 
         }
 
         public string partial_speech
         {
             get { return _partial; }
-            set { _partial = value; this.OnPartialSpeech(); }
+            set { _partial = value; OnPartialSpeech(); }
 
         }
 
