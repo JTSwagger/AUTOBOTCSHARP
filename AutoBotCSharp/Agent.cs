@@ -24,8 +24,8 @@ namespace AutoBotCSharp
     {
         public static Socket sock;
         public static NetworkStream stream;
-        static string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\trainer.tr";
-        public string[] trainer = System.IO.File.ReadAllLines(path);
+        static string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\trainer.tr";
+        public string[] trainer = File.Exists(path) ? File.ReadAllLines(path) : new string[];
         public string version = "Version 66";
         public string verToCheck = "";
         public List<string> maleNames = new List<string>();
