@@ -21,7 +21,7 @@ namespace AutoBotCSharp
         public Agent user;
         public string version;
         public Agent_Google googleUser;
-        public Speech_Recognizer reco = new Speech_Recognizer();
+        public Speech_Recognizer reco = new Speech_Recognizer(6000);
 
 
         public MainWindow()
@@ -778,10 +778,10 @@ namespace AutoBotCSharp
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-           reco.TurnOnMic(Speech_Recognizer.Google);
-           reco.PartialSpeech += onGooglePartialSpeech;
-           reco.FinalSpeech += onGoogleFinalSpeech;
-            App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+            reco.PartialSpeech += onGooglePartialSpeech;
+            reco.FinalSpeech += onGoogleFinalSpeech;
+            reco.TurnOnMic(Speech_Recognizer.Google);
+
         }
         public void onMicChange(object sender, EventArgs e)
         {
@@ -833,7 +833,7 @@ namespace AutoBotCSharp
     
         public void onGooglePartialSpeech(object sender, EventArgs e)
         {
-            Speech_Recognizer reco = (Speech_Recognizer)sender;
+            
             string response = reco.partial_speech.ToLower().Trim();
             string raw = response;
             App.getAgent().SilenceTimer = 0;

@@ -22,6 +22,7 @@ namespace AutoBotCSharp
 
     public class Agent
     {
+        public static int port = 6000;
         public static Socket sock;
         public static NetworkStream stream;
         static string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\trainer.tr";
@@ -2884,11 +2885,14 @@ namespace AutoBotCSharp
             {
                  if (!App.getWindow().reco.MicOn)
                 {
-                    App.getWindow().reco = new Speech_Recognizer();
-                    App.getWindow().reco.TurnOnMic("GOOGLE");
+                    App.getWindow().reco = new Speech_Recognizer(port);
                     App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
                     App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
                     App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+                    App.getWindow().reco.TurnOnMic("GOOGLE");
+                    port += 1;
+                    if(port > 6020) { port = 6000; }
+        
                      
                 }
             });

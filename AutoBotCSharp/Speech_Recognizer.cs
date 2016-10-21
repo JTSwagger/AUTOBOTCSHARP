@@ -16,12 +16,14 @@ namespace AutoBotCSharp
 {
     public class Speech_Recognizer
     {
-        public Speech_Recognizer()
+        public Speech_Recognizer(int port)
         {
-
+            shutdown = false;
+            PORT = port;
 
 
         }
+        public int PORT;
         public bool MicOn = false;
         private static string _partial = "";
         private static string _Final = "";
@@ -78,18 +80,19 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
+            
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
             info.UseShellExecute = false;
             info.RedirectStandardInput = true;
             proc = Process.Start(info);
-            proc.StandardInput.WriteLine("python transcribe_streaming.py lcn infinity");
+            proc.StandardInput.WriteLine("python transcribe_streaming.py " + PORT);
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
-            Thread.Sleep(300);
             sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("localhost", 6969);
+            sock.Connect("localhost", PORT);
+            
             while (shutdown == false)
             {
                 this.MicOn = true;
@@ -102,8 +105,9 @@ namespace AutoBotCSharp
                 string[] poop = recv.Split('"');
 
                 if (poop.Length > 0)
-                {   
-                    string Speech = poop[1].Trim().Remove('\\');
+                {
+                    string Speech = poop[1].Trim();
+                    Speech = Speech.Replace("\\","");
                      this.partial_speech = Speech;
                     if (recv.Contains("confidence:")) { this.Final_Speech = Speech; }
 
