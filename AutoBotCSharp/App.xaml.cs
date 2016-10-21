@@ -186,13 +186,10 @@ namespace AutoBotCSharp
             // call position advancement
             if (waveOutIsStopped)
             {
-                
                 Console.WriteLine("SPEECH FINALIZED: " + response + Environment.NewLine + "ON QUESTION " + ag.Question);
                 switch (ag.Question)
                 {
                     case Agent.STARTYMCSTARTFACE:
-
-
                         string check = "this is " + getAgent().cust.firstName.ToLower();
                         if (getAgent().cust.isNameEnabled)
                         {
@@ -209,9 +206,9 @@ namespace AutoBotCSharp
                                 Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
 
                                 getAgent().hasAsked = true;
-                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
+                                RollTheClip(findNameClips(getWindow().btnTheirName.Content.ToString())[1]);                           
                             }
-                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here"))
+                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here") || response.Contains("no"))
                             {
                                 Console.WriteLine("THIS IS NOT THE PERSON YOU WANT"); 
                                                   
@@ -340,7 +337,6 @@ namespace AutoBotCSharp
                                 Agent.UpdateDBase(DBCommand);
 
                             } else { ag.hasAsked = true; }
-                          
                         }
                         else
                         {
@@ -352,7 +348,6 @@ namespace AutoBotCSharp
                             } else { ag.hasAsked = true; }
                             break;
                         }
-
                         break;
                     case Agent.YMM3:
                         if (ag.cust.numVehicles > 3)
@@ -389,7 +384,7 @@ namespace AutoBotCSharp
                         break;
 
                     case Agent.DOB:
-                        string[] dobby = App.getAgent().dobInfo;
+                        string[] dobby = getAgent().dobInfo;
                         if (dobby[0] != "" && dobby[1] != "")
                         {                           
                             if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))

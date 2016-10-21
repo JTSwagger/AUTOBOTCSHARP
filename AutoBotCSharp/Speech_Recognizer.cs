@@ -66,6 +66,7 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @"C:\Users\Insurance Express\Documents\verifier-key.json");
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
@@ -76,7 +77,7 @@ namespace AutoBotCSharp
             proc.StandardInput.Flush();
             proc.StandardInput.Close();
             Thread.Sleep(300);
-            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
+            sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
             sock.Connect("localhost", 6969);
             while (shutdown == false)
             {
@@ -84,9 +85,9 @@ namespace AutoBotCSharp
                 byte[] buff = new byte[1024];
                 int data = sock.Receive(buff);
                 char[] message = new char[data];
-                System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
+                Decoder d = Encoding.UTF8.GetDecoder();
                 int charLen = d.GetChars(buff, 0, data, message, 0);
-                System.String recv = new System.String(message);
+                string recv = new string(message);
                 string[] poop = recv.Split('"');
                 if (poop.Length > 0)
                 {
