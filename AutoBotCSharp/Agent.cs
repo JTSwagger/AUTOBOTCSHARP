@@ -272,10 +272,8 @@ namespace AutoBotCSharp
                         {
                             if (stats.Contains("DEAD") || stats.Contains("DISPO") || stats.Contains("HANGUP"))
                             {
-                                String theCommand = "INSERT INTO `DROPPEDCALLS` (`SPOT`) VALUES('" + App.getAgent().Question + "')";
                                 App.getAgent().HangUpandDispo("hangup");
                                 App.getAgent().inCall = false;
-                                Agent.UpdateDBase(theCommand);
                             }
 
                         }
@@ -288,15 +286,16 @@ namespace AutoBotCSharp
                         }
                         if (App.getAgent().Dialer_Status == "READY")
                         {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                App.getWindow().reco.TurnOffMic();
+                            });
                             App.getAgent().newCall = true;
-                         
-
                         }
                         else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
 
                         {
-
-                            if (App.getAgent().isTalking == false) { App.getAgent().SilenceTimer += .2; Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); }
+                            if (App.getAgent().isTalking == false) { App.getAgent().SilenceTimer += .2; /* Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); */ }
                             if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }
                             if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                             App.getAgent().calltime += 0.2;
@@ -304,7 +303,7 @@ namespace AutoBotCSharp
 
                             if (App.getAgent().newCall)
                             {
-                                
+                                setupReco();
                                 App.getAgent().inCall = true;
                                 App.getAgent().currentlyRebuttaling = false;
                                 App.getAgent().custObjected = false;
@@ -343,6 +342,28 @@ namespace AutoBotCSharp
             }
             return true;
         }
+
+        protected static int portNum = 6000;
+        public static void setupReco()
+        {
+            var window = App.getWindow();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                window.reco = new Speech_Recognizer(portNum);
+                window.reco.TurnOnMic("Google");
+            });
+            if (portNum >= 6020)
+            {
+                portNum = 6000;
+            }
+            else
+            {
+                portNum += 1;
+            }
+
+
+        }
+
         //------------------------------------------------------------------------------------------------------
         private void setGlobals()
         {
@@ -2880,21 +2901,7 @@ namespace AutoBotCSharp
         public bool AskQuestion()
         {
             Console.WriteLine("ASKING QUESTION");
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                 if (!App.getWindow().reco.MicOn)
-                {
-                    App.getWindow().reco = new Speech_Recognizer(port);
-                    App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
-                    App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
-                    App.getWindow().reco.MicChange += App.getWindow().onMicChange;
-                    App.getWindow().reco.TurnOnMic("GOOGLE");
-                    port += 1;
-                    if(port > 6020) { port = 6000; }
-        
-                     
-                }
-            });
+            
             Console.WriteLine("ASKING QUESTION " + Question);
             try
             {
