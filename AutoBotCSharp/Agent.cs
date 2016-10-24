@@ -9,6 +9,7 @@ using System.Net;
 using System.IO;
 using System.Windows.Media;
 using OpenQA.Selenium.Support.UI;
+
 using System.ComponentModel;
 using System.Windows;
 using MySql.Data.MySqlClient;
@@ -289,7 +290,7 @@ namespace AutoBotCSharp
                         if (App.getAgent().Dialer_Status == "READY")
                         {
                             App.getAgent().newCall = true;
-                         
+
 
                         }
                         else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
@@ -304,7 +305,7 @@ namespace AutoBotCSharp
 
                             if (App.getAgent().newCall)
                             {
-                                
+
                                 App.getAgent().inCall = true;
                                 App.getAgent().currentlyRebuttaling = false;
                                 App.getAgent().custObjected = false;
@@ -606,7 +607,7 @@ namespace AutoBotCSharp
             resp = webRequest.GetResponse();
             reader = new StreamReader(resp.GetResponseStream());
         }
-        public  string CheckIProvider(string s)
+        public string CheckIProvider(string s)
         {
 
 
@@ -1715,7 +1716,7 @@ namespace AutoBotCSharp
 
                         if (temp.selectData("frmInsuranceCarrier", Data))
                         {
-                            
+
                             Console.WriteLine("Val is: " + temp.driver.FindElementById("frmInsuranceCarrier").GetAttribute("value"));
                             if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; }
                             Console.WriteLine("put stuff in, current question is: " + temp.Question);
@@ -2467,7 +2468,7 @@ namespace AutoBotCSharp
         //------------------------------------------------------------------
         public void HangUpandDispo(string dispo)
         {
-            
+
 
             Console.WriteLine("got called");
             try
@@ -2494,7 +2495,7 @@ namespace AutoBotCSharp
                 {
 
                 }
-               
+
                 string hangupDisp = "http://loudcloud9.ytel.com/x5/api/agent.php?source=test&user=101&pass=API101IEpost&agent_user=" + AgentNum + "&function=external_hangup&value=1";
                 Console.WriteLine("API CALL TO YTEL: " + hangupDisp);
                 WebRequest h = WebRequest.Create(hangupDisp);
@@ -2585,23 +2586,8 @@ namespace AutoBotCSharp
             }
 
 
-        }
-        static void zip_extract_progress(object sender, ExtractProgressEventArgs e)
-        {
-            Console.WriteLine("extracting...");
-            string path2 = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\';
-            if (e.EventType == ZipProgressEventType.Extracting_AfterExtractAll)
-            {
-                ProcessStartInfo start = new ProcessStartInfo();
-                start.UseShellExecute = true;
-                start.Arguments = "version" + App.getAgent().verToCheck + " agent" + App.getAgent().AgentNum;
-                Console.WriteLine(start.Arguments);
-                start.FileName = "\"" + path2 + "AutoBotCSharpV" + App.getAgent().verToCheck + "\\" + "AutoBotCSharp.exe" + "\"";
-                Console.WriteLine(start.FileName);
-                Process.Start(start);
-                App.getAgent().driver.Quit();
-                Application.Current.Shutdown();
-            }
+
+
         }
         public void drawHead()
         {
@@ -2804,7 +2790,7 @@ namespace AutoBotCSharp
             }
             AskQuestion();
             await Task.Run((Action)getDob);
-    
+
             started = true;
         }
         public void setupTesting()
@@ -2815,7 +2801,7 @@ namespace AutoBotCSharp
             cust.firstName = firstName;
             cust.phone = "123-456-7890";
             AgentNum = "1198";
-            
+
             try
             {
                 if (maleNames.Contains(firstName)) { selectData("frmGender", "Male"); } else { EnterData("frmGender", "Female"); }
@@ -2854,7 +2840,7 @@ namespace AutoBotCSharp
         }
         //---------------------------------------------------------------
 
-        
+
         //------------------------------------------------------------------
         public void PauseUnPause(string pauseAction)
         {
@@ -2876,29 +2862,28 @@ namespace AutoBotCSharp
             }
 
         }
-     
+
         public bool AskQuestion()
         {
             Console.WriteLine("ASKING QUESTION");
             Application.Current.Dispatcher.Invoke(() =>
             {
-                 if (!App.getWindow().reco.MicOn)
-                {
-                    App.getWindow().reco = new Speech_Recognizer(port);
-                    App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
-                    App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
-                    App.getWindow().reco.MicChange += App.getWindow().onMicChange;
-                    App.getWindow().reco.TurnOnMic("GOOGLE");
-                    port += 1;
-                    if(port > 6020) { port = 6000; }
-        
-                     
-                }
+
+                App.getWindow().reco = new Speech_Recognizer(port);
+                App.getWindow().reco.PartialSpeech += App.getWindow().onGooglePartialSpeech;
+                App.getWindow().reco.FinalSpeech += App.getWindow().onGoogleFinalSpeech;
+                App.getWindow().reco.MicChange += App.getWindow().onMicChange;
+                App.getWindow().reco.TurnOnMic("GOOGLE");
+                port += 1;
+                if (port > 6020) { port = 6000; }
+
+
+
             });
             Console.WriteLine("ASKING QUESTION " + Question);
             try
             {
-                
+
                 cust.speech = "";
                 isTalking = true;
                 SilenceTimer = 0;
@@ -2926,7 +2911,6 @@ namespace AutoBotCSharp
                         if (!App.getAgent().custObjected)
                         { App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3"); }
                         else { App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3"); }
-
                         break;
                     case PROVIDER:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
@@ -3003,7 +2987,6 @@ namespace AutoBotCSharp
                         catch { goto TCPA; }
                     case TCPA:
                         TCPA:
-
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
                         break;
                     case Agent.WHICHSECONDARIES:
@@ -3034,5 +3017,6 @@ namespace AutoBotCSharp
             }
         }
     }
-
 }
+
+

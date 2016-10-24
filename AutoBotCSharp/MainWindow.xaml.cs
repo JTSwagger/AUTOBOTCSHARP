@@ -803,11 +803,8 @@ namespace AutoBotCSharp
                          App.getWindow().appendSpeechBoxText("Full: " + FResult);
                          if (FResult.Contains("incoming")) { System.Threading.Thread.Sleep(500); };
                      }));
-
-
                     Dispatcher.Invoke(async () =>
                     {
-
                         if (App.getAgent().custObjected == false)
                         {
                             Console.WriteLine("Did not object....");
@@ -823,18 +820,17 @@ namespace AutoBotCSharp
                             }
                         }
                     });
-
                 }
             }
 
-            }
-        
-
+            }       
     
         public void onGooglePartialSpeech(object sender, EventArgs e)
         {
             
+           
             string response = reco.partial_speech.ToLower().Trim();
+            Console.WriteLine("Partial Results Generated--->" + response);
             string raw = response;
             App.getAgent().SilenceTimer = 0;
             if (App.waveOutIsStopped)
@@ -852,9 +848,7 @@ namespace AutoBotCSharp
 
                 }));
             }
-        }
-
-    
+        }   
         private void button3_Click(object sender, RoutedEventArgs e)
         {
             reco.TurnOffMic();
