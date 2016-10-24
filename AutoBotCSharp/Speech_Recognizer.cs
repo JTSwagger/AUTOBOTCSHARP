@@ -80,7 +80,7 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\verifier-key.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "creds.json");
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
             ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
@@ -140,12 +140,19 @@ namespace AutoBotCSharp
 //------------------------------------------------------------------------------------
         public void TurnOffMic()
         {
-            Console.WriteLine("***STOPPING GOOGLE SPEECH RECO***");
-            byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
-            sock.Send(toBytes);
-            sock.Close();
-            shutdown = true;
-            this.MicOn = false;
+            try
+            {
+                Console.WriteLine("***STOPPING GOOGLE SPEECH RECO***");
+                byte[] toBytes = Encoding.ASCII.GetBytes("TURNOFF::");
+                sock.Send(toBytes);
+                sock.Close();
+                shutdown = true;
+                this.MicOn = false;
+            }
+            catch
+            {
+                Console.WriteLine("Could not shut off socket...socket is already shutoff");
+            }
 
         }
 //--------------------------------------------------------------------------------

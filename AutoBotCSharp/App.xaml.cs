@@ -211,7 +211,7 @@ namespace AutoBotCSharp
                                 getAgent().hasAsked = true;
                                     App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
                             }
-                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here"))
+                            else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here") || response == "no")
                             {
                                 Console.WriteLine("THIS IS NOT THE PERSON YOU WANT"); 
                                                   
@@ -287,17 +287,20 @@ namespace AutoBotCSharp
                         if (ag.cust.numVehicles > 1)
                         {
                             ag.Question = Agent.YMM1;
-                            ag.hasAsked = false;                          
+                            ag.hasAsked = false;
+                            App.getWindow().reco.TurnOffMic();
                         }
                         else if (ag.cust.numVehicles == 1)
                         {
                             ag.Question = Agent.YMM_ONLY_ONE;
-                            ag.hasAsked = false;                        
+                            ag.hasAsked = false;
+                            App.getWindow().reco.TurnOffMic();
                         }
                         else
                         {
                             ag.cust.numVehicles = 1;
                             ag.hasAsked = true;
+                            App.getWindow().reco.TurnOffMic();
                         }
                         App.getWindow().reco.TurnOffMic();
                         break;
@@ -338,7 +341,7 @@ namespace AutoBotCSharp
                                 ag.hasAsked = false;
                                 DBCommand = "INSERT INTO `YMM_2` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                                 Agent.UpdateDBase(DBCommand);
-
+                                App.getWindow().reco.TurnOffMic();
                             } else { ag.hasAsked = true; }
                           
                         }
@@ -644,7 +647,8 @@ namespace AutoBotCSharp
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
             if (getAgent().low_blow_bro) { getAgent().low_blow_bro = false;  getAgent().HangUpandDispo("LOW");  }
-         
+            App.getWindow().reco.Final_Speech = "";
+            App.getWindow().reco.partial_speech = "";
             Agent user = getAgent();
             Console.WriteLine("CHERYL JUST REBUTTALED " + getAgent().currentlyRebuttaling);   
             user.isTalking = false;
