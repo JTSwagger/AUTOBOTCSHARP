@@ -20,8 +20,6 @@ namespace AutoBotCSharp
         {
             shutdown = false;
             PORT = port;
-
-
         }
         public int PORT;
         public bool MicOn = false;
@@ -68,46 +66,50 @@ namespace AutoBotCSharp
             set { _Final = value; OnFinalSpeech(); }
 
         }
+
         public string partial_speech
         {
             get { return _partial; }
             set { _partial = value; OnPartialSpeech(); }
+
         }
 
         public static string Final_Result = "";
 
         public async Task<bool> reco_google()
         {
-            foreach (Process hogger in Process.GetProcessesByName("Python"))
-            {
-                hogger.Kill();
-            }
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "creds.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @".\verifier-key.json");
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
-            ProcessStartInfo info = new ProcessStartInfo("python");
-            info.Arguments = " transcribe_streaming.py " + PORT;
-            info.UseShellExecute = true;
+            ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
+            info.UseShellExecute = false;
+            info.RedirectStandardInput = true;
             proc = Process.Start(info);
+            proc.StandardInput.WriteLine("python transcribe_streaming.py " + PORT);
+            proc.StandardInput.Flush();
+            proc.StandardInput.Close();
             Thread.Sleep(300);
-            sock = new Socket(System.Net.Sockets.SocketType.Stream, ProtocolType.Tcp);
-            sock.Connect("localhost", PORT);          
+            sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            sock.Connect("localhost", PORT);
+            
             while (shutdown == false)
             {
                 this.MicOn = true;
                 byte[] buff = new byte[1024];
                 int data = sock.Receive(buff);
                 char[] message = new char[data];
-                System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
+                Decoder d = Encoding.UTF8.GetDecoder();
                 int charLen = d.GetChars(buff, 0, data, message, 0);
-                System.String recv = new System.String(message);
+                string recv = new string(message);
                 string[] poop = recv.Split('"');
+
                 if (poop.Length > 0)
                 {
                     string Speech = poop[1].Trim();
                     Speech = Speech.Replace("\\","");
-                     this.partial_speech = Speech;
-                    if (recv.Contains("confidence:")) { Final_Result = Speech; _partial = ""; }
+                    partial_speech = Speech;
+                    if (recv.Contains("confidence:")) { Final_Speech = Speech; }
+
                 }
             }
             return false;
@@ -127,6 +129,7 @@ namespace AutoBotCSharp
                     {
                         return (false);
                     }
+                case "Google":
                 case Google:
                     task = Task.Run(reco_google);                
                     return true;

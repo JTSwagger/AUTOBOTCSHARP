@@ -546,8 +546,7 @@ namespace AutoBotCSharp
                             App.getAgent().selectData("frmTcpaConsumerConsented", "Responded YES, said sure, I agree, that's okay, etc.");
                             string name = App.getAgent().cust.firstName + " " + App.getAgent().driver.FindElementById("frmLastName").GetAttribute("value");
                             string phone = App.getAgent().cust.phone;
-                            DBCommand = "INSERT INTO `LEADS` (`AGENT`, `NAME`, `PHONE`, `LEAD_ID`, `LEAD_GUID`, `IMPORT_ID`) VALUES ('" + App.getAgent().AgentNum + "','" + name + "','" + phone + "','" + App.getAgent().cust.LeadID + "','" + App.getAgent().cust.LEADGUID + "','" + App.getAgent().cust.IMPORT_ID + "')";
-                            Agent.UpdateDBase(DBCommand);
+                            
                             App.getAgent().driver.FindElementById("btnSubmit").Click();
                             App.getAgent().SilenceTimer = 0;
                             App.getAgent().SilenceTimer = 0;
@@ -555,16 +554,7 @@ namespace AutoBotCSharp
                             Console.WriteLine("called endcall successfully");
                             App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\ENDCALL.mp3");
                             App.screenshots ++;
-                            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/";
-                            try
-                            {
-                                OpenQA.Selenium.Screenshot Lead = App.getAgent().driver.GetScreenshot();
-                                Lead.SaveAsFile(path + "Lead" + App.screenshots + ".jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                            }
-                            catch(Exception e)
-                            {
-                                Console.WriteLine(e.StackTrace);
-                            }                                                                                                      
+                            string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/";                                                                                              
                         }
                         else if(response.ToLower().TrimEnd('.', '?', '!').Contains("no") || response.Contains("no thank you") || response.ToLower().TrimEnd('.', '?', '!').Contains("do not consent") || response.ToLower().TrimEnd('.', '?', '!').Contains("not okay") || response.ToLower().TrimEnd('.', '?', '!').Contains("nope") || response.Contains("don't think so") || response.Contains("negative") || response.Contains("sounds bad"))
                         {

@@ -21,23 +21,24 @@ namespace AutoBotCSharp
         public Agent user;
         public string version;
         public Agent_Google googleUser;
-        public Speech_Recognizer reco = new Speech_Recognizer(6000);
+        public Speech_Recognizer reco;
 
 
         public MainWindow()
         {
+            reco = new Speech_Recognizer(6000);
             Agent user = new AutoBotCSharp.Agent();
             string apiKey1 = "";
             string apiKey2 = "";
             App.getWindow().Closed += closeall;
             try
             {
-                string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\keys.txt";
-                string[] keys = System.IO.File.ReadAllLines(path);
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\keys.txt";
+                string[] keys = File.ReadAllLines(path);
                 apiKey1 = keys[0];
                 apiKey2 = keys[1];
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("keys.txt not found", "ya dun goofed");
             }
