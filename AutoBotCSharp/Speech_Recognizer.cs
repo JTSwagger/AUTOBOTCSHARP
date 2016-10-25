@@ -78,23 +78,22 @@ namespace AutoBotCSharp
 
         public async Task<bool> reco_google()
         {
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @".\verifier-key.json");
+            
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @".\creds.json");
+
             shutdown = false;
             Console.WriteLine("***STARTING GOOGLE SPEECH RECO***");  
-            ProcessStartInfo info = new ProcessStartInfo("CMD.exe");                               
-            info.UseShellExecute = false;
-            info.RedirectStandardInput = true;
+            ProcessStartInfo info = new ProcessStartInfo("python");                               
+            info.UseShellExecute = true;
+            info.Arguments = "transcribe_streaming.py " + PORT;
             proc = Process.Start(info);
-            proc.StandardInput.WriteLine("python transcribe_streaming.py " + PORT);
-            proc.StandardInput.Flush();
-            proc.StandardInput.Close();
             Thread.Sleep(300);
             sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
             sock.Connect("localhost", PORT);
             
             while (shutdown == false)
             {
-                this.MicOn = true;
+                this.is_recording = true;
                 byte[] buff = new byte[1024];
                 int data = sock.Receive(buff);
                 char[] message = new char[data];
@@ -147,7 +146,7 @@ namespace AutoBotCSharp
                 sock.Send(toBytes);
                 sock.Close();
                 shutdown = true;
-                this.MicOn = false;
+                this.is_recording = false;
             }
             catch
             {

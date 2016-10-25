@@ -197,24 +197,21 @@ namespace AutoBotCSharp
                         if (getAgent().cust.isNameEnabled)
                         {
 
-                            if (response.Contains("yes") || response.Contains("speaking") || response.Contains(check) || response.Contains("yeah") || (response.Contains("hi") && !(response.Contains("this"))) || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
+                            if (response.Contains("yes") || response.Contains("speaking") || (response.Contains(check)  && !(response.Contains("this"))) || response.Contains("yeah") || response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
                             {
-                                Console.WriteLine("THIS IS THE PERSON YOU WANT");
-                                Thread.Sleep(300);
+                                Console.WriteLine("THIS IS THE PERSON YOU WANT"); 
                                 App.getAgent().custObjected = false;
                                 getAgent().Question = Agent.INTRO;
                             }
                             else if (response.Contains("hello"))
                             {
                                 Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
-
                                 getAgent().hasAsked = true;
                                     App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
                             }
                             else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here") || response == "no")
                             {
-                                Console.WriteLine("THIS IS NOT THE PERSON YOU WANT"); 
-                                                  
+                                Console.WriteLine("THIS IS NOT THE PERSON YOU WANT");                                                  
                                 getAgent().Question = "SPOUSE?";
                                 ag.hasAsked = false;
                             }
@@ -254,7 +251,7 @@ namespace AutoBotCSharp
                             DBCommand = "INSERT INTO `INS_PROVIDER` (`SPEECH`,`PASS/FAIL`) VALUES('" + response + "',1)";
                             Agent.UpdateDBase(DBCommand);
                             ag.hasAsked = false;
-                            App.getWindow().reco.TurnOffMic();                      
+                                                
                             break;
            
                         } else
@@ -268,7 +265,7 @@ namespace AutoBotCSharp
                             Agent.UpdateDBase(DBCommand);
                             ag.Question = Agent.INST_START;
                             ag.hasAsked = false;
-                            App.getWindow().reco.TurnOffMic();
+                            
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.INST_START:
@@ -299,7 +296,7 @@ namespace AutoBotCSharp
                         else
                         {
                             ag.cust.numVehicles = 1;
-                            ag.hasAsked = true;
+                            ag.hasAsked = false ;
                             App.getWindow().reco.TurnOffMic();
                         }
                         App.getWindow().reco.TurnOffMic();

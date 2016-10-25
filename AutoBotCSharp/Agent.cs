@@ -135,7 +135,7 @@ namespace AutoBotCSharp
             {
                 switch ((int)time)
                 {
-                    case 5:
+                    case 4:
                         Application.Current.Dispatcher.Invoke((() => App.RollTheClip(@"C:\SoundBoard\Cheryl\INTRO\hello 1.mp3")));
                         SilenceTimer = 6;
                         break;
@@ -287,14 +287,17 @@ namespace AutoBotCSharp
                         {
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                App.getWindow().reco.TurnOffMic();
+                                if (App.getWindow().reco.is_recording)
+                                {
+                                    App.getWindow().reco.TurnOffMic();
+                                }
                             });
                             App.getAgent().newCall = true;
                         }
                         else if (App.getAgent().Dialer_Status == "INCALL" || App.getAgent().testing == true)
 
                         {
-                            if (App.getAgent().isTalking == false) { App.getAgent().SilenceTimer += .2; /* Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds"); */ }
+                            if (App.getAgent().isTalking == false) { App.getAgent().SilenceTimer += .2;  Console.WriteLine("Silence is " + App.getAgent().SilenceTimer + " seconds");  }
                             if (App.getAgent().SilenceTimer >= 2) { App.getAgent().INPUTDEFAULT(); }
                             if (App.getAgent().SilenceTimer >= 4) { App.getAgent().CheckForContact(App.getAgent().SilenceTimer); }
                             App.getAgent().calltime += 0.2;
@@ -302,7 +305,8 @@ namespace AutoBotCSharp
 
                             if (App.getAgent().newCall)
                             {
-                                setupReco();
+                                App.getAgent().newCall = false;
+                              
                                 App.getAgent().inCall = true;
                                 App.getAgent().currentlyRebuttaling = false;
                                 App.getAgent().custObjected = false;
@@ -313,7 +317,8 @@ namespace AutoBotCSharp
                                 App.getAgent().notInterestedFutureBool = false;
                                 App.getAgent().calltime = 0;
                                 App.getAgent().SilenceTimer = 0;
-                                App.getAgent().newCall = false;
+                                Application.Current.Dispatcher.Invoke(() => setupReco());
+
                             }
                         }
                         //Console.WriteLine("Dialer Status: " + Dialer_Status);
@@ -345,11 +350,20 @@ namespace AutoBotCSharp
         protected static int portNum = 6000;
         public static void setupReco()
         {
+            
+
             var window = App.getWindow();
             Application.Current.Dispatcher.Invoke(() =>
             {
+                foreach (Process bill in Process.GetProcessesByName("Python"))
+                {
+                    bill.Kill();
+                }
                 window.reco = new Speech_Recognizer(portNum);
-                window.reco.TurnOnMic("Google");
+                window.reco.PartialSpeech += window.onGooglePartialSpeech;
+                window.reco.FinalSpeech += window.onGoogleFinalSpeech;
+                window.reco.MicChange += window.onMicChange;
+                window.reco.TurnOnMic(Speech_Recognizer.Google);
             });
             if (portNum >= 6020)
             {
@@ -1220,7 +1234,7 @@ namespace AutoBotCSharp
                 {
                     return (month + " " + (DateTime.Now.Year - 3).ToString());
                 }
-                else if (response.Contains("four") || response.Contains("4"))
+                else if (response.Contains("four") || response.Contains("4") || response == ("4"))
                 {
                     return (month + " " + (DateTime.Now.Year - 4).ToString());
                 }
@@ -1784,6 +1798,7 @@ namespace AutoBotCSharp
                 case Agent.INST_START:
                     //Console.WriteLine("omg wtf bbq");
                     Data = temp.HowLong(response);
+                    Console.WriteLine("CHECKING FOR START DATE: " + Data);
                     if (Data != "FALSE")
                     {
                         theDates = Data.Split(' ');
@@ -1796,6 +1811,7 @@ namespace AutoBotCSharp
                     else
                     {
                         mrMeseeks = false;
+                        Console.WriteLine("COULDN'T DO IT.");
                     }
                     break;
                 case Agent.NUM_VEHICLES:
@@ -2445,11 +2461,12 @@ namespace AutoBotCSharp
         {
             AgentNum = AgentNumber;
 
-            ChromeDriverService cds = ChromeDriverService.CreateDefaultService();
-            cds.HideCommandPromptWindow = true;
-            driver = new ChromeDriver(cds);
+            
             try
             {
+                ChromeDriverService cds = ChromeDriverService.CreateDefaultService();
+                cds.HideCommandPromptWindow = true;
+                driver = new ChromeDriver(cds);
                 driver.Navigate().GoToUrl("http://loudcloud9.ytel.com");
                 driver.SwitchTo().Frame("top");
                 Thread.Sleep(500);
@@ -2494,7 +2511,7 @@ namespace AutoBotCSharp
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (App.getWindow().reco.MicOn)
+                    if (App.getWindow().reco.is_recording)
                     {
                         App.getWindow().reco.TurnOffMic();
                     }
@@ -2923,8 +2940,8 @@ namespace AutoBotCSharp
                             }
                             else
                             {
-                                Question = INTRO;
-                                AskQuestion();
+                                Question = PROVIDER;
+                                App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3");
                             }
                         });
                         break;

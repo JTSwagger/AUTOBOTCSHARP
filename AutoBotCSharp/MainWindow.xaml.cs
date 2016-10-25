@@ -699,8 +699,15 @@ namespace AutoBotCSharp
         {
             user = new Agent();
             user.AgentNum = "1198";
-            var cds = ChromeDriverService.CreateDefaultService();
-            cds.HideCommandPromptWindow = true;
+            try
+            {
+                var cds = ChromeDriverService.CreateDefaultService();
+                cds.HideCommandPromptWindow = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
             string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\MALENAMES.txt";
             using (StreamReader r = new StreamReader(path))
             {
@@ -781,6 +788,7 @@ namespace AutoBotCSharp
         {
             reco.PartialSpeech += onGooglePartialSpeech;
             reco.FinalSpeech += onGoogleFinalSpeech;
+            reco.MicChange += onMicChange;
             reco.TurnOnMic(Speech_Recognizer.Google);
 
         }
@@ -789,7 +797,8 @@ namespace AutoBotCSharp
             Dispatcher.Invoke(() =>
             {
                 Speech_Recognizer r = (Speech_Recognizer)sender;
-                lblreco.Content = "RECORDING: " + r.MicOn;
+                bool status = r.is_recording;
+                lblreco.Content = "RECORDING: " + status;
             });
         }
         public void onGoogleFinalSpeech(object sender, EventArgs e)
