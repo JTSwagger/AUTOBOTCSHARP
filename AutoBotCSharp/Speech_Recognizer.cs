@@ -154,6 +154,12 @@ namespace AutoBotCSharp
             }
 
         }
+
+        public void clearSpeech()
+        {
+            _partial = "";
+            _Final = "";
+        }
 //--------------------------------------------------------------------------------
     
     }

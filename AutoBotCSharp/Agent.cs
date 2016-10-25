@@ -1223,53 +1223,106 @@ namespace AutoBotCSharp
         public string HowLong(string response)
         {
             string month = cust.expMonth;
-
-            if (response.Contains("year"))
+            if (response.Contains("two") || response.Contains("2"))
             {
-                if (response.Contains("two") || response.Contains("2"))
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 2).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Nov " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Dec " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("three") || response.Contains("3"))
+                else { return (month + " " + (DateTime.Now.Year - 2).ToString()); }
+            }
+            else if (response.Contains("three") || response.Contains("3"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 3).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Oct " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Nov " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("four") || response.Contains("4") || response == ("4"))
+                else { return (month + " " + (DateTime.Now.Year - 3).ToString()); }
+            }
+            else if (response.Contains("four") || response.Contains("4") || response == ("4"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 4).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Sep " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Oct " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("five") || response.Contains("5"))
+                else { return (month + " " + (DateTime.Now.Year - 4).ToString()); }
+            }
+            else if (response.Contains("five") || response.Contains("5"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 5).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Aug " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Sep " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                if (response.Contains("six") || response.Contains("6") || response.Contains("sex"))
+                else { return (month + " " + (DateTime.Now.Year - 5).ToString()); }
+            }
+            else if (response.Contains("six") || response.Contains("6") || response.Contains("sex"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 6).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Jul " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Aug " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("seven") || response.Contains("7"))
+                else { return (month + " " + (DateTime.Now.Year - 6).ToString()); }
+            }
+            else if (response.Contains("seven") || response.Contains("7"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 7).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Jun " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Jul " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("eight") || response.Contains("8"))
+                else { return (month + " " + (DateTime.Now.Year - 7).ToString()); }
+            }
+
+            else if (response.Contains("eight") || response.Contains("8"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 8).ToString());
+                    if (DateTime.Now.Month == 1) { return ("May " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Jun " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("nine") || response.Contains("9"))
+                else { return (month + " " + (DateTime.Now.Year - 8).ToString()); }
+            }
+            else if (response.Contains("nine") || response.Contains("9"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 9).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Apr " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("May " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                if (response.Contains("ten") || response.Contains("10"))
+                else { return (month + " " + (DateTime.Now.Year - 9).ToString()); }
+            }
+            else if (response.Contains("ten") || response.Contains("10"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 10).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Mar " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Apr " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("eleven") || response.Contains("11"))
+                else { return (month + " " + (DateTime.Now.Year - 10).ToString()); }
+            }
+            else if (response.Contains("eleven") || response.Contains("11"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 11).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Feb " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Mar " + (DateTime.Now.Year - 1).ToString()); }
                 }
-                else if (response.Contains("twelve") || response.Contains("12"))
+                else { return (month + " " + (DateTime.Now.Year - 11).ToString()); }
+            }
+            else if (response.Contains("twelve") || response.Contains("12"))
+            {
+                if (response.Contains("months"))
                 {
-                    return (month + " " + (DateTime.Now.Year - 12).ToString());
+                    if (DateTime.Now.Month == 1) { return ("Jan " + (DateTime.Now.Year - 1).ToString()); }
+                    else if (DateTime.Now.Month == 2) { return ("Feb " + (DateTime.Now.Year - 1).ToString()); }
                 }
+                else { return (month + " " + (DateTime.Now.Year - 12).ToString()); }
+            }
                 else if (response.Contains("thirteen") || response.Contains("13"))
                 {
                     return (month + " " + (DateTime.Now.Year - 13).ToString());
@@ -1298,24 +1351,18 @@ namespace AutoBotCSharp
                 {
                     return (month + " " + (DateTime.Now.Year - 19).ToString());
                 }
-                else
+                else if(response.Contains("twenty") || response.Contains("20"))
                 {
                     return (month + " " + (DateTime.Now.Year - 20).ToString());
                 }
-            }
-            else if (response.Contains("just started") || response.Contains("last month"))
-            {
-                return ((DateTime.Now.Month - 1).ToString() + " " + DateTime.Now.Year.ToString());
-            }
-
-            else
-            {
+                
+         
                 return "FALSE";
             }
 
 
 
-        }
+        
         //===================================================================================================
         public int getNumVehicles(string response)
         {
@@ -1795,25 +1842,7 @@ namespace AutoBotCSharp
                     }
 
                     break;
-                case Agent.INST_START:
-                    //Console.WriteLine("omg wtf bbq");
-                    Data = temp.HowLong(response);
-                    Console.WriteLine("CHECKING FOR START DATE: " + Data);
-                    if (Data != "FALSE")
-                    {
-                        theDates = Data.Split(' ');
-                        temp.selectData("frmPolicyStart_Month", theDates[0]);
-                        temp.selectData("frmPolicyStart_Year", theDates[1]);
-                        temp.Callpos = Agent.INBETWEEN;
-                        //Console.WriteLine("\n BEYBLADE \n");                      
-                    }
 
-                    else
-                    {
-                        mrMeseeks = false;
-                        Console.WriteLine("COULDN'T DO IT.");
-                    }
-                    break;
                 case Agent.NUM_VEHICLES:
                     int data = temp.getNumVehicles(response);
                     if (data > 0) { if (temp.Callpos != Agent.FIXING) { temp.Callpos = Agent.INBETWEEN; } temp.cust.numVehicles = data; }
@@ -2916,12 +2945,12 @@ namespace AutoBotCSharp
      
         public bool AskQuestion()
         {
-            Console.WriteLine("ASKING QUESTION");
-            
+            Console.WriteLine("ASKING QUESTION");            
             Console.WriteLine("ASKING QUESTION " + Question);
+
             try
             {
-                
+              
                 cust.speech = "";
                 isTalking = true;
                 SilenceTimer = 0;
@@ -2949,7 +2978,7 @@ namespace AutoBotCSharp
                         if (!App.getAgent().custObjected)
                         { App.RollTheClip(@"C:\Soundboard\Cheryl\INTRO\Intro2.mp3"); }
                         else { App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3"); }
-
+                        
                         break;
                     case PROVIDER:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Ins provider 1.mp3");
@@ -2959,63 +2988,83 @@ namespace AutoBotCSharp
                         break;
                     case INST_START:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\INSURANCE INFO\Years with 1.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case NUM_VEHICLES:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\How many vehicles do you have.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YMM_ONLY_ONE:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\YMMYV.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YMM1:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\First Vehicle.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YMM2:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\2nd Vehicle.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YMM3:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\Third Vehicle.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YMM4:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\VEHICLE INFO\Fourth Vehicle.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case DOB:
                         App.playDobClips();
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case BDAYMONTH:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\REBUTTALS\Can You Just Verify the month.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case MARITAL_STATUS:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Marital Status.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case SPOUSE_NAME:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Spouses First name.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case SPOUSE_DOB:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\DRIVER INFO\Spouses Date of Birth.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case SPOUSEBDAYMONTH:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\REBUTTALS\Can You Just Verify the month.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case OWN_OR_RENT:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Do You Own Or Rent the Home.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case RES_TYPE:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\HOMETYPE.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case CREDIT:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Credit.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case ADDRESS:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Could you please verify your address.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case EMAIL:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\EMAIL.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case PHONE_TYPE:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\PHONETYPE.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case LAST_NAME:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\PERSONAL INFO\Last Name.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case SECONDARIES:
                         try
@@ -3028,21 +3077,27 @@ namespace AutoBotCSharp
                         TCPA:
 
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\TCPA.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case Agent.WHICHSECONDARIES:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Which secondaries.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case YEARBUILT:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\YearBuilt.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case SQFT:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\Square footage.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case PPC:
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\WRAPUP\PPCoverage.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                     case "REPEAT":
                         App.RollTheClip(@"C:\SoundBoard\Cheryl\REACTIONS\Can you repeat that.mp3");
+                        Application.Current.Dispatcher.Invoke(() => setupReco());
                         break;
                 }
                 Callpos = INBETWEEN;

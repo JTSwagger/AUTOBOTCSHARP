@@ -197,18 +197,18 @@ namespace AutoBotCSharp
                         if (getAgent().cust.isNameEnabled)
                         {
 
-                            if (response.Contains("yes") || response.Contains("speaking") || (response.Contains(check)  && !(response.Contains("this"))) || response.Contains("yeah") || response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
+                            if (response.Contains("yes") || response.Contains("speaking") || response.Contains("hello") || (response.Contains(check)  && !(response.Contains("this"))) || response.Contains("yeah") || response.Contains("hi") || response.Contains("yup") || response.Contains("sure is") || response.Contains("you've got him"))
                             {
                                 Console.WriteLine("THIS IS THE PERSON YOU WANT"); 
                                 App.getAgent().custObjected = false;
                                 getAgent().Question = Agent.INTRO;
                             }
-                            else if (response.Contains("hello"))
-                            {
-                                Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
-                                getAgent().hasAsked = true;
-                                    App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
-                            }
+                           // else if (response.Contains("hello"))
+                          //  {
+                            //    Console.WriteLine("WE DON'T KNOW IF THIS IS THE PERSON YOU WANT");
+                            //    getAgent().hasAsked = true;
+                             //   App.RollTheClip(App.findNameClips(App.getWindow().btnTheirName.Content.ToString())[1]);                           
+                            //}
                             else if (response.Contains("no it isnt") ||response.Contains("no, it is not") || response.Contains("he's not here") || response == "no")
                             {
                                 Console.WriteLine("THIS IS NOT THE PERSON YOU WANT");                                                  
@@ -269,6 +269,23 @@ namespace AutoBotCSharp
                         } else { ag.hasAsked = true; }
                         break;
                     case Agent.INST_START:
+                        string Data = ag.HowLong(response);
+                        Console.WriteLine("CHECKING FOR START DATE: " + Data);
+                        if (Data != "FALSE")
+                        {
+                            string[] theDates = Data.Split(' ');
+                            ag.selectData("frmPolicyStart_Month", theDates[0]);
+                            ag.selectData("frmPolicyStart_Year", theDates[1]);
+                            ag.Callpos = Agent.INBETWEEN;
+                            //Console.WriteLine("\n BEYBLADE \n");                      
+                        }
+
+                        else
+                        {
+          
+                            Console.WriteLine("COULDN'T DO IT.");
+                        }
+                     
                         if (ag.driver.FindElementById("frmPolicyStart_Month").GetAttribute("value") != "")
                         {
                             ag.Question = Agent.NUM_VEHICLES;
@@ -390,20 +407,25 @@ namespace AutoBotCSharp
 
                     case Agent.DOB:
                         string[] dobby = App.getAgent().dobInfo;
-                        if (dobby[0] != "" && dobby[1] != "")
-                        {                           
-                            if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
-                            {   
-                               ag.Question = Agent.MARITAL_STATUS;                              
-                            }
-                            else if(response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect") )
-                            {
-                                RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
-                                getAgent().AskingBDay = true;
-                                dobby[0] = "";
-                                dobby[1] = "";
+                        if (dobby != null)
+                        { 
+                            if(dobby[0] != "" && dobby[1] != "" )
+                                {
+                                if (response.ToLower().Contains("yes") || response.ToLower().Contains("yeah") || response.ToLower().Contains("right") || response.ToLower().Contains("correct") || response.ToLower().Contains("yup") || response.ToLower().Contains("yah"))
+                                {
+                                    ag.Question = Agent.MARITAL_STATUS;
+                                }
+                                else if (response.ToLower().Contains("no") || response.ToLower().Contains("wrong") || response.ToLower().Contains("incorrect"))
+                                {
+                                    RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                                    getAgent().AskingBDay = true;
+                                    dobby[0] = "";
+                                    dobby[1] = "";
+
+                                }
                             }                          
                         }
+       
                         else
                         {
                            
@@ -444,28 +466,21 @@ namespace AutoBotCSharp
                         if (getAgent().maleNames.Contains(response)) { getAgent().selectData("frmGender", "Male"); } else { getAgent().EnterData("frmGender", "Female"); }
                         break;
                     case Agent.SPOUSE_DOB: 
-                        if (!App.getAgent().CheckForMonth(response))
+                        string[] DayYear = response.Split(',');
+                        Console.WriteLine(DayYear[0]);
+                        if (DayYear.Length > 1)
                         {
-                            ag.BDAYHOLDER = App.getAgent().returnNumeric(response);
-                            ag.Question = Agent.SPOUSEBDAYMONTH;
-
-                        }
-
-                        else
-                        {
-                            string[] DayYear = response.Split(',');
-                            Console.WriteLine(DayYear[0]);
                             DayYear[0] = App.getAgent().returnNumeric(DayYear[0]);
                             DayYear[1] = App.getAgent().returnNumeric(DayYear[1]);
                             Console.WriteLine("DAY: " + DayYear[0]);
                             getAgent().selectData("frmSpouseDOB_Day", DayYear[0]);
                             Console.WriteLine("YEAR: " + DayYear[1]);
-                            getAgent().selectData("frmSpouseDOB_Year", DayYear[1]);
+                            getAgent().selectData("frmSpouseDOB_Year", DayYear[1]);                       
                         }
+                        ag.Question = Agent.OWN_OR_RENT;
+                        ag.hasAsked = false;
                         break;
-                    case Agent.SPOUSEBDAYMONTH:
-                        ag.Question = Agent.OWN_OR_RENT; 
-                        break;
+
                     case Agent.OWN_OR_RENT: ag.Question = Agent.RES_TYPE; break;
                     case Agent.RES_TYPE: ag.Question = Agent.ADDRESS; break;
                     case Agent.ADDRESS:
@@ -630,6 +645,8 @@ namespace AutoBotCSharp
          */
         public static void onPlaybackStopped(object sender, StoppedEventArgs e)
         {
+            App.getWindow().reco.clearSpeech();
+            App.getWindow().speechTxtBox.Clear();
             Console.WriteLine(getAgent().Callpos);
             Console.WriteLine(getAgent().Question);
             if (getAgent().endcall == true) { getAgent().endcall = false; getAgent().HangUpandDispo("Auto Lead"); }
@@ -854,25 +871,37 @@ namespace AutoBotCSharp
         public static async void playDobClips()
         {
             string[] dobby = getAgent().dobInfo;
-            foreach (string clippy in dobby)
+            if (dobby != null)
             {
-                Console.WriteLine(clippy);
-            }
-            if (dobby[0] != "" && dobby[1] != "")
-            {
-                string moday = dobby[0] + dobby[1];
-                string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
-                bool isDone = await RollTheClipAndWait(modayPath);
+                foreach (string clippy in dobby)
+                {
+                    Console.WriteLine(clippy);
+                }
+
+                if (dobby[0] != "" && dobby[1] != "")
+                {
+                    string moday = dobby[0] + dobby[1];
+                    string modayPath = @"C:\Soundboard\Cheryl\Birthday\" + moday + ".mp3";
+                    bool isDone = await RollTheClipAndWait(modayPath);
+                }
+                else
+                {
+                    RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
+                    getAgent().AskingBDay = true;
+                    return;
+                }
+                if (dobby[2] != "")
+                {
+                    RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+                }
             }
             else
             {
+
                 RollTheClip(@"C:\Soundboard\Cheryl\DRIVER INFO\dob1.mp3");
                 getAgent().AskingBDay = true;
                 return;
-            }
-            if (dobby[2] != "")
-            {
-                RollTheClip(@"C:\Soundboard\Cheryl\Birthday\" + dobby[2] + ".mp3");
+
             }
         }
     }
